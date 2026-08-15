@@ -1,21 +1,30 @@
-# Current Documentation
+# Offline GeoStack Documentation
 
-![TPKX Map Factory current architecture](current_architecture.svg)
+![Offline GeoStack current architecture](current_architecture.svg)
 
-This folder is the current technical record for the 2026 **TPKX Map Factory + ArcGIS Earth** architecture.
+This folder is the technical record for the current 2026 **Offline GeoStack** architecture:
+
+**QGIS → temporary raster MBTiles → custom Compact Cache V2 / TPKX converter → ArcGIS Earth → live field-position inputs.**
 
 ## Start here
 
-- [Technical Architecture](TECHNICAL_ARCHITECTURE.md) — converter mechanics, TMS/Compact Cache V2 structure, workflows, acceptance evidence, offline doctrine, and do-not-regress rules.
-- [Notes for GIS Professionals](NOTES_FOR_GIS_PROFESSIONALS.md) — the interoperability design in condensed form.
+- [Professional GIS Engineering Record](professional_report/README.md) — long-form architecture, implementation, validation, operational doctrine, appendices, and future-AI continuity reference.
+- [Technical Architecture](TECHNICAL_ARCHITECTURE.md) — converter mechanics, TMS/Compact Cache V2 structure, workflows, acceptance evidence, and do-not-regress rules.
+- [Notes for GIS Professionals](NOTES_FOR_GIS_PROFESSIONALS.md) — condensed interoperability interpretation.
 - [Quick Start](QUICK_START.md) — normal-user and advanced-user operation.
 - [Project Status — 2026-08-15](PROJECT_STATUS_2026-08-15.md) — frozen release checkpoint.
-- [Offline Operation and Persistent Geographic Awareness](OFFLINE_OPERATION_AND_PERSISTENT_GEOGRAPHIC_AWARENESS.md) — why local maps are operational inventory rather than a fallback cache.
+- [Offline Operation and Persistent Geographic Context](OFFLINE_OPERATION_AND_PERSISTENT_GEOGRAPHIC_CONTEXT.md) — why local maps are operational inventory rather than a fallback cache.
 - [PRAVE → ArcGIS Earth Integration](PRAVE_ARCGIS_EARTH_INTEGRATION.md) — live-proven native Automation API path and RSSI display rules.
 - [AI-Assisted Engineering Method](AI_ENGINEERING_METHOD.md) — how the human/AI closed-loop workflow compressed cross-domain engineering work.
 - [AI Continuity / Restart Note](AI_CONTINUITY_RESTART_NOTE.md) — current baseline for future maintainers and future AI systems.
 - [Historical Timeline](HISTORICAL_TIMELINE.md) — how the project moved from terrestrial chartplotter work through Google Earth and into ArcGIS Earth / TPKX.
 - [Source and Licensing Note](SOURCE_AND_LICENSING_NOTE.md) — technical capability versus source-data rights.
+
+## Required production assets
+
+The current QGIS reference projects are stored under [`../required_qgis_projects/`](../required_qgis_projects/).
+
+The exact accepted Factory package is stored under [`../releases/TPKX_MAP_FACTORY_v1_0_0.zip`](../releases/TPKX_MAP_FACTORY_v1_0_0.zip).
 
 ## Legacy architecture
 
