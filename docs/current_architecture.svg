@@ -1,69 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
-  <title id="title">TPKX Map Factory current architecture</title>
-  <desc id="desc">QGIS renders raster tiles to temporary MBTiles, a custom Python converter packages them as Esri Compact Cache V2 TPKX, and ArcGIS Earth displays the result natively offline.</desc>
+  <title id="title">Offline GeoStack current architecture</title>
+  <desc id="desc">QGIS renders raster tiles to temporary MBTiles, a custom Python converter packages them as Esri Compact Cache V2 TPKX, ArcGIS Earth displays the result natively offline, and live field inputs provide position and command context.</desc>
   <defs>
-    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-      <path d="M0,0 L12,6 L0,12 z" fill="#4b5563"/>
-    </marker>
-    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity="0.18"/>
-    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#4b5563"/></marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity="0.18"/></filter>
   </defs>
   <rect width="1200" height="320" rx="20" fill="#f7f9fc"/>
-  <text x="600" y="42" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="28" font-weight="700" fill="#162235">TPKX Map Factory — 2026 Current Architecture</text>
-  <text x="600" y="69" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="15" fill="#526273">QGIS makes the pixels. The converter packs the pixels. ArcGIS Earth displays the pixels.</text>
+  <text x="600" y="40" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="31" font-weight="700" fill="#162235">Offline GeoStack — 2026 Current Architecture</text>
+  <text x="600" y="68" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="15" fill="#526273">QGIS → MBTiles → Compact Cache V2 / TPKX → ArcGIS Earth + live field positioning</text>
 
-  <g filter="url(#shadow)">
-    <rect x="45" y="112" width="190" height="112" rx="16" fill="#ffffff" stroke="#3a8d5d" stroke-width="3"/>
-    <circle cx="83" cy="149" r="20" fill="#3a8d5d"/>
-    <text x="83" y="156" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#fff">Q</text>
-    <text x="140" y="147" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#1d2939">QGIS</text>
-    <text x="140" y="177" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="14" fill="#526273">3.44.9 render engine</text>
-    <text x="140" y="199" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#526273">layers • labels • pixels</text>
-  </g>
-
+  <g filter="url(#shadow)"><rect x="45" y="112" width="190" height="112" rx="16" fill="#ffffff" stroke="#3a8d5d" stroke-width="3"/><circle cx="83" cy="149" r="20" fill="#3a8d5d"/><text x="83" y="156" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#fff">Q</text><text x="140" y="147" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" fill="#1d2939">QGIS</text><text x="140" y="177" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="14" fill="#526273">3.44.9 render engine</text><text x="140" y="199" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#526273">layers • labels • pixels</text></g>
   <line x1="235" y1="168" x2="292" y2="168" stroke="#4b5563" stroke-width="4" marker-end="url(#arrow)"/>
 
-  <g filter="url(#shadow)">
-    <rect x="305" y="112" width="190" height="112" rx="16" fill="#ffffff" stroke="#d09a2d" stroke-width="3"/>
-    <rect x="331" y="133" width="42" height="42" rx="6" fill="#d09a2d"/>
-    <path d="M340 144h24M340 154h24M340 164h24" stroke="#fff" stroke-width="3"/>
-    <text x="412" y="147" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="21" font-weight="700" fill="#1d2939">MBTiles</text>
-    <text x="400" y="177" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="14" fill="#526273">temporary raster pyramid</text>
-    <text x="400" y="199" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#526273">SQLite • PNG/JPEG tiles</text>
-  </g>
-
+  <g filter="url(#shadow)"><rect x="305" y="112" width="190" height="112" rx="16" fill="#ffffff" stroke="#d09a2d" stroke-width="3"/><rect x="331" y="133" width="42" height="42" rx="6" fill="#d09a2d"/><path d="M340 144h24M340 154h24M340 164h24" stroke="#fff" stroke-width="3"/><text x="412" y="147" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="21" font-weight="700" fill="#1d2939">MBTiles</text><text x="400" y="177" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="14" fill="#526273">temporary raster pyramid</text><text x="400" y="199" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#526273">SQLite • PNG/JPEG tiles</text></g>
   <line x1="495" y1="168" x2="552" y2="168" stroke="#4b5563" stroke-width="4" marker-end="url(#arrow)"/>
 
-  <g filter="url(#shadow)">
-    <rect x="565" y="101" width="235" height="134" rx="16" fill="#ffffff" stroke="#6b5bd2" stroke-width="3"/>
-    <circle cx="603" cy="143" r="20" fill="#6b5bd2"/>
-    <text x="603" y="150" text-anchor="middle" font-family="Consolas,monospace" font-size="18" font-weight="700" fill="#fff">Py</text>
-    <text x="690" y="139" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#1d2939">Custom Converter</text>
-    <text x="682" y="171" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="14" fill="#526273">TMS row flip • 128×128 bundles</text>
-    <text x="682" y="193" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#526273">Compact Cache V2 • metadata</text>
-    <text x="682" y="215" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="600" fill="#6b5bd2">tile bytes preserved</text>
-  </g>
-
+  <g filter="url(#shadow)"><rect x="565" y="101" width="235" height="134" rx="16" fill="#ffffff" stroke="#6b5bd2" stroke-width="3"/><circle cx="603" cy="143" r="20" fill="#6b5bd2"/><text x="603" y="150" text-anchor="middle" font-family="Consolas,monospace" font-size="18" font-weight="700" fill="#fff">Py</text><text x="690" y="139" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#1d2939">Custom Converter</text><text x="682" y="171" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="14" fill="#526273">TMS row flip • 128×128 bundles</text><text x="682" y="193" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#526273">Compact Cache V2 • metadata</text><text x="682" y="215" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="600" fill="#6b5bd2">tile bytes preserved</text></g>
   <line x1="800" y1="168" x2="857" y2="168" stroke="#4b5563" stroke-width="4" marker-end="url(#arrow)"/>
 
-  <g filter="url(#shadow)">
-    <rect x="870" y="112" width="130" height="112" rx="16" fill="#ffffff" stroke="#2e7dbf" stroke-width="3"/>
-    <path d="M902 136h67v56h-67z" fill="#e8f3fb" stroke="#2e7dbf" stroke-width="2"/>
-    <path d="M910 147h51M910 158h51M910 169h51" stroke="#2e7dbf" stroke-width="2"/>
-    <text x="935" y="211" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#1d2939">TPKX</text>
-  </g>
-
+  <g filter="url(#shadow)"><rect x="870" y="112" width="130" height="112" rx="16" fill="#ffffff" stroke="#2e7dbf" stroke-width="3"/><path d="M902 136h67v56h-67z" fill="#e8f3fb" stroke="#2e7dbf" stroke-width="2"/><path d="M910 147h51M910 158h51M910 169h51" stroke="#2e7dbf" stroke-width="2"/><text x="935" y="211" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#1d2939">TPKX</text></g>
   <line x1="1000" y1="168" x2="1050" y2="168" stroke="#4b5563" stroke-width="4" marker-end="url(#arrow)"/>
 
-  <g filter="url(#shadow)">
-    <rect x="1062" y="112" width="105" height="112" rx="16" fill="#ffffff" stroke="#1678c8" stroke-width="3"/>
-    <circle cx="1114" cy="151" r="26" fill="#1678c8"/>
-    <path d="M1092 151c14-18 30-18 44 0-14 18-30 18-44 0zm6 0c10 10 22 10 32 0-10-10-22-10-32 0z" fill="#fff" opacity="0.92"/>
-    <text x="1114" y="195" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#1d2939">ArcGIS Earth</text>
-    <text x="1114" y="214" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="12" fill="#526273">native • offline</text>
-  </g>
+  <g filter="url(#shadow)"><rect x="1062" y="104" width="105" height="128" rx="16" fill="#ffffff" stroke="#1678c8" stroke-width="3"/><circle cx="1114" cy="143" r="25" fill="#1678c8"/><path d="M1092 143c14-18 30-18 44 0-14 18-30 18-44 0zm6 0c10 10 22 10 32 0-10-10-22-10-32 0z" fill="#fff" opacity="0.92"/><text x="1114" y="184" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#1d2939">ArcGIS Earth</text><text x="1114" y="204" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="12" fill="#526273">native • offline</text><text x="1114" y="222" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="10.5" fill="#6b5bd2">GNSS • PRAVE • F22 • QR</text></g>
 
-  <rect x="357" y="266" width="486" height="34" rx="17" fill="#162235"/>
+  <rect x="327" y="266" width="546" height="34" rx="17" fill="#162235"/>
   <text x="600" y="288" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="600" fill="#ffffff">BUILD IT ONLINE • CARRY IT OFFLINE • NO OPERATIONAL INTERNET DEPENDENCY</text>
 </svg>
