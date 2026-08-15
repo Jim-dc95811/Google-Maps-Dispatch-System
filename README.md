@@ -4,9 +4,33 @@
 
 **A Windows-first offline geospatial stack for manufacturing native TPKX maps, running them in ArcGIS Earth, and feeding live GNSS / PRAVE / F22 / QR field data without depending on the Internet at showtime.**
 
+![Offline GeoStack architecture](docs/current_architecture.svg)
+
 This repository began life as the **Google Maps Dispatch System**. That history is preserved, but the current 2026 architecture has outgrown the old name.
 
 **Offline GeoStack** is the master project identity.
+
+## Status at a glance
+
+| Subsystem | Status |
+| --- | --- |
+| TPKX Map Factory v1.0.0 | ✅ **RELEASE-ACCEPTED** |
+| QGIS → MBTiles manufacturing | ✅ **LIVE-PROVEN** |
+| MBTiles → TPKX / Compact Cache V2 converter | ✅ **LIVE-PROVEN** |
+| Advanced existing-MBTiles conversion | ✅ **LIVE-PROVEN** |
+| ArcGIS Earth native TPKX runtime | ✅ **LIVE-PROVEN** |
+| PRAVE → ArcGIS Earth Automation API | ✅ **LIVE-PROVEN** |
+| AE session restoration of loaded TPKX | ✅ **LIVE-OBSERVED** |
+| Native AE GNSS with actual field receiver | ⏳ **FIELD ACCEPTANCE PENDING** |
+| Operational Internet dependency | **NONE BY DESIGN** |
+
+## Get the working pieces
+
+- **[Download TPKX Map Factory v1.0.0](releases/TPKX_MAP_FACTORY_v1_0_0.zip)**
+- **[Get the required QGIS projects](required_qgis_projects/)**
+- **[Quick Start](docs/QUICK_START.md)**
+- **[Professional GIS Engineering Record](docs/professional_report/README.md)**
+- **[Technical Architecture](docs/TECHNICAL_ARCHITECTURE.md)**
 
 The current production chain is:
 
@@ -265,9 +289,7 @@ KML remains first-class. It simply no longer has to carry jobs that native TPKX 
 
 ## Required QGIS projects
 
-The two current QGIS reference projects are included in this repository under:
-
-`required_qgis_projects/`
+The two current QGIS reference projects are included in [`required_qgis_projects/`](required_qgis_projects/).
 
 They are intended to be placed at:
 
@@ -293,7 +315,7 @@ The project uses read-only reference files plus archive recovery rather than a h
 - `docs/TECHNICAL_ARCHITECTURE.md` — detailed converter / pipeline engineering
 - `docs/professional_report/` — long-form professional GIS and future-AI technical record
 - `docs/PRAVE_ARCGIS_EARTH_INTEGRATION.md` — live positioning path
-- `docs/OFFLINE_OPERATION_AND_PERSISTENT_GEOGRAPHIC_AWARENESS.md` — offline doctrine (filename retained for continuity; current public wording uses Geographic Context)
+- `docs/OFFLINE_OPERATION_AND_PERSISTENT_GEOGRAPHIC_CONTEXT.md` — offline doctrine and persistent map/position context
 - `docs/AI_ENGINEERING_METHOD.md` — human/AI development method
 - `CHANGELOG.md` — release and architecture evolution
 - `CONTRIBUTING.md` — acceptance rules and do-not-regress guidance
