@@ -1,0 +1,3 @@
+# Public-facing one-paragraph summary
+
+TPKX Map Factory v1.0.0 is a Windows workflow that uses QGIS as the rendering engine, raster MBTiles as a temporary manufacturing intermediate, and a custom Python Compact Cache V2 converter to produce native TPKX packages for ArcGIS Earth. The normal interface is designed for non-GIS users; an advanced MBTiles -> TPKX path lets GIS professionals bring their own QGIS cartography. The operational doctrine is offline-first: Internet connectivity may help during preparation, but essential map use must continue without it.
