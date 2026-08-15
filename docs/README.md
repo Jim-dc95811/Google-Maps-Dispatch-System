@@ -10,6 +10,9 @@ This folder is the current technical record for the 2026 **TPKX Map Factory + Ar
 - [Notes for GIS Professionals](NOTES_FOR_GIS_PROFESSIONALS.md) — the interoperability design in condensed form.
 - [Quick Start](QUICK_START.md) — normal-user and advanced-user operation.
 - [Project Status — 2026-08-15](PROJECT_STATUS_2026-08-15.md) — frozen release checkpoint.
+- [Offline Operation and Persistent Geographic Awareness](OFFLINE_OPERATION_AND_PERSISTENT_GEOGRAPHIC_AWARENESS.md) — why local maps are operational inventory rather than a fallback cache.
+- [PRAVE → ArcGIS Earth Integration](PRAVE_ARCGIS_EARTH_INTEGRATION.md) — live-proven native Automation API path and RSSI display rules.
+- [AI-Assisted Engineering Method](AI_ENGINEERING_METHOD.md) — how the human/AI closed-loop workflow compressed cross-domain engineering work.
 - [AI Continuity / Restart Note](AI_CONTINUITY_RESTART_NOTE.md) — current baseline for future maintainers and future AI systems.
 - [Historical Timeline](HISTORICAL_TIMELINE.md) — how the project moved from terrestrial chartplotter work through Google Earth and into ArcGIS Earth / TPKX.
 - [Source and Licensing Note](SOURCE_AND_LICENSING_NOTE.md) — technical capability versus source-data rights.
@@ -17,6 +20,7 @@ This folder is the current technical record for the 2026 **TPKX Map Factory + Ar
 ## Legacy architecture
 
 - [Legacy Google Earth README — 2026-07-23](LEGACY_GOOGLE_EARTH_README_2026-07-23.md)
+- `legacy/` — preserved visual/history material from the earlier project phase.
 
 The legacy material is intentionally preserved as engineering lineage. It is not the current baseline.
 
