@@ -42,9 +42,13 @@
 - Esri World
 - Esri World / Google Labels
 
-### RELEASE ARTIFACT
+### RELEASE PACKAGE
 
-`releases/TPKX_MAP_FACTORY_v1_0_0.zip`
+The accepted Windows archive is named:
+
+`TPKX_MAP_FACTORY_v1_0_0.zip`
+
+The release is accepted and preserved in the project archive. The GitHub repository documentation is current; the binary archive should only be attached to GitHub when the exact accepted ZIP can be uploaded intact.
 
 ### TECHNICAL DETAIL
 
