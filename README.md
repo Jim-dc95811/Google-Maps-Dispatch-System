@@ -2,9 +2,9 @@
 
 ## 2026 current architecture: TPKX Map Factory + ArcGIS Earth
 
-This repository began as a Google Earth Pro terrestrial chartplotter and offline-map project. That history is still important, but the **current 2026 operational architecture has moved forward to ArcGIS Earth (AE)**.
+This repository began as a Google Earth Pro terrestrial chartplotter and offline-map project. That history is preserved here, but the **current operational architecture has moved forward to ArcGIS Earth (AE) with native TPKX packages**.
 
-The current map-production chain is:
+The present map-production chain is:
 
 ```text
 Map source / QGIS layer stack
@@ -21,76 +21,74 @@ Native .tpkx package
 ArcGIS Earth
 ```
 
-The project goal remains the same:
-
 > **Complex machinery underneath. Cartoonishly simple controls on top.**
 
-The major difference is that the finished map is now a **native TPKX package consumed directly by ArcGIS Earth**. Google Earth Pro/KML Super Overlay work is retained as project history and interoperability work, not the current primary deployment path.
+The normal user does not need to operate QGIS manually, understand SQLite, learn Compact Cache V2, or own ArcGIS Pro. The finished map is one `.tpkx` file that ArcGIS Earth opens natively.
 
 ---
 
 ## TPKX Map Factory v1.0.0
 
-**TPKX Map Factory v1.0.0 is live-proven.**
+**Status: LIVE-PROVEN / RELEASE ACCEPTED — 2026-08-15**
 
-It gives two deliberately different workflows from the same GUI.
+TPKX Map Factory v1.0.0 is the first frozen public baseline of the ArcGIS Earth / TPKX architecture.
 
 ### Normal-user workflow
 
-1. Choose a map source.
-2. Choose the map area.
-3. Choose the zoom range.
-4. Click **BUILD TPKX MAP**.
-5. Open the resulting `.tpkx` directly in ArcGIS Earth.
+```text
+1. Choose map source
+2. Choose map area
+3. Choose zoom range
+4. BUILD TPKX MAP
+5. Open the finished .tpkx in ArcGIS Earth
+```
 
-The normal operator does not have to manually use QGIS, SQLite, MBTiles internals, Compact Cache V2, or ArcGIS Pro.
-
-### Advanced GIS workflow
-
-Advanced users who already work in QGIS can build any raster cartography they want, export it to raster MBTiles, and use:
-
-**ADVANCED: MBTILES → TPKX**
-
-This bypasses the canned Factory map-source stage and exposes the same proven converter engine directly.
-
-That means a GIS professional can compose imagery, labels, parcel boundaries, roads, overlays, custom symbology, or other rasterized QGIS content and carry the finished pixels into ArcGIS Earth as a native TPKX package.
-
----
-
-## Current frozen Factory recipe
-
-The v1.0.0 public Factory uses:
-
-- **QGIS 3.44.9**
-- **Python 3.14.5** established known-good for this project
-- Raster tile format: **PNG**
-- DPI: **96**
-- Antialiasing: **ON**
-- Metatile: **4**
-- Operator-selectable zoom range: **Z0–Z20**
-- Temporary manufacturing format: **MBTiles**
-- Final operator deliverable: **one `.tpkx` file**
-
-Current Factory source choices:
+The normal GUI exposes four map choices:
 
 1. **Google Earth**
 2. **Google Hybrid**
 3. **Esri World**
 4. **Esri World / Google Labels**
 
-The Esri World / Google Labels recipe is a QGIS-rendered two-layer composition: Esri imagery underneath with a labels-only Google layer above. QGIS performs the compositing; the TPKX converter does not need to understand how the pixels were created.
+The current frozen raster recipe is:
 
-**Important:** map-source licensing, caching, export, and redistribution rules are source-specific. The Factory and converter are format/workflow tools; users remain responsible for using source data in ways permitted by the applicable provider or license.
+- QGIS **3.44.9**
+- Python **3.14.5** established known-good
+- PNG raster tiles
+- **96 DPI**
+- antialiasing **ON**
+- metatile **4**
+- operator-selectable **Z0–Z20**
+- temporary manufacturing format: **MBTiles**
+- final operator deliverable: **one `.tpkx`**
+
+### Advanced GIS workflow
+
+The same GUI also includes:
+
+**ADVANCED: MBTILES → TPKX**
+
+A GIS professional can therefore build any suitable raster cartography in QGIS, export the finished tile pyramid to MBTiles, and use the Factory only as the TPKX packaging bridge.
+
+That keeps the beginner interface simple without taking power away from advanced users.
 
 ---
 
 ## Why the converter matters
 
-QGIS already has an excellent raster tile-rendering engine and can create MBTiles. ArcGIS Earth already has excellent native TPKX support. The missing bridge was a simple, reusable way to take a finished raster MBTiles pyramid and package it as Esri Compact Cache V2 / TPKX.
+QGIS already knows how to create the map. ArcGIS Earth already knows how to display native TPKX. The missing interoperability bridge was:
 
-The custom converter was built from the published TPKX and Compact Cache V2 structure rather than by rerendering the map.
+```text
+QGIS raster MBTiles → Esri Compact Cache V2 / TPKX
+```
 
-Conceptually it does this:
+The custom Python converter was implemented from the published TPKX / Compact Cache V2 structure.
+
+It **does not rerender the cartography**.
+
+It reads the already-rendered raster tiles from MBTiles, converts the row addressing required by the target cache structure, writes Compact Cache V2 bundles and package metadata, and produces a TPKX archive.
+
+Conceptually:
 
 ```text
 MBTiles SQLite tiles
@@ -103,30 +101,28 @@ TMS row → ArcGIS top-origin row
         ↓
 128 × 128 Compact Cache V2 bundle addressing
         ↓
-.bundle binary records + index
+.bundle binary records + indexes
         ↓
 root.json + iteminfo.json + thumbnail
         ↓
-ZIP64 .tpkx package
+ZIP64 .tpkx
 ```
 
-The important design decision is that the converter **preserves the existing raster tile bytes**. It does not redraw, sharpen, blur, resample, or reinterpret the cartography.
-
-Tile placement is deterministic. MBTiles/TMS Y addressing is converted using the standard row inversion:
+The critical TMS row conversion is:
 
 ```text
 y_arcgis = (2^z - 1) - y_tms
 ```
 
-Bundle placement then uses integer addressing into 128 × 128 Compact Cache V2 packets.
+Tile placement and bundle indexing are deterministic. The raster tile bytes produced by QGIS are preserved rather than being resampled into a new cartographic pyramid.
 
-This is a packaging and addressing conversion, not a second rendering stage.
+> **QGIS makes the pixels. The converter packs the pixels. ArcGIS Earth displays the pixels.**
 
 ---
 
-## Live acceptance results
+## Live acceptance evidence
 
-The system has been tested with both small smoke-test maps and large production-style packages.
+The architecture has been tested well beyond toy examples.
 
 ### First integrated Factory proof
 
@@ -136,91 +132,92 @@ The system has been tested with both small smoke-test maps and large production-
 - Tiles: 23,119
 - Finished Windows File Explorer size: **3,560,735 KB**
 - Elapsed: 0:13:55
-- Result: opened and rendered correctly in ArcGIS Earth
+- ArcGIS Earth: **PASS**
 
 ### Large advanced MBTiles → TPKX proof
 
-- Existing MBTiles supplied directly to the advanced converter path
+- Existing MBTiles supplied directly to the advanced converter
 - Tiles: **271,497**
 - Bundles: 47
 - Zooms: Z8–Z18
 - Finished Windows File Explorer size: **25,561,426 KB**
 - Elapsed: 0:17:59
-- Result: opened and rendered correctly in ArcGIS Earth
+- ArcGIS Earth: **PASS**
 
-### Large Factory Esri World / Google Labels proof
+### Large Esri World / Google Labels Factory proof
 
 - Area: approximately 1,378.89 sq mi
-- Estimated / completed tiles: **271,242**
+- Tiles: **271,242**
 - Zooms: Z8–Z18
 - Finished Windows File Explorer size: **24,291,406 KB**
 - Elapsed: 2:51:52
-- Result: opened and rendered correctly in ArcGIS Earth
+- ArcGIS Earth: **PASS**
 
 ### v1.0.0 release smoke test
 
-- Manual decimal-degree GPS diagonal points
-- Factory converted coordinates to the required EPSG:3857 extent
+- Map area entered from two manual decimal-degree GPS diagonal points
+- Factory normalized the corners and produced the EPSG:3857 HOME EXTENT
 - Area: approximately 0.12 sq mi
-- Finished file: `test2 small.tpkx`
+- Output: `test2 small.tpkx`
 - Windows File Explorer size reported by Factory: **12,852 KB**
 - Elapsed: 0:00:12
-- Result: opened and rendered correctly in ArcGIS Earth
+- ArcGIS Earth: **PASS**
 
-For this project, **ArcGIS Earth is the final acceptance authority**: a package must open, land in the correct geographic position, expose the expected zoom behavior, and render correctly.
+For this project, **ArcGIS Earth is the final operational acceptance authority** for a finished TPKX: it must open, land in the correct place, expose the expected zoom behavior, and render correctly.
 
 ---
 
-## ArcGIS Earth operational findings
+## ArcGIS Earth operational role
 
-ArcGIS Earth has proven to be a substantially better 2026 fit for this project than continuing to rebuild around legacy Google Earth behavior.
+ArcGIS Earth is now the project’s primary viewer.
 
-Live-observed / live-proven capabilities relevant to this project include:
+Relevant capabilities observed or proven during this project include:
 
-- Native local TPKX display
-- KML/KMZ compatibility
+- native local TPKX display
+- KML/KMZ support
 - KML NetworkLinks
-- 3D globe operation
-- Native GNSS/NMEA capability
-- Local Automation API
-- Native drawing/marker capability
-- Session restoration: previously loaded TPKX files repopulate after restart
-- Online point-to-point driving directions when connectivity is available
+- 3D globe navigation
+- native GNSS/NMEA capability
+- local Automation API
+- native drawing / marker display
+- session restoration of previously loaded TPKX files
+- online point-to-point driving directions when connectivity exists
 
-The system treats online services as optional enhancements, not operational dependencies.
+The key architectural rule is that online services are enhancements, not dependencies.
 
 ---
 
 ## Hard offline requirement
 
-This project now has a non-negotiable architectural rule:
-
 > **There can be no operational dependence on Internet connectivity. Period.**
 
-Internet access can be used during preparation to manufacture or refresh map packages. At incident/showtime, core operation must continue with the Internet absent.
+Internet access can be used while preparing or refreshing maps. At incident/showtime, core operation must continue without a hotspot, without cellular coverage, and without a live map service.
 
-That means:
-
-- TPKX map display works locally.
-- Essential map viewing does not require a hotspot.
-- Essential command functions must not depend on cellular coverage.
-- Loss of Internet must not collapse the command picture.
-
-The concept that emerged from this work is **Persistent Geographic Awareness**:
+The operating concept that emerged from this work is **Persistent Geographic Awareness**:
 
 > Keeping current position, surroundings, routes, and terrain continuously visible and available without having to summon them from a network.
 
-A large-screen map display with local high-resolution imagery and own-position GNSS changes the operator experience from merely knowing **“I am at this coordinate”** to understanding **“I am in this place, on this road, inside this terrain.”**
+With a large display, local high-resolution TPKX imagery, and own-position GNSS, the operator moves from merely knowing:
+
+```text
+I am at this coordinate.
+```
+
+to understanding:
+
+```text
+I am on this road, in this forest, inside this terrain, with this context around me.
+```
 
 ---
 
 ## PRAVE / live-position integration
 
-The larger dispatch system has also moved forward with ArcGIS Earth.
+The larger dispatch project has also moved forward with ArcGIS Earth.
 
-The project’s PRAVE decoder now has a live-proven ArcGIS Earth Automation API path. Test traffic displayed six units (`7-101` through `7-106`) as native ArcGIS Earth drawings using the established fire-truck RSSI icon set.
+The `$PRAVE` decoder now has a **LIVE-PROVEN ArcGIS Earth Automation API path**. Controlled test traffic displayed units `7-101` through `7-106` as native ArcGIS Earth drawings using the established fire-truck RSSI icon family.
 
-Observed test status included:
+Observed healthy test state included:
 
 ```text
 UNITS=6
@@ -231,83 +228,66 @@ BAD_PRAVE=0
 RMC=FRESH
 ```
 
-The current architecture is to decode protocol-specific inputs at the edge and normalize them into one live-position manager rather than force every transport through KML.
+The forward design is protocol-specific decoding at the edge followed by normalization into one live-position manager rather than forcing every transport through KML.
 
-Planned / continuing inputs include:
+Continuing inputs include:
 
 - `$PRAVE`
 - F22
-- Native GNSS / NMEA
+- native GNSS / NMEA
 - QR dispatch / bounded command input
-- KML where interoperability or external feeds make KML the correct tool
+- KML/KMZ / NetworkLinks where interoperability makes KML the correct tool
 
-KML remains important. It is simply no longer required as the default live-position transport when the ArcGIS Earth Automation API provides a cleaner native path.
+KML remains important. It is no longer required as the default live-position transport merely because the original Google Earth architecture used it.
 
 ---
 
 ## Human-interface philosophy
 
-The public Factory is intentionally not a GIS workstation UI.
+The public Factory is intentionally **not** designed like a GIS workstation.
 
-The normal-user front door is designed around recognition rather than technical vocabulary:
+The GUI uses colored icons and strong visual landmarks so the operator can:
 
-- colored source icons
-- map-area controls
-- GPS coordinate entry
-- visible zoom controls
-- one large BUILD button
-- one clearly separated advanced MBTiles conversion button
-- visible progress state
+```text
+see → recognize → click
+```
 
-The goal is:
+instead of:
 
-> **see → recognize → click**
+```text
+scan → read → interpret → decide → click
+```
 
-rather than:
-
-> scan → read → interpret → decide → click
-
-Advanced GIS capability is still present, but it is placed behind the advanced MBTiles → TPKX path so beginner simplicity is not sacrificed.
+The normal-user front door remains simple. Advanced GIS freedom lives behind the existing-MBTiles converter path.
 
 ---
 
-## Repository history
+## Repository map
 
-The repository name **Google-Maps-Dispatch-System** reflects the project’s origin. Earlier work proved:
+The repository now separates the current architecture from its history.
 
-- direct MBTiles → KML Super Overlay conversion
-- local Google Earth Pro offline map deployment
-- KML forests / Blooming Onion packaging
-- map utility tooling
-- warm-cache recovery experiments
-- Network Earth local serving
-- Google Earth Enterprise client/server archaeology
+### Current material
 
-That work was not wasted. It produced the tile-pyramid, KML, caching, transport, and diagnostic knowledge that made the ArcGIS Earth / TPKX architecture understandable quickly.
-
-However, **the current baseline is ArcGIS Earth + TPKX**. Do not revive legacy Google Earth workflows and present them as current architecture.
-
-The previous README has been preserved in this repository as:
-
-`docs/LEGACY_GOOGLE_EARTH_README_2026-07-23.md`
-
----
-
-## Files in this repository
-
-Current public material includes:
-
-- `README.md` — current project front door
-- `docs/TECHNICAL_ARCHITECTURE.md` — GIS/engineering detail
-- `docs/LEGACY_GOOGLE_EARTH_README_2026-07-23.md` — preserved previous public architecture
-- `releases/TPKX_MAP_FACTORY_v1_0_0.zip` — TPKX Map Factory v1.0.0
+- `README.md` — current public front door
+- `docs/TECHNICAL_ARCHITECTURE.md` — GIS/software architecture in detail
+- `docs/NOTES_FOR_GIS_PROFESSIONALS.md` — short professional interpretation
+- `docs/QUICK_START.md` — normal-user and advanced-user workflow
+- `docs/PROJECT_STATUS_2026-08-15.md` — frozen status checkpoint
+- `docs/AI_CONTINUITY_RESTART_NOTE.md` — restart context for future human/AI maintainers
+- `docs/HISTORICAL_TIMELINE.md` — project evolution
+- `docs/SOURCE_AND_LICENSING_NOTE.md` — separation between technical capability and source-data rights
 - `releases/TPKX_MAP_FACTORY_v1_0_0_RELEASE_NOTES.md` — v1.0 release record
+- `releases/PUBLIC_RELEASE_CHECKLIST.md` — v1.0 release gates
 
-A longer professional engineering report also exists for GIS professionals and future AI/human maintainers, covering project lineage, converter internals, acceptance evidence, PRAVE integration, offline doctrine, and do-not-regress rules.
+### Preserved legacy material
+
+- `docs/LEGACY_GOOGLE_EARTH_README_2026-07-23.md`
+
+The legacy document is preserved so future readers can reconstruct the evolution without mistaking superseded Google Earth/KML architecture for the current baseline.
 
 ---
 
-## Requirements
+## Current requirements
 
 ### Windows
 
@@ -316,7 +296,7 @@ A longer professional engineering report also exists for GIS professionals and f
 ### Python
 
 - Python **3.14.5** is the current known-good project baseline.
-- No additional Python libraries are required for the TPKX Factory/converter path.
+- No additional Python libraries are required by the core TPKX converter path.
 
 ### QGIS
 
@@ -331,7 +311,7 @@ The required QGIS project files are placed there for Factory use.
 
 ### ArcGIS Earth
 
-ArcGIS Earth is the current primary viewer for finished `.tpkx` packages.
+ArcGIS Earth is the current primary viewer for finished TPKX packages.
 
 ---
 
@@ -347,8 +327,19 @@ ArcGIS Earth is the current primary viewer for finished `.tpkx` packages.
 - Keep temporary manufacturing material out of the destination directory.
 - Keep simple users simple and advanced users powerful.
 - Retain KML for the jobs KML does well.
-- Treat Google Earth work as valuable lineage, not the new baseline.
-- Publicly document the machinery so other people and future AI systems can reconstruct it.
+- Treat Google Earth work as valuable lineage, not the current baseline.
+- Distinguish DESIGNED, BUILT, BENCH-PROVEN, and LIVE-PROVEN states.
+- Document enough detail that future GIS professionals and AI systems can reconstruct the system without inventing history.
+
+---
+
+## Source-data note
+
+TPKX Map Factory is a map-manufacturing and format-conversion workflow. It does not grant rights to imagery, labels, basemaps, or other source data.
+
+Users are responsible for complying with the terms, licenses, caching rules, export restrictions, attribution requirements, and redistribution rules that apply to each source they use.
+
+The technical ability to request, render, cache, package, or display content is separate from the legal right to redistribute that content.
 
 ---
 
@@ -356,25 +347,16 @@ ArcGIS Earth is the current primary viewer for finished `.tpkx` packages.
 
 The project is developed and published by **Jim Gaddy** with **ChatGPT / Tool Master** serving as technical design, coding, GIS research, documentation, packaging, and diagnostic partner.
 
-The MBTiles → TPKX converter is an example of the kind of engineering problem that becomes dramatically more approachable when one working context can simultaneously reason about:
-
-- SQLite / MBTiles
-- Web Mercator tile mathematics
-- TMS/XYZ addressing
-- binary file structures
-- Esri Compact Cache V2
-- Python implementation
-- QGIS rendering
-- ArcGIS Earth acceptance behavior
-
-The underlying formats and mathematics are not new. The 2026 change is the reduced cost of assembling the knowledge and producing the missing glue.
+The MBTiles → TPKX bridge illustrates why AI changes the cost of this kind of engineering. The underlying formats and mathematics were already available. The 2026 difference is the ability to hold SQLite/MBTiles, Web Mercator tile math, TMS addressing, binary file structures, Compact Cache V2, Python implementation, QGIS rendering, and ArcGIS Earth acceptance behavior in one working context and rapidly build the missing glue.
 
 ---
 
-## Current project motto
+## Project mottoes
 
 > **Build it online. Carry it offline.**
 
-And the engineering version:
-
 > **QGIS makes the pixels. The converter packs the pixels. ArcGIS Earth displays the pixels.**
+
+And the small-software lesson:
+
+> **It is not the number of bytes that matters. It is what the bytes are doing.**
