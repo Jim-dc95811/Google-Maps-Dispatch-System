@@ -1,16 +1,18 @@
-# TPKX Map Factory / ArcGIS Earth Technical Architecture
+# Offline GeoStack — TPKX Map Factory / ArcGIS Earth Technical Architecture
 
 ## Purpose
 
-This document records the current 2026 GIS architecture of the Google Maps Dispatch System after its migration from a Google Earth Pro / KML Super Overlay baseline to **ArcGIS Earth + native TPKX**.
+This document records the current 2026 GIS architecture of **Offline GeoStack** after its migration from a Google Earth Pro / KML Super Overlay baseline to **ArcGIS Earth + native TPKX**.
+
+Master project identity:
+
+**Offline GeoStack — QGIS → TPKX → ArcGIS Earth + Live Field Positioning**
 
 It is intended for GIS professionals, software engineers, and future AI systems that need enough detail to reconstruct the actual data path rather than treating the Factory as a black box.
 
 ---
 
 ## 1. Architectural summary
-
-The production chain is:
 
 ```text
 Source imagery / QGIS layer stack
@@ -26,6 +28,8 @@ Esri Compact Cache V2 bundles
 TPKX package
         ↓
 ArcGIS Earth
+        ↓
+GNSS / PRAVE / F22 / QR / KML field inputs
 ```
 
 The normal operator sees only a simplified GUI. QGIS performs cartographic rendering. The converter performs format/address translation and packaging. The finished operator deliverable is a single `.tpkx` file.
@@ -153,7 +157,7 @@ This is important because each QGIS zoom level may contain independent label pla
 
 A useful mental model is:
 
-> QGIS creates the pixels. The converter files the pixels into the cabinet ArcGIS Earth understands.
+> **QGIS makes the pixels. The converter packs the pixels. ArcGIS Earth displays the pixels.**
 
 ---
 
@@ -287,8 +291,6 @@ The public Factory design requires the user-selected destination to receive only
 
 Temporary QGIS projects, temporary MBTiles, work directories, and converter support material belong in temporary workspace and are cleaned after success.
 
-The intent is appliance-like behavior:
-
 ```text
 operator selects destination
         ↓
@@ -365,7 +367,7 @@ The advanced converter remains visible but visually separated so advanced power 
 
 ## 16. ArcGIS Earth operational role
 
-ArcGIS Earth is now the project’s primary 2026 viewer.
+ArcGIS Earth is the current primary 2026 viewer/runtime.
 
 Relevant capabilities observed or proven in this project include:
 
@@ -385,8 +387,6 @@ Internet-dependent conveniences are treated as optional enhancements.
 
 ## 17. Hard offline rule
 
-The project has one non-negotiable operational requirement:
-
 > **There can be no operational dependence on Internet connectivity. Period.**
 
 The Internet may be used during map manufacturing and refresh cycles. At incident/showtime, the command system must continue to perform essential functions with Internet connectivity absent.
@@ -395,11 +395,9 @@ This requirement applies to core map viewing, the command picture, and other ess
 
 ---
 
-## 18. Persistent Geographic Awareness
+## 18. Persistent Geographic Context
 
-The phrase **Persistent Geographic Awareness** emerged from the operational design.
-
-It describes a state in which position, surroundings, routes, terrain, and local context remain continuously visible without the operator repeatedly requesting them from a network service.
+**Persistent Geographic Context** describes a state in which position, surroundings, routes, terrain, and local context remain continuously visible without the operator repeatedly requesting them from a network service.
 
 With a large screen, local high-resolution TPKX imagery, and own-position GNSS, the operator moves from:
 
@@ -483,6 +481,7 @@ They should be preserved as history but not presented as the current baseline.
 8. Retain KML for interoperability rather than discarding it.
 9. Preserve the no-operational-Internet-dependency rule.
 10. Validate finished map packages in ArcGIS Earth.
+11. Preserve **Offline GeoStack** as the master project identity; treat older naming as lineage.
 
 ---
 
@@ -511,4 +510,4 @@ The missing component was the exact deterministic bridge between them.
 
 The converter is therefore small relative to the systems it connects, but its value lies in the exact ordering of bytes, rows, indexes, metadata, and package structure.
 
-That is the central architectural lesson of this project.
+That is the central architectural lesson of Offline GeoStack.
