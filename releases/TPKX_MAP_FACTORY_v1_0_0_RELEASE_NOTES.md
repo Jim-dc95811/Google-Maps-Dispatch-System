@@ -1,10 +1,14 @@
-# TPKX Map Factory v1.0.0 — Release Notes
+# Offline GeoStack — TPKX Map Factory v1.0.0 Release Notes
 
-**Release status: LIVE-PROVEN / RELEASE ACCEPTED**
+**Release status: LIVE-PROVEN / RELEASE-ACCEPTED**
 
 Date: 2026-08-15
 
-TPKX Map Factory v1.0.0 is the first public-release baseline of the project’s ArcGIS Earth / TPKX manufacturing architecture.
+`TPKX Map Factory v1.0.0` is the first release-accepted map-manufacturing baseline inside **Offline GeoStack**.
+
+Master project identity:
+
+**Offline GeoStack — QGIS → TPKX → ArcGIS Earth + Live Field Positioning**
 
 ## What v1.0.0 does
 
@@ -55,7 +59,7 @@ The advanced path is intended for QGIS/GIS users who want to create their own la
 - Esri World
 - Esri World / Google Labels
 
-Source-data licensing/export/caching rules are source-specific. The Factory is a format and workflow tool; users are responsible for lawful/permitted use of source data.
+Source-data licensing/export/caching rules are source-specific. The Factory is a format and workflow tool; users are responsible for permitted use of source data.
 
 ## Map-area input
 
@@ -108,6 +112,14 @@ v1.0.0 freezes the proven v0.1.6 mechanics and adds the public-facing GUI treatm
 - Elapsed: 0:00:12
 - ArcGIS Earth: PASS
 
+## Binary-release status
+
+The exact release-accepted Windows archive is named:
+
+`TPKX_MAP_FACTORY_v1_0_0.zip`
+
+It remains preserved in the canonical project archive. During the GitHub repository rebuild, the available connector truncated the binary archive when transmitting it. The bad public copy was removed rather than being left in place. The exact accepted ZIP should be attached directly to GitHub before public binary distribution.
+
 ## Release rule
 
 v1.0.0 is feature-frozen.
@@ -118,12 +130,10 @@ The proven converter should not be casually rewritten.
 
 ## Operational doctrine
 
-The final map package is intended to support offline ArcGIS Earth operation.
-
 > **There can be no operational dependence on Internet connectivity. Period.**
 
 Internet connectivity may be used during map preparation or for optional enhancements, but essential field/command use must not depend on cellular coverage, a hotspot, or a live map service.
 
 ## Project authorship
 
-Developed and published by Jim Gaddy with ChatGPT / Tool Master serving as technical design, coding, GIS research, documentation, packaging, and diagnostic partner.
+Developed and published by **Jim Gaddy** with **ChatGPT / Tool Master** serving as technical design, coding, GIS research, documentation, packaging, and diagnostic partner.
