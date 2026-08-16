@@ -1,4 +1,4 @@
-# TPKX Map Factory v1.0.0 — Quick Start
+# Offline GeoStack — TPKX Map Factory v1.0.0 Quick Start
 
 ## Install once
 
@@ -11,8 +11,10 @@
 C:\Google Earth Project\QGIS\
 ```
 
-5. Place the two required QGIS `.qgz` project files in that folder.
-6. Extract `TPKX_MAP_FACTORY_v1_0_0.zip`.
+5. Download the two files from [`required_qgis_projects/`](../required_qgis_projects/) and place them in that folder with their exact filenames.
+6. Obtain the release-accepted `TPKX_MAP_FACTORY_v1_0_0.zip` and extract it completely before use.
+
+> **GitHub binary note:** the exact accepted ZIP is preserved in the canonical project archive. The connector used during this repository rebuild could not transmit that ZIP intact, so the bad copy was removed. See [`releases/README.md`](../releases/README.md). The exact ZIP should be attached directly to GitHub before public binary distribution.
 
 ## Make a map
 
@@ -40,12 +42,22 @@ If you already have a suitable raster MBTiles file:
 4. Wait for COMPLETE.
 5. Open the finished package in ArcGIS Earth.
 
-This allows you to build any desired raster layer stack in QGIS and use the Factory only as the TPKX packaging bridge.
+This is the direct interoperability path for GIS professionals: build the desired raster layer stack in QGIS, export suitable raster MBTiles, then let the Factory package those existing tiles into TPKX.
+
+## What the Factory is doing underneath
+
+```text
+Normal path:
+QGIS project → raster MBTiles → Compact Cache V2 → TPKX → ArcGIS Earth
+
+Advanced path:
+existing raster MBTiles → Compact Cache V2 → TPKX → ArcGIS Earth
+```
+
+The converter does not rerender the cartography. QGIS owns the pixels; the converter owns the package mechanics.
 
 ## Operational rule
 
-The finished TPKX is intended to support offline operation.
-
 > **There can be no operational dependence on Internet connectivity. Period.**
 
-Build/refresh maps before they are needed. At showtime, the map is already in the trunk.
+Build or refresh maps before they are needed. At showtime, the map is already in the trunk.
