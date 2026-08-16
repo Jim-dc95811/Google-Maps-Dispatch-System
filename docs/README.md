@@ -10,15 +10,16 @@ For the current block diagram, see [current_architecture.svg](current_architectu
 
 ## Start here
 
+- **[Project Status — 2026-08-16](PROJECT_STATUS_2026-08-16.md)** — current full checkpoint: mobile TPKX, USB Map Fountain, v1.2 Factory branch, Rasta gigapixel proofs, rejected recovery path, and next gates.
 - **[Software & Downloads](SOFTWARE_AND_DOWNLOADS.md)** — official links for pinned QGIS 3.44.9, pinned Python 3.14.5, ArcGIS Earth, required QGIS projects, and the v1.0.0 release record.
 - [Quick Start](QUICK_START.md) — clean-machine normal-user and advanced-user operation for the frozen baseline.
 - **[ArcGIS Earth Mobile + USB Map Fountain](ARCGIS_EARTH_MOBILE_MAP_FOUNTAIN.md)** — live-proven Android local-TPKX and MBTiles→HTTPS-WMTS→USB-tether paths.
 - [USB Map Fountain live proof — 2026-08-16](mobile_map_fountain_live_proof_2026-08-16.md) — concise evidence note.
 - [Professional GIS Engineering Record](professional_report/README.md) — long-form architecture, implementation, validation, operational doctrine, appendices, and future-AI continuity reference.
-- [Technical Architecture](TECHNICAL_ARCHITECTURE.md) — converter mechanics, TMS/Compact Cache V2 structure, workflows, acceptance evidence, and do-not-regress rules.
+- [Technical Architecture](TECHNICAL_ARCHITECTURE.md) — current converter, TPKX, mobile Map Fountain, acceptance, and do-not-regress engineering record.
 - [Technical FAQ](FAQ.md) — direct answers to the questions GIS developers are most likely to ask first.
 - [Notes for GIS Professionals](NOTES_FOR_GIS_PROFESSIONALS.md) — condensed interoperability interpretation.
-- [Project Status — 2026-08-15](PROJECT_STATUS_2026-08-15.md) — frozen v1.0 release checkpoint; use the root README/roadmap for 2026-08-16 mobile developments.
+- [Project Status — 2026-08-15](PROJECT_STATUS_2026-08-15.md) — historical frozen v1.0 release checkpoint.
 - [Offline Operation and Persistent Geographic Context](OFFLINE_OPERATION_AND_PERSISTENT_GEOGRAPHIC_CONTEXT.md) — why local maps are operational inventory rather than a fallback cache.
 - [PRAVE → ArcGIS Earth Integration](PRAVE_ARCGIS_EARTH_INTEGRATION.md) — live-proven native Automation API path and RSSI display rules.
 - [AI-Assisted Engineering Method](AI_ENGINEERING_METHOD.md) — how the human/AI closed-loop workflow compressed cross-domain engineering work.
