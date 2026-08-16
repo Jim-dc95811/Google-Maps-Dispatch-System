@@ -1,71 +1,83 @@
-# Offline GeoStack — TPKX Map Factory / ArcGIS Earth Technical Architecture
+# Offline GeoStack — Technical Architecture
 
 ## Purpose
 
-This document records the current 2026 GIS architecture of **Offline GeoStack** after its migration from a Google Earth Pro / KML Super Overlay baseline to **ArcGIS Earth + native TPKX**.
+This document records the current 2026 architecture of **Offline GeoStack** after the move from a single TPKX deployment path to a dual local-deployment model:
+
+1. **native TPKX** for ArcGIS Earth local-file use;
+2. **raster MBTiles served as local HTTPS WMTS** for ArcGIS Earth Mobile.
+
+The frozen v1.0.0 TPKX Map Factory remains the accepted baseline. Later TEST branches expand around that baseline without rewriting its proven converter.
 
 Master project identity:
 
-**Offline GeoStack — QGIS → TPKX → ArcGIS Earth + Live Field Positioning**
-
-It is intended for GIS professionals, software engineers, and future AI systems that need enough detail to reconstruct the actual data path rather than treating the Factory as a black box.
+**Offline GeoStack — QGIS → MBTiles / TPKX → ArcGIS Earth Desktop + Mobile + Live Field Positioning**
 
 ---
 
-## 1. Architectural summary
+## 1. Current architectural summary
 
 ```text
 Source imagery / QGIS layer stack
         ↓
 QGIS 3.44.9 rendering engine
         ↓
-Raster tile pyramid in MBTiles
+verified raster tile pyramid in MBTiles
         ↓
-Custom Python MBTiles → TPKX converter
-        ↓
-Esri Compact Cache V2 bundles
-        ↓
-TPKX package
-        ↓
-ArcGIS Earth
-        ↓
-GNSS / PRAVE / F22 / QR / KML field inputs
+        ├───────────────────────────────────────────┐
+        │                                           │
+        ↓                                           ↓
+Custom MBTiles → TPKX converter             USB Map Fountain
+        ↓                                   local HTTPS WMTS
+Compact Cache V2 bundles                            ↓
+        ↓                                   Android USB tether
+native .tpkx                                        ↓
+        ↓                                   ArcGIS Earth Mobile
+ArcGIS Earth Windows / Mobile
 ```
 
-The normal operator sees only a simplified GUI. QGIS performs cartographic rendering. The converter performs format/address translation and packaging. The finished operator deliverable is a single `.tpkx` file.
+Live positioning and command context sit around the ArcGIS Earth runtime:
+
+- native GNSS / NMEA;
+- PRAVE;
+- F22;
+- QR;
+- KML/KMZ / NetworkLinks where appropriate.
+
+No outside Internet connection is required for either local raster deployment path.
 
 ---
 
 ## 2. Why QGIS remains the rendering engine
 
-QGIS already solves the difficult GIS work:
+QGIS already solves the GIS/cartographic work:
 
-- reprojection
-- raster and vector layer compositing
-- label rendering
-- antialiasing
-- source access
-- zoom-dependent cartography
-- tile-pyramid generation
-- MBTiles output
+- reprojection;
+- raster/vector compositing;
+- label rendering;
+- antialiasing;
+- source access;
+- zoom-dependent cartography;
+- tile-pyramid generation;
+- MBTiles output.
 
-Reimplementing these functions would add risk without adding value. The Factory therefore treats QGIS as a rendering engine instead of attempting to become a GIS engine.
+The Factory therefore treats QGIS as a rendering engine rather than rebuilding GIS behavior.
 
-Current normal Factory render recipe:
+Current known-good render baseline:
 
-- QGIS 3.44.9
-- Web Mercator tile scheme / EPSG:3857
-- PNG raster tiles
-- 96 DPI
-- antialiasing ON
-- metatile 4
-- operator-selectable Z0–Z20
+- QGIS 3.44.9;
+- EPSG:3857 / Web Mercator tile scheme;
+- PNG raster tiles;
+- 96 DPI;
+- antialiasing ON;
+- metatile 4;
+- operator-selectable Z0–Z20.
 
 ---
 
-## 3. MBTiles as manufacturing intermediate
+## 3. MBTiles is now a branch point
 
-MBTiles is SQLite-based and exposes the raster pyramid in a simple schema. The converter expects a standard raster MBTiles `tiles` table containing:
+MBTiles is SQLite-based and exposes the raster pyramid through the standard raster `tiles` table:
 
 ```text
 zoom_level
@@ -74,39 +86,37 @@ tile_row
 tile_data
 ```
 
-`tile_data` contains the already-rendered PNG or JPEG bytes.
+`tile_data` contains already-rendered PNG/JPEG bytes.
 
-In the normal Factory workflow, MBTiles is **not the public/operator deliverable**. It is a temporary manufacturing intermediate between QGIS and TPKX and is cleaned after successful packaging.
+### Frozen v1.0 meaning
 
-Advanced GIS users may intentionally provide their own raster MBTiles directly to the converter path.
+In the release-accepted v1.0.0 normal workflow, MBTiles is temporary manufacturing material and the published operator product is TPKX.
+
+### Current v1.2 TEST meaning
+
+The mobile Map Fountain proof changed the value of MBTiles. It can now be a deliberate final product when the operator wants live local serving to ArcGIS Earth Mobile.
+
+TPKX Map Factory v1.2.0 TEST therefore exposes:
+
+```text
+TPKX
+MBTiles
+Both
+```
+
+`Both` is the current TEST default.
+
+The architecture still manufactures **one** QGIS tile pyramid. It does not create separate cartography for the two outputs.
 
 ---
 
-## 4. The MBTiles → TPKX interoperability problem
-
-The key interoperability gap was straightforward:
-
-- QGIS can create raster MBTiles.
-- ArcGIS Earth natively consumes TPKX.
-- There was no simple public bridge in the required direction for this workflow.
+## 4. MBTiles → TPKX bridge
 
 The custom converter implements the published TPKX / Compact Cache V2 structure.
 
-It does **not** rerender the map.
+It does **not** rerender the map, flatten zooms, or resample imagery. It preserves the existing tile image bytes and changes the addressing/container structure around them.
 
-It does **not** flatten zoom levels into a new raster.
-
-It does **not** resample the tile imagery.
-
-It preserves the existing tile image bytes and changes the addressing/container structure around them.
-
----
-
-## 5. TMS row conversion
-
-Raster MBTiles commonly stores rows using TMS bottom-origin Y addressing. ArcGIS compact cache addressing is top-origin.
-
-For each tile at zoom `z`:
+Critical TMS row conversion:
 
 ```text
 y_arcgis = (2^z - 1) - y_tms
@@ -114,314 +124,324 @@ y_arcgis = (2^z - 1) - y_tms
 
 `x` remains the tile column.
 
-This conversion is integer math and deterministic.
-
----
-
-## 6. Compact Cache V2 bundle structure
-
-The converter uses Esri Compact Cache V2 with a packet size of 128.
-
-Each bundle therefore represents:
-
-```text
-128 × 128 = 16,384 possible tile positions
-```
-
-For a converted ArcGIS row/column:
+Compact Cache V2 uses a packet size of 128:
 
 ```text
 bundle_row = floor(row / 128) × 128
 bundle_col = floor(col / 128) × 128
-```
-
-The tile position inside a bundle is:
-
-```text
 index = (row mod 128) × 128 + (col mod 128)
 ```
 
-Bundle files are named from the starting row and column of the packet and grouped by zoom level.
+The converter writes bundle headers/indexes/tile bytes plus package metadata such as:
 
-The converter writes the Compact Cache V2 binary header, fixed index area, tile-length records, tile bytes, and packed index entries expected by the format.
+- `root.json`;
+- `iteminfo.json`;
+- `thumbnail.png`;
+- zoom-level bundle directories;
+- ZIP64-compatible `.tpkx` container.
+
+The frozen `MBTiles_to_TPKX_v0_1_0.py` converter is LIVE-PROVEN and should not be casually rewritten.
 
 ---
 
-## 7. Tile-byte preservation
+## 5. Tile-byte preservation
 
-The converter reads `tile_data` from SQLite and writes those bytes directly into the Compact Cache V2 bundle.
+For raster PNG/JPEG MBTiles, the converter reads `tile_data` from SQLite and writes those bytes into Compact Cache V2.
 
-For PNG/JPEG raster MBTiles, the conversion stage therefore preserves the cartography created by QGIS.
+This preserves QGIS-created cartography, including zoom-specific label placement and layer hierarchy.
 
-This is important because each QGIS zoom level may contain independent label placement, road hierarchy, annotation, and raster detail. The converter does not reinterpret these pixels.
-
-A useful mental model is:
+Useful shorthand:
 
 > **QGIS makes the pixels. The converter packs the pixels. ArcGIS Earth displays the pixels.**
 
----
+For the Map Fountain path, the converter is not involved:
 
-## 8. Coordinate and precision behavior
-
-No application-level rounding is used for tile placement.
-
-Critical addressing uses integer math. Web Mercator metadata uses normal double-precision floating-point calculations and Python's `math.pi`.
-
-The converter may format coordinates to a fixed number of decimal places for human-readable console/status output, but those display strings are not fed back into the packaged coordinate values.
-
-The important distinction is:
-
-- **display formatting** may be rounded for readability;
-- **tile placement and package construction** are not rounded to a simplified decimal grid.
+> **QGIS makes the pixels. MBTiles stores the pixels. Map Fountain serves the requested pixels. ArcGIS Earth Mobile displays them.**
 
 ---
 
-## 9. Package metadata
+## 6. TPKX acceptance
 
-The converter creates the TPKX support structure expected around the bundle files, including:
+Structural validation is necessary but not sufficient.
 
-- `root.json`
-- `iteminfo.json`
-- `thumbnail.png`
-- `tile/Lxx/*.bundle`
-
-The root metadata identifies the Web Mercator spatial reference, tile dimensions, DPI, origin, LOD table, minimum and maximum LOD, extents, and Compact Cache V2 storage mode.
-
-The package is then written as a ZIP64-compatible `.tpkx`.
-
-Metadata such as package GUID and creation time can legitimately differ between two conversions of the same MBTiles. Therefore byte-for-byte package identity is not the acceptance rule.
-
----
-
-## 10. Verification and acceptance philosophy
-
-The converter performs structural checks, but the project deliberately uses **ArcGIS Earth as the final acceptance authority**.
-
-A finished TPKX is accepted when ArcGIS Earth:
+A TPKX is accepted only when the intended ArcGIS Earth runtime:
 
 - opens it without complaint;
-- places it in the correct geographic location;
+- places it correctly;
 - exposes the expected zoom behavior;
 - renders the expected imagery/cartography;
 - behaves normally during navigation.
 
-This matters more operationally than two TPKX files having identical archive bytes.
+This project does not substitute byte-level internal success for target-viewer acceptance.
+
+That lesson became especially important during the TPKX → MBTiles recovery experiment: controlled recovery could match raster tile bytes, yet a recovered production MBTiles later showed blurred/missing regions on ArcGIS Earth Mobile. The recovery path was therefore rejected for production use.
 
 ---
 
-## 11. Factory v1.0.0 workflows
+## 7. TPKX Map Factory workflows
 
-### Normal operator path
+### Frozen v1.0 normal path
 
 ```text
-1. Choose map source
-2. Choose map area
-3. Choose zoom range
-4. BUILD TPKX MAP
-5. Save .tpkx
-6. Open in ArcGIS Earth
+choose source
+→ choose area
+→ choose zoom range
+→ QGIS MBTiles
+→ frozen converter
+→ TPKX
+→ ArcGIS Earth
 ```
 
-The operator can define the map area in three ways:
-
-1. Paste a prepared QGIS-style HOME EXTENT.
-2. Load two diagonal coordinate pairs from Windows Clipboard History.
-3. Enter two diagonal GPS decimal-degree coordinate pairs manually.
-
-Manual GPS input uses ordinary:
+### Frozen v1.0 advanced path
 
 ```text
-Latitude, Longitude
+existing raster MBTiles
+→ ADVANCED MBTILES → TPKX
+→ ArcGIS Earth
 ```
 
-The Factory normalizes corner order and converts internally to the EPSG:3857 extent required by QGIS.
-
-The direct HOME EXTENT field uses the project’s visible order:
+### v1.2.0 TEST normal output choices
 
 ```text
-xmin, xmax, ymin, ymax
-```
-
-### Advanced GIS path
-
-```text
-Existing raster MBTiles
-        ↓
-ADVANCED: MBTILES → TPKX
-        ↓
 TPKX
-        ↓
-ArcGIS Earth
+MBTiles
+Both
 ```
 
-This path is intentionally simple. It does not ask for source, extent, or zoom because those properties already exist in the MBTiles.
+- **TPKX:** build MBTiles, convert, verify, publish TPKX.
+- **MBTiles:** build/verify/publish MBTiles and skip converter.
+- **Both:** preserve the same QGIS-built MBTiles and also create TPKX from it.
 
-It enables a GIS professional to perform all cartographic composition in QGIS and use the Factory only as the TPKX packaging bridge.
+The accepted v1.0.0 branch remains separate until v1.2 earns live acceptance.
 
 ---
 
-## 12. Source recipes
+## 8. Source recipes
 
-The v1.0.0 GUI exposes four frozen source choices:
+The frozen v1.0.0 GUI exposes:
 
-1. Google Earth
-2. Google Hybrid
-3. Esri World
-4. Esri World / Google Labels
+1. Google Earth;
+2. Google Hybrid;
+3. Esri World;
+4. Esri World / Google Labels.
 
-The Esri World / Google Labels choice is a QGIS-rendered two-layer composition:
+The converter remains source-agnostic. Licensing, caching, attribution, export, and redistribution rules remain source-specific and separate from binary-format capability.
+
+---
+
+## 9. ArcGIS Earth Windows role
+
+ArcGIS Earth Windows remains the primary desktop 3D operational runtime.
+
+Live-proven/observed project capabilities include:
+
+- local TPKX display;
+- KML/KMZ / NetworkLinks;
+- native GNSS/NMEA own-position;
+- local Automation API;
+- native drawings / markers;
+- PRAVE live-position rendering;
+- session restoration of loaded TPKX packages.
+
+Known-good native GNSS observation used 9600 baud with GLL + RMC present.
+
+---
+
+## 10. ArcGIS Earth Mobile local TPKX
+
+**Status: LIVE-PROVEN on multiple packages — 2026-08-16**
+
+Android ArcGIS Earth Mobile opened locally stored TPKX packages through `Add Data → File`, including:
+
+- Rasta Thames Bridge;
+- smaller Esri map;
+- smaller Google Hybrid map.
+
+One larger Google Hybrid package returned `spatial reference not supported`. Because other packages loaded, treat this as a package-level compatibility question until metadata differences are isolated.
+
+---
+
+## 11. USB Map Fountain
+
+**Status: LIVE-PROVEN — v0.2.1 TEST — 2026-08-16**
+
+Live chain:
 
 ```text
-Google labels-only layer
-        over
-Esri World Imagery
+raster MBTiles on Windows PC / SSD
+        ↓
+HTTPS WMTS
+        ↓
+Android USB tether / Remote NDIS
+        ↓
+ArcGIS Earth Mobile
 ```
 
-QGIS renders the composite pixels before MBTiles creation. The converter remains layer-agnostic.
+The Windows PC listens on the USB-tether interface. ArcGIS Earth Mobile requests individual WMTS tiles by zoom/row/column.
 
-This architecture is deliberately extensible: any raster result QGIS can legitimately render into suitable MBTiles can be fed to the advanced converter.
-
-Source-data licensing, caching, export, attribution, and redistribution rules remain source-specific and are outside the binary-format conversion itself.
-
----
-
-## 13. Temporary data and destination cleanliness
-
-The public Factory design requires the user-selected destination to receive only the final `.tpkx` product.
-
-Temporary QGIS projects, temporary MBTiles, work directories, and converter support material belong in temporary workspace and are cleaned after success.
+Observed live server traffic showed Android requests such as:
 
 ```text
-operator selects destination
-        ↓
-Factory works elsewhere
-        ↓
-destination receives one finished TPKX
+GET /wmts/tiles/<unique-map-id>/GoogleMapsCompatible/<z>/<row>/<col>.png
+→ 200
 ```
 
-This prevents intermediate manufacturing artifacts from being mistaken for operator deliverables.
+### Why unique map IDs matter
+
+An early multi-map build reused one WMTS layer identity and one tile URL namespace. ArcGIS Earth Mobile could therefore display stale cached tiles from the previous small test map.
+
+v0.2.1 fixed this by assigning every selected MBTiles a unique map/service identity and unique tile URL namespace.
+
+### HTTPS + QR
+
+The live test progressed from HTTP to HTTPS and then QR-based service entry.
+
+The current prototype certificate was tied to the observed USB-tether PC address during testing. General certificate/IP lifecycle management remains productization work; do not confuse the live proof with a finished universal installer.
+
+### Offline acceptance
+
+Outside Internet connectivity was removed while the private USB-tether network remained active. ArcGIS Earth Mobile continued consuming/displaying local map tiles.
+
+### Multiple large maps
+
+Three different substantial MBTiles were displayed through the path, including a large Lago panorama.
+
+### Operator envelope
+
+Live observation:
+
+> **Deliberate pan/zoom is smooth and reliable. Rapid repeated zooming or whipping the view around can outrun the current delivery/render path.**
+
+This is current operator guidance, not a claim of a fixed theoretical limit.
 
 ---
 
-## 14. Human factors / GUI design
+## 12. TPKX → MBTiles recovery experiment
 
-The v1.0.0 GUI intentionally uses colored icons and strong visual landmarks.
+**Status: REJECTED AS PRODUCTION PATH**
 
-The design goal is:
+A reverse Compact Cache V2 tool was prototyped to recover raster tiles from existing TPKX packages.
+
+Controlled Thames Bridge testing showed:
+
+- bundle extraction worked;
+- tile coordinate recovery worked;
+- recovered tile bytes matched the controlled original tile set.
+
+A subsequent production ESG1S recovery produced a large MBTiles whose mobile visual result included blurred/missing regions.
+
+Decision:
+
+- remove recovery from TPKX Map Factory v1.2;
+- rebuild important MBTiles directly through QGIS;
+- preserve MBTiles at manufacture time whenever Map Fountain deployment may be needed.
+
+This is a deliberate target-viewer decision, not a theoretical statement that Compact Cache V2 cannot be decoded.
+
+---
+
+## 13. Offline doctrine
+
+> **There can be no operational dependence on Internet connectivity. Period.**
+
+This requirement refers to outside/public connectivity, not useful private local links.
+
+Both are valid offline designs:
+
+```text
+TPKX already stored locally
+```
+
+and
+
+```text
+MBTiles on local depot
+→ private USB/local network
+→ local HTTPS WMTS
+→ ArcGIS Earth Mobile
+```
+
+The Map Fountain path was live-proven with outside Internet removed.
+
+---
+
+## 14. Persistent Geographic Context
+
+**Persistent Geographic Context** describes a state in which position, surroundings, routes, terrain, and local context remain continuously visible without depending on a public-network request at showtime.
+
+Local TPKX and local Map Fountain are two different ways to keep that geographic inventory close to the operator.
+
+---
+
+## 15. Human factors / GUI rules
+
+Normal-user GUI design should favor:
 
 ```text
 see → recognize → click
 ```
 
-instead of:
+over:
 
 ```text
 scan → read → interpret → decide → click
 ```
 
-This matters because the target audience includes ordinary operators who should not have to become GIS technicians to manufacture a map.
+Long operations must also be truthful about state.
 
-The advanced converter remains visible but visually separated so advanced power does not contaminate beginner simplicity.
+Do **not** show:
 
----
+- `FINISHED`;
+- a full green progress bar;
+- `COMPLETE`;
 
-## 15. Live acceptance evidence
+while final verification/publishing is still running.
 
-### Integrated Google Hybrid proof
-
-- Area: 113.31 sq mi
-- Zooms: Z8–Z18
-- Tiles: 23,119
-- Windows File Explorer size: 3,560,735 KB
-- Elapsed: 0:13:55
-- ArcGIS Earth: PASS
-
-### Advanced MBTiles → TPKX proof
-
-- Tiles: 271,497
-- Bundles: 47
-- Zooms: Z8–Z18
-- Windows File Explorer size: 25,561,426 KB
-- Elapsed: 0:17:59
-- ArcGIS Earth: PASS
-
-### Large Esri World / Google Labels Factory proof
-
-- Approximate area: 1,378.89 sq mi
-- Tiles: 271,242
-- Zooms: Z8–Z18
-- Windows File Explorer size: 24,291,406 KB
-- Elapsed: 2:51:52
-- ArcGIS Earth: PASS
-
-### v1.0.0 release smoke test
-
-- Area: approximately 0.12 sq mi
-- Input method: two manual decimal-degree GPS diagonal points
-- Output: `test2 small.tpkx`
-- Windows File Explorer size reported by Factory: 12,852 KB
-- Elapsed: 0:00:12
-- ArcGIS Earth: PASS
+QGIS internal metatile/work-unit counts must not be labeled as final raster tile counts.
 
 ---
 
-## 16. ArcGIS Earth operational role
+## 16. Live desktop acceptance evidence
 
-ArcGIS Earth is the current primary 2026 viewer/runtime.
+### Integrated Google Hybrid
 
-Relevant capabilities observed or proven in this project include:
+- 23,119 tiles;
+- Z8–Z18;
+- Windows File Explorer size **3,560,735 KB**;
+- elapsed **0:13:55**;
+- ArcGIS Earth **PASS**.
 
-- native local TPKX display;
-- KML/KMZ support;
-- KML NetworkLinks;
-- 3D globe navigation;
-- local Automation API;
-- native drawing/marker display;
-- GNSS/NMEA capability;
-- session restoration of previously loaded TPKX files;
-- online driving directions when connectivity exists.
+### Advanced MBTiles → TPKX
 
-Internet-dependent conveniences are treated as optional enhancements.
+- 271,497 tiles;
+- 47 bundles;
+- Z8–Z18;
+- Windows File Explorer size **25,561,426 KB**;
+- elapsed **0:17:59**;
+- ArcGIS Earth **PASS**.
 
----
+### Large Esri World / Google Labels
 
-## 17. Hard offline rule
+- 271,242 tiles;
+- Z8–Z18;
+- Windows File Explorer size **24,291,406 KB**;
+- elapsed **2:51:52**;
+- ArcGIS Earth **PASS**.
 
-> **There can be no operational dependence on Internet connectivity. Period.**
+### v1.0 release smoke test
 
-The Internet may be used during map manufacturing and refresh cycles. At incident/showtime, the command system must continue to perform essential functions with Internet connectivity absent.
-
-This requirement applies to core map viewing, the command picture, and other essential incident functions.
-
----
-
-## 18. Persistent Geographic Context
-
-**Persistent Geographic Context** describes a state in which position, surroundings, routes, terrain, and local context remain continuously visible without the operator repeatedly requesting them from a network service.
-
-With a large screen, local high-resolution TPKX imagery, and own-position GNSS, the operator moves from:
-
-```text
-"I am at this coordinate."
-```
-
-to:
-
-```text
-"I am on this road, in this forest, inside this terrain, with this context around me."
-```
-
-This is particularly important for command, wildfire, forestry, utility, delivery, rural access, and other field operations where mobile connectivity cannot be assumed.
+- `test2 small.tpkx`;
+- Windows File Explorer size **12,852 KB**;
+- elapsed **0:00:12**;
+- ArcGIS Earth **PASS**.
 
 ---
 
-## 19. PRAVE and live data
+## 17. Live field data
 
-The project’s `$PRAVE` path has been migrated from Google Earth-oriented output to a live-proven ArcGIS Earth Automation API implementation.
+PRAVE → ArcGIS Earth Automation API is LIVE-PROVEN with units `7-101` through `7-106` and native fire-truck RSSI drawings.
 
-A controlled test displayed units `7-101` through `7-106` in ArcGIS Earth using native drawings and the established fire-truck RSSI icon family.
-
-Observed healthy test state included:
+Observed healthy state:
 
 ```text
 UNITS=6
@@ -432,82 +452,48 @@ BAD_PRAVE=0
 RMC=FRESH
 ```
 
-The forward architecture is protocol-specific decoding at the edge followed by normalization into one ArcGIS Earth live-position manager.
-
-KML remains available where interoperability, persistence, or external feeds make KML the correct tool.
+Forward inputs include PRAVE, F22, native GNSS/NMEA, QR, and KML/KMZ interoperability.
 
 ---
 
-## 20. Planned / continuing live inputs
-
-- `$PRAVE`
-- F22
-- native GNSS/NMEA
-- QR dispatch coordinates and bounded commands
-- KML/KMZ / NetworkLinks where appropriate
-
-The project does not require every live transport to be forced through KML merely because the original Google Earth architecture did so.
-
----
-
-## 21. Legacy lineage
-
-Earlier project branches solved real problems and remain technically valuable:
-
-- MBTiles production in QGIS
-- direct MBTiles → KML Super Overlay conversion
-- KML Blooming Onion deployment
-- large map-depot design
-- warm-cache recovery experiments
-- Network Earth local serving
-- Wireshark/PCAP diagnostics
-- Google Earth Enterprise exploration
-
-These efforts provided the tile-pyramid, cache, KML, network, and deployment understanding that made the TPKX/ArcGIS Earth pivot rapid.
-
-They should be preserved as history but not presented as the current baseline.
-
----
-
-## 22. Do-not-regress rules
+## 18. Do-not-regress rules
 
 1. Do not return Google Earth Pro to primary-viewer status by inertia.
-2. Do not require a local KML/PNG server when native TPKX solves the basemap problem.
-3. Do not make temporary MBTiles a normal public deliverable.
-4. Do not casually rewrite the proven converter without a verified defect.
-5. Do not add persistent logs/work folders to the user’s chosen TPKX destination.
-6. Do not reintroduce removed beginner-facing complexity merely for advanced users.
-7. Keep advanced GIS freedom through the existing-MBTiles converter path.
-8. Retain KML for interoperability rather than discarding it.
-9. Preserve the no-operational-Internet-dependency rule.
-10. Validate finished map packages in ArcGIS Earth.
-11. Preserve **Offline GeoStack** as the master project identity; treat older naming as lineage.
+2. Do not present KML Super Overlay / Blooming Onion as the current basemap baseline.
+3. Do not casually rewrite the frozen MBTiles→TPKX converter.
+4. Do not discard MBTiles automatically when the operator selected MBTiles/Both or may need Map Fountain deployment.
+5. Do not revive TPKX→MBTiles recovery as a production shortcut without solving and live-proving the visual defect.
+6. Do not reintroduce removed beginner-facing extent/Grid-ID complexity merely for advanced users.
+7. Keep advanced GIS freedom through existing-MBTiles → TPKX.
+8. Retain KML for interoperability.
+9. Preserve the no-operational-public-Internet-dependency rule.
+10. Validate TPKX in the intended ArcGIS Earth target.
+11. Validate mobile Map Fountain through actual service requests and visual navigation, not just a successful server start.
+12. Do not market incidental multi-client behavior as a supported multi-user product.
+13. Preserve **Offline GeoStack** as the master identity.
 
 ---
 
-## 23. Known-good software baseline
+## 19. Known-good software baseline
 
-- Windows 10/11 64-bit
-- Python 3.14.5
-- QGIS 3.44.9
-- ArcGIS Earth
+- Windows 10/11 64-bit;
+- Python 3.14.5;
+- QGIS 3.44.9;
+- ArcGIS Earth Windows;
+- ArcGIS Earth Mobile Android.
 
-No additional Python libraries are required by the core TPKX converter path; it uses the Python standard library.
+The frozen core TPKX converter uses the Python standard library.
 
 ---
 
-## 24. Engineering interpretation
+## 20. Engineering interpretation
 
-The important technical achievement is not a new raster renderer or a new globe.
-
-It is interoperability:
+The project is primarily interoperability engineering.
 
 ```text
-QGIS already knew how to manufacture the map.
-ArcGIS Earth already knew how to display the finished package.
-The missing component was the exact deterministic bridge between them.
+QGIS already knew how to manufacture the raster pyramid.
+ArcGIS Earth already knew how to display TPKX and WMTS.
+The missing work was making the exact local bridges reliable and operator-usable.
 ```
-
-The converter is therefore small relative to the systems it connects, but its value lies in the exact ordering of bytes, rows, indexes, metadata, and package structure.
 
 That is the central architectural lesson of Offline GeoStack.
