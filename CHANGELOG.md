@@ -2,6 +2,67 @@
 
 This file records public architecture milestones. It intentionally distinguishes major design pivots from ordinary code edits and preserves the older Google Maps Dispatch System / Google Earth work as lineage rather than current branding.
 
+## 2026-08-16 — ArcGIS Earth Mobile + local Map Fountain path LIVE-PROVEN
+
+A second offline deployment path was proven alongside local TPKX.
+
+### ArcGIS Earth Mobile local TPKX
+
+- ArcGIS Earth Mobile opened multiple locally stored TPKX packages on Android.
+- Successful examples included a Rasta Thames Bridge package and smaller Esri / Google Hybrid map packages.
+- One larger Google Hybrid package returned `spatial reference not supported`; package-level compatibility remains a controlled test item.
+
+### USB Map Fountain
+
+`Rasta USB Map Fountain v0.2.1 TEST` was live-proven serving raster MBTiles from Windows to ArcGIS Earth Mobile over the Android USB-tether network.
+
+Proven chain:
+
+```text
+MBTiles on PC / SSD
+→ local HTTPS WMTS
+→ Android USB tether / Remote NDIS
+→ ArcGIS Earth Mobile
+```
+
+Live observations:
+
+- outside Internet removed: **PASS**;
+- HTTPS: **PASS**;
+- QR service loading: **PASS**;
+- selectable MBTiles GUI: **PASS**;
+- unique per-map WMTS identity fixed stale test-map reuse;
+- three different substantial MBTiles: **PASS**;
+- large Lago panorama streamed and navigated smoothly on Android;
+- deliberate pan/zoom is reliable; rapid repeated zoom/pan can outrun the current mobile delivery/render path.
+
+This converts the earlier Map Fountain concept from architecture candidate to a real local mobile map-delivery mechanism.
+
+### TPKX → MBTiles recovery experiment rejected
+
+A reverse Compact Cache V2 recovery tool was prototyped. Controlled testing showed exact tile-byte recovery on a Thames Bridge fixture, but a recovered production map displayed blurred/missing regions on ArcGIS Earth Mobile.
+
+Decision:
+
+- do not use TPKX recovery as the production MBTiles path;
+- remove recovery from the next Factory branch;
+- rebuild important MBTiles directly from QGIS;
+- preserve MBTiles going forward when Map Fountain use is expected.
+
+### TPKX Map Factory v1.2.0 TEST built
+
+v1.2 changes normal output choice to:
+
+```text
+TPKX
+MBTiles
+Both
+```
+
+`Both` is the current TEST default. The accepted v1.0.0 baseline remains frozen. v1.2 is BUILT / SELF-TESTED and entered Windows live acceptance on 2026-08-16.
+
+---
+
 ## 2026-08-15 — Master project renamed **Offline GeoStack**
 
 The project had grown beyond the original repository name. The current master identity is:
@@ -42,8 +103,8 @@ First frozen public baseline of the **TPKX Map Factory + ArcGIS Earth** architec
 ### Architecture
 
 - ArcGIS Earth is the primary viewer/runtime.
-- TPKX is the primary raster basemap deployment format.
-- MBTiles is a temporary manufacturing intermediate in the normal workflow.
+- TPKX is the primary raster basemap deployment format in the frozen v1.0 workflow.
+- MBTiles is the QGIS manufacturing intermediate.
 - Hard rule established: no operational dependence on Internet connectivity.
 
 ---
