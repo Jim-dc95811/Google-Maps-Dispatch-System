@@ -1,10 +1,12 @@
 # Offline GeoStack Documentation
 
-![Offline GeoStack current architecture](current_architecture.svg)
+![Offline GeoStack](offline_geostack_banner.svg)
 
 This folder is the technical record for the current 2026 **Offline GeoStack** architecture:
 
 **QGIS → temporary raster MBTiles → custom Compact Cache V2 / TPKX converter → ArcGIS Earth → live field-position inputs.**
+
+For the stripped-down block diagram, see [current_architecture.svg](current_architecture.svg).
 
 ## Start here
 
@@ -24,7 +26,7 @@ This folder is the technical record for the current 2026 **Offline GeoStack** ar
 
 The current QGIS reference projects are stored under [`../required_qgis_projects/`](../required_qgis_projects/).
 
-The exact accepted Factory package is stored under [`../releases/TPKX_MAP_FACTORY_v1_0_0.zip`](../releases/TPKX_MAP_FACTORY_v1_0_0.zip).
+The exact release-accepted Factory archive remains preserved in the canonical project archive. See [`../releases/README.md`](../releases/README.md) for the binary-release status. A connector-truncated GitHub copy was deliberately removed instead of leaving a bad public download.
 
 ## Legacy architecture
 
