@@ -1,48 +1,97 @@
 # Offline GeoStack Roadmap
 
-The v1.0 map-manufacturing baseline is frozen. The roadmap expands the stack **around** proven components rather than reopening them casually.
+The release-accepted **TPKX Map Factory v1.0.0** remains frozen. New capability is developed in later TEST branches and promoted only after live target acceptance.
 
-## v1.0 baseline — frozen
+## Frozen v1.0 baseline
 
 - ✅ TPKX Map Factory v1.0.0 release accepted
 - ✅ QGIS 3.44.9 raster manufacturing
 - ✅ custom MBTiles → Compact Cache V2 / TPKX bridge
 - ✅ advanced existing-MBTiles conversion
-- ✅ ArcGIS Earth native TPKX runtime
+- ✅ ArcGIS Earth Windows native TPKX runtime
 - ✅ PRAVE → ArcGIS Earth Automation API proof
 - ✅ no operational Internet dependency for core map display
 
-## Near-term field integration
+## 2026-08-16 mobile breakthrough
 
-### Native GNSS acceptance
+### ArcGIS Earth Mobile local TPKX
 
-**Status:** ✅ LIVE-OBSERVED — 2026-08-15
+**Status: ✅ LIVE-PROVEN on multiple packages**
 
-The actual field GNSS receiver was observed successfully driving ArcGIS Earth native realtime location on Windows. Known-good observed configuration is **9600 baud** with **GLL and RMC NMEA sentences** present in the stream. ArcGIS Earth displayed the native blue-dot own position without Python or a custom ME plotting path.
+Observed successful local-file packages include a Rasta Thames Bridge TPKX plus smaller Esri and Google Hybrid TPKX files copied into Android storage and opened through ArcGIS Earth Mobile.
 
-Keep this simple for normal operators: prefer ArcGIS Earth native GNSS when the actual field receiver and serial architecture permit it.
+One larger Google Hybrid package returned `spatial reference not supported`. Because other TPKX packages loaded successfully, keep this as a package-level compatibility question rather than a blanket mobile limitation.
 
-### F22 → common live-position manager
+### USB Map Fountain
 
-**Status:** designed
+**Status: ✅ LIVE-PROVEN — v0.2.1 TEST**
 
-Decode F22 at the protocol edge and normalize it into the same ArcGIS Earth live-position abstraction used by other remote-unit inputs. Do not create a second renderer merely because the transport differs.
+Live-proven chain:
 
-### QR → ArcGIS Earth
+```text
+MBTiles on Windows PC / SSD
+        ↓
+local HTTPS WMTS
+        ↓
+Android USB tether / Remote NDIS
+        ↓
+ArcGIS Earth Mobile
+```
 
-**Status:** modernization candidate
+Proven behavior:
 
-Preserve QR as an optical/physical dispatch and command input. Preferred modern output is a bounded Automation API action: destination marker, fly-to, layer toggle, operating-view reset, or other allowlisted command.
+- phone reaches Windows PC over USB tether;
+- ArcGIS Earth Mobile consumes WMTS tiles from the PC;
+- service works with outside Internet removed;
+- HTTPS works;
+- QR service loading works;
+- GUI can select different MBTiles from the PC / SSD;
+- unique service IDs prevent stale-map cache reuse;
+- three different substantial MBTiles have displayed successfully;
+- large Lago panorama displayed smoothly on mobile.
+
+Live operator envelope:
+
+> **Deliberate pan/zoom is reliable. Rapid repeated zooming or whipping the view around can outrun the current delivery/render path.**
+
+Near-term Map Fountain work:
+
+1. generalize HTTPS certificate/IP lifecycle beyond the current test address;
+2. controlled cold-restart / reconnect test;
+3. repeat with additional large production map libraries;
+4. measure throughput and latency on practical field hardware;
+5. decide whether the appliance transport should be USB, Wi-Fi, or both;
+6. preserve the single-user/private-depot positioning unless multi-user behavior is deliberately accepted.
+
+### Wi-Fi / vehicle appliance follow-on
+
+**Status: architecture candidate informed by live USB proof**
+
+The earlier concept remains useful, but it is no longer hypothetical at the application layer. WMTS → ArcGIS Earth Mobile is proven. The remaining Wi-Fi/Pi question is transport/appliance packaging.
+
+Candidate:
+
+```text
+Pi / Windows map depot + SSD
+        ↓
+private local Wi-Fi or USB link
+        ↓
+HTTPS WMTS
+        ↓
+ArcGIS Earth Mobile
+```
+
+Do not add appliance complexity until the software and operator workflow are stable.
 
 ## Map-production expansion
 
-### v1.1 output-format choice
+### TPKX Map Factory v1.2.0 TEST — output choice
 
-**Status:** strong candidate
+**Status: 🟡 BUILT / SELF-TESTED; Windows live acceptance underway — 2026-08-16**
 
-The v1.0 Factory already manufactures a finished raster MBTiles before invoking the proven MBTiles → TPKX converter. A future v1.1 GUI can expose that existing production stage as a supported final deliverable without changing the rendering engine.
+The Map Fountain proof changed MBTiles from disposable manufacturing material into a useful deployment product.
 
-Proposed operator choices:
+Normal operator choices in v1.2 TEST:
 
 ```text
 TPKX
@@ -52,139 +101,111 @@ Both
 
 Behavior:
 
-- **TPKX** — preserve the accepted v1.0 behavior: manufacture temporary MBTiles, convert it, verify the TPKX, and publish the TPKX.
-- **MBTiles** — manufacture and verify the raster MBTiles, publish it as the final product, and stop before conversion.
-- **Both** — publish the verified MBTiles and then use the same proven converter to publish the TPKX as well.
+- **TPKX** — manufacture MBTiles, run the frozen proven converter, publish TPKX.
+- **MBTiles** — manufacture and verify MBTiles, publish it directly, skip TPKX conversion.
+- **Both** — preserve the QGIS-built MBTiles and create TPKX from the exact same tile pyramid.
+- **Both is the current TEST default.**
 
-Keep **TPKX** as the default so the v1.0 operator workflow remains familiar. Do not fork the QGIS rendering path merely to create the MBTiles edition; both outputs must come from the same proven manufacturing engine.
+Advanced **MBTiles → TPKX** remains available.
 
-This opens the Factory to users and applications that want raster MBTiles but have no interest in ArcGIS Earth.
+The accepted v1.0.0 baseline stays separate and unchanged.
+
+### TPKX → MBTiles recovery
+
+**Status: ❌ REJECTED AS PRODUCTION PATH**
+
+A reverse Compact Cache V2 recovery experiment could recover exact raster tile bytes from a controlled fixture. A recovered production map later showed blurred/missing regions on ArcGIS Earth Mobile.
+
+Decision:
+
+- remove the recovery tool from v1.2;
+- rebuild important MBTiles directly from QGIS instead;
+- preserve MBTiles going forward when Map Fountain deployment may be needed.
 
 ### More QGIS recipes
 
-**Status:** open for v1.1+
+**Status: open for v1.2+**
 
-The four-source v1.0 menu stays frozen. Additional cartographic recipes should be added only after small-area visual acceptance and should not make the beginner GUI harder to operate.
+The four-source v1.0 menu stays frozen. Add sources only after small-area visual acceptance and without burdening the beginner workflow.
 
 ### Advanced raster compatibility
 
-**Status:** potential
+**Status: potential**
 
-Current converter baseline is raster PNG/JPEG MBTiles. Additional raster variations may be considered only with controlled fixtures and ArcGIS Earth acceptance. Vector/PBF support is not a v1.0 goal.
+Current converter baseline remains raster PNG/JPEG MBTiles. Additional raster variations require controlled fixtures and target-viewer acceptance. Vector/PBF support is not a current goal.
 
-## v1.1 reliability / fortification candidates
-
-The v1.0 Factory already has strong output-integrity, cancellation, cleanup, duplicate-instance, temporary-workspace, verification, and subprocess protections. Any additional hardening should remain **bounded and visible** rather than turning a successful batch Factory into a self-restarting supervisor system.
+## Reliability / fortification candidates
 
 ### One controlled QGIS manufacturing retry
 
-**Status:** candidate
+**Status: candidate**
 
-If the QGIS manufacturing subprocess fails **before conversion begins**, allow at most **one automatic retry** after cleaning the failed temporary manufacturing state.
-
-Requirements:
-
-- visibly report `RETRY 1/1` to the operator;
-- create a fresh disposable QGIS/work directory for the retry;
-- never retry forever;
-- never hide the original failure in the log;
-- never overwrite an existing accepted output;
-- if the retry fails, stop cleanly and report the failure.
-
-Do **not** automatically retry the TPKX converter after an ambiguous conversion/disk failure. Converter failure should remain a clean stop until there is evidence that a particular failure mode is safe to retry.
+Allow at most one visible retry only for a clearly failed QGIS manufacturing stage before conversion begins. No infinite loops; no hidden restarts.
 
 ### Large-build free-space preflight
 
-**Status:** candidate
+**Status: candidate**
 
-Before starting a large build, perform a conservative free-space sanity check for the selected work/output volumes. The exact estimator can remain intentionally simple; its job is to catch obviously impossible jobs before hours of QGIS rendering begin, not to promise an exact final byte count.
+Perform a conservative free-space sanity check for work/output volumes before hours-long builds.
 
 ### Explicit stage/status preservation
 
-**Status:** candidate
+**Status: required principle**
 
-Keep operator-visible stage reporting unambiguous across long jobs and any future retry path:
+Long operations must tell the operator what is actually happening. Do not show `FINISHED`, a full green bar, or `COMPLETE` while final verification/publishing is still running.
+
+Suggested stage vocabulary:
 
 ```text
 QGIS manufacturing
 MBTiles verification
 TPKX conversion
 TPKX verification
-Publishing
+Publishing MBTiles
+Publishing TPKX
 Complete
 ```
 
-A retry or recovery action must say exactly which stage is being repeated. Avoid silent restarts.
+## Field integration
 
-## Mobile / nearby-depot experiments
+### Native GNSS
 
-### ArcGIS Earth Mobile exact-TPKX acceptance
+**Status: ✅ LIVE-OBSERVED — 2026-08-15**
 
-**Status:** bench test pending
+Actual field receiver drove ArcGIS Earth native realtime blue-dot location on Windows. Known-good observed input: **9600 baud**, GLL + RMC present.
 
-Install ArcGIS Earth Mobile on Android and test an **exact Factory-produced TPKX** completely offline before making a public compatibility claim. Start with a small known-good package, then test a substantial production package only after the small gate passes.
+### F22 → common live-position manager
 
-### Wi-Fi Map Fountain
+**Status: designed**
 
-**Status:** experimental architecture candidate
+Normalize F22 at the protocol edge and feed the same ArcGIS Earth live-position abstraction used by other remote-unit inputs.
 
-Investigate a deliberately simple nearby map appliance:
+### QR → ArcGIS Earth
 
-```text
-Raspberry Pi + SSD
-        ↓
-local Wi-Fi access point
-        ↓
-on-demand raster tile service
-        ↓
-ArcGIS Earth Mobile
-```
+**Status: active interoperability path**
 
-Goal: the Pi/SSD remains the mother map depot while Android consumes map tiles **in real time over local Wi-Fi**, without downloading the complete mother TPKX to the device and without Internet connectivity.
-
-The Pi should remain a dumb map-serving appliance, not become a GIS workstation. Prefer a standards-based tile interface supported by ArcGIS Earth Mobile, with the existing TPKX/Compact Cache V2 knowledge used only as needed to retrieve the requested raster tiles efficiently.
-
-Bench questions to answer before productizing:
-
-- Can ArcGIS Earth Mobile consume the local service reliably while completely offline from the Internet?
-- Can the service expose multiple mother maps cleanly?
-- What latency/throughput is acceptable while panning and zooming?
-- What previously viewed tiles, if any, remain visible after the Android leaves Wi-Fi range?
-- Does any retained cache survive an ArcGIS Earth Mobile restart?
-
-Do not treat incidental client caching as an offline guarantee until live testing establishes its actual behavior.
-
-## Deployment polish
-
-### ArcGIS Earth workspace profile
-
-**Status:** partially explored
-
-Investigate a deliberate field workspace using startup layers, local packages, custom icons, autosave, and other administrator-supported controls. Freeze only after cold-start and offline acceptance.
-
-### ArcGIS Field Maps crossover
-
-**Status:** not yet live-proven
-
-Test an exact Factory-produced TPKX on the intended Android/iOS Field Maps workflow before making a public compatibility claim.
+QR is now live-proven for Map Fountain service loading on ArcGIS Earth Mobile. Dispatch/command QR remains a separate bounded-command modernization candidate.
 
 ## Public documentation / community
 
-- Publish the exact accepted v1.0 ZIP through a direct GitHub binary upload.
-- Publish a clean-machine start-to-finish map-manufacturing demonstration.
-- Present the MBTiles → TPKX bridge to GIS/QGIS/ArcGIS Earth technical audiences.
-- Keep legacy Google Earth material available as lineage, not as the current baseline.
+- attach the exact accepted `TPKX_MAP_FACTORY_v1_0_0.zip` as the public v1.0 binary;
+- finish live acceptance of v1.2 output modes before promoting it;
+- publish a clean desktop + mobile demonstration showing both TPKX and Map Fountain paths;
+- document the USB Map Fountain operator workflow and practical navigation envelope;
+- present the MBTiles → TPKX bridge and local mobile serving path to GIS/QGIS/ArcGIS Earth audiences;
+- retain Google Earth / KML work as lineage, not current baseline.
 
 ## Non-goals
 
-- Rebuilding QGIS inside the Factory
-- Rebuilding ArcGIS Earth
-- Turning the baseline into a multi-user map server
-- Making cloud connectivity mandatory
-- Hiding evidence status behind marketing language
-- Rewriting proven components merely because a cleaner implementation seems possible
-- Adding unbounded restart loops or invisible automatic recovery behavior
+- rebuilding QGIS inside the Factory;
+- rebuilding ArcGIS Earth;
+- making public Internet connectivity mandatory;
+- marketing incidental multi-client behavior as a supported multi-user product;
+- hiding evidence status behind marketing language;
+- rewriting proven components without a verified defect;
+- using TPKX recovery as a shortcut after it failed the live mobile visual gate;
+- adding unbounded restart loops or invisible automatic recovery.
 
 ## Governing rule
 
-> **New capability must earn its way into the baseline by answering to the same live target that accepted the old capability.**
+> **New capability must earn its way into the baseline by answering to the real target.**
