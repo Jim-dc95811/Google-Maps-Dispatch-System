@@ -1,5 +1,13 @@
 # ArcGIS Earth Mobile + USB Map Fountain
 
+## Standalone project home
+
+Map Fountain now has its own repository:
+
+**https://github.com/Jim-dc95811/Map-Fountain**
+
+This Offline GeoStack document remains the integration/evidence record for how Map Fountain fits the master operational system.
+
 ## Status
 
 **LIVE-PROVEN — 2026-08-16**
