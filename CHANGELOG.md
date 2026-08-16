@@ -1,10 +1,22 @@
-# Changelog
+# Offline GeoStack — Changelog
 
-This file records the public architecture milestones of the project. It intentionally distinguishes major design pivots from ordinary code edits.
+This file records public architecture milestones. It intentionally distinguishes major design pivots from ordinary code edits and preserves the older Google Maps Dispatch System / Google Earth work as lineage rather than current branding.
+
+## 2026-08-15 — Master project renamed **Offline GeoStack**
+
+The project had grown beyond the original repository name. The current master identity is:
+
+**Offline GeoStack — QGIS → TPKX → ArcGIS Earth + Live Field Positioning**
+
+`TPKX Map Factory` remains the map-manufacturing subsystem. ArcGIS Earth remains the primary runtime. GNSS, PRAVE, F22, QR, and KML are field/live/interoperability inputs around that runtime.
+
+Public documentation was reorganized around the new identity, the required QGIS projects were published, a professional GIS/future-AI engineering record was added, and the former Google Earth architecture was retained as historical lineage.
+
+---
 
 ## v1.0.0 — 2026-08-15 — RELEASE ACCEPTED
 
-First frozen public baseline of the **TPKX Map Factory + ArcGIS Earth** architecture.
+First frozen public baseline of the **TPKX Map Factory + ArcGIS Earth** architecture now carried by Offline GeoStack.
 
 ### Added
 
@@ -29,7 +41,7 @@ First frozen public baseline of the **TPKX Map Factory + ArcGIS Earth** architec
 
 ### Architecture
 
-- ArcGIS Earth is the primary viewer.
+- ArcGIS Earth is the primary viewer/runtime.
 - TPKX is the primary raster basemap deployment format.
 - MBTiles is a temporary manufacturing intermediate in the normal workflow.
 - Hard rule established: no operational dependence on Internet connectivity.
