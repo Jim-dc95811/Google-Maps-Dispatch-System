@@ -1,10 +1,24 @@
 # Offline GeoStack — TPKX Map Factory v1.0.0 Quick Start
 
+## Before you start — get the exact software
+
+**[Open Software & Downloads](SOFTWARE_AND_DOWNLOADS.md)**
+
+That page contains the official download links for the known-good v1.0.0 environment:
+
+- **QGIS 3.44.9 Solothurn — 64-bit Windows**
+- **Python 3.14.5 — 64-bit Windows**
+- **ArcGIS Earth — Windows desktop**
+- the two required Offline GeoStack QGIS project files
+- the TPKX Map Factory v1.0.0 release record
+
+For reproducibility, **QGIS 3.44.9 and Python 3.14.5 are pinned for the v1.0.0 baseline.** Do not silently substitute a newer maintenance release while trying to reproduce the accepted environment.
+
 ## Install once
 
 1. Install ArcGIS Earth.
-2. Install Python 3.14.5.
-3. Install QGIS 3.44.9.
+2. Install Python 3.14.5 (64-bit).
+3. Install QGIS 3.44.9 (64-bit).
 4. Create:
 
 ```text
