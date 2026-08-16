@@ -1,6 +1,12 @@
-# AI CONTINUITY / RESTART NOTE
+# OFFLINE GEOSTACK — AI CONTINUITY / RESTART NOTE
 
 This repository is intended to be understandable by future human maintainers and future AI systems without silently reviving superseded architecture.
+
+## Master identity
+
+**Offline GeoStack — QGIS → TPKX → ArcGIS Earth + Live Field Positioning**
+
+The repository slug `Google-Maps-Dispatch-System` is historical lineage, not the current master project name.
 
 ## Current baseline
 
@@ -12,9 +18,10 @@ QGIS 3.44.9
   -> custom MBTiles to TPKX converter
   -> Esri Compact Cache V2 / .tpkx
   -> ArcGIS Earth
+  -> live field inputs / overlays
 ```
 
-TPKX Map Factory v1.0.0 is LIVE-PROVEN / RELEASE ACCEPTED.
+TPKX Map Factory v1.0.0 is LIVE-PROVEN / RELEASE-ACCEPTED.
 
 ArcGIS Earth is abbreviated **AE** throughout current project work.
 
@@ -36,8 +43,9 @@ For finished TPKX products, **ArcGIS Earth is the final operational acceptance a
 - Do not casually rewrite the proven MBTiles-to-TPKX converter.
 - Do not add persistent work folders, logs, or sidecars to the user's chosen TPKX destination.
 - Do not reintroduce the removed Neighbor Extent/Grid-ID complexity into the normal-user GUI.
-- Keep advanced GIS freedom through the existing-MBTiles -> TPKX button.
+- Keep advanced GIS freedom through the existing-MBTiles → TPKX button.
 - Retain KML for interoperability, NetworkLinks, external feeds, and saved content.
+- Do not reintroduce vendor-adjacent project language that the current master branding intentionally avoids.
 
 ## Current known-good baseline
 
@@ -45,29 +53,35 @@ For finished TPKX products, **ArcGIS Earth is the final operational acceptance a
 - Python 3.14.5
 - QGIS 3.44.9
 - ArcGIS Earth
-- Factory raster recipe: PNG, 96 DPI, antialiasing ON, metatile 4, Z0-Z20
+- Factory raster recipe: PNG, 96 DPI, antialiasing ON, metatile 4, Z0–Z20
 
 No additional Python libraries are required by the core TPKX converter path.
 
 ## Proven paths
 
-1. Normal Factory: source -> area -> zoom -> QGIS -> temporary MBTiles -> TPKX -> AE.
-2. Advanced Factory: existing raster MBTiles -> TPKX -> AE.
-3. PRAVE -> ArcGIS Earth Automation API is LIVE-PROVEN with native drawings and RSSI fire-truck icons.
+1. Normal Factory: source → area → zoom → QGIS → temporary MBTiles → TPKX → AE.
+2. Advanced Factory: existing raster MBTiles → TPKX → AE.
+3. PRAVE → ArcGIS Earth Automation API is LIVE-PROVEN with native drawings and RSSI fire-truck icons.
 
-## Persistent Geographic Awareness
+## Persistent Geographic Context
 
-Current operational language includes **Persistent Geographic Awareness**: keeping position, surroundings, routes, and terrain continuously visible and available without relying on a network request at showtime.
+Current operational language uses **Persistent Geographic Context**: keeping position, surroundings, routes, and terrain continuously visible and available without relying on a network request at showtime.
 
 ## Historical archive rule
 
 Legacy Google Earth, KML forest/Blooming Onion, Network Earth, and Google Earth Enterprise work is technically valuable lineage. Preserve it as history. Do not treat old material as current merely because it exists.
 
+## Binary-release truth
+
+The exact accepted `TPKX_MAP_FACTORY_v1_0_0.zip` remains preserved in the canonical project archive. A connector-truncated GitHub copy was removed. Do not mistake a reconstructed or partial archive for the release-accepted binary.
+
 See:
 
 - `README.md`
+- `docs/README.md`
+- `docs/professional_report/README.md`
 - `docs/TECHNICAL_ARCHITECTURE.md`
 - `docs/LEGACY_GOOGLE_EARTH_README_2026-07-23.md`
-- `releases/TPKX_MAP_FACTORY_v1_0_0_RELEASE_NOTES.md`
+- `releases/README.md`
 
 for the current restart point.
