@@ -6,9 +6,15 @@
 
 ![Offline GeoStack architecture](docs/current_architecture.svg)
 
-This repository began life as the **Google Maps Dispatch System**. That history is preserved, but the current 2026 architecture has outgrown the old name.
+This repository began life as the **Google Maps Dispatch System**. That lineage is preserved, but the 2026 architecture has outgrown the old name.
 
 **Offline GeoStack** is the master project identity.
+
+> **QGIS makes the pixels. The converter packs the pixels. ArcGIS Earth displays the pixels.**
+
+> **Build it online. Carry it offline.**
+
+---
 
 ## Status at a glance
 
@@ -24,15 +30,23 @@ This repository began life as the **Google Maps Dispatch System**. That history 
 | Native AE GNSS with actual field receiver | ⏳ **FIELD ACCEPTANCE PENDING** |
 | Operational Internet dependency | **NONE BY DESIGN** |
 
-## Get the working pieces
+---
 
-- **[Download TPKX Map Factory v1.0.0](releases/TPKX_MAP_FACTORY_v1_0_0.zip)**
-- **[Get the required QGIS projects](required_qgis_projects/)**
+## Start here
+
+- **[TPKX Map Factory v1.0.0 release record](releases/README.md)**
+- **[Required QGIS project files](required_qgis_projects/)**
 - **[Quick Start](docs/QUICK_START.md)**
 - **[Professional GIS Engineering Record](docs/professional_report/README.md)**
 - **[Technical Architecture](docs/TECHNICAL_ARCHITECTURE.md)**
+- **[PRAVE → ArcGIS Earth live integration](docs/PRAVE_ARCGIS_EARTH_INTEGRATION.md)**
+- **[Offline doctrine / Persistent Geographic Context](docs/OFFLINE_OPERATION_AND_PERSISTENT_GEOGRAPHIC_CONTEXT.md)**
 
-The current production chain is:
+The exact release-accepted Windows archive is named `TPKX_MAP_FACTORY_v1_0_0.zip`. It remains preserved in the project’s canonical working archive. A connector-truncated GitHub copy was deliberately removed rather than leaving a bad public download; the exact binary should be attached directly to GitHub before public release distribution.
+
+---
+
+## What the stack actually does
 
 ```text
 Map source / QGIS layer stack
@@ -51,11 +65,9 @@ ArcGIS Earth
 GNSS / PRAVE / F22 / QR / KML field inputs
 ```
 
-> **QGIS makes the pixels. The converter packs the pixels. ArcGIS Earth displays the pixels.**
-
-> **Build it online. Carry it offline.**
-
 The normal user does not need to operate QGIS manually, understand SQLite, learn Compact Cache V2, or own ArcGIS Pro. The finished map is one `.tpkx` file that ArcGIS Earth opens natively.
+
+The advanced user can bypass the canned map-source workflow and feed an existing raster MBTiles directly into the same converter engine.
 
 ---
 
@@ -66,23 +78,30 @@ Two mature GIS worlds were already almost touching:
 - **QGIS** could render sophisticated cartography and generate raster MBTiles.
 - **ArcGIS Earth** could consume native TPKX packages beautifully, including offline.
 
-What was missing for this workflow was the bridge:
+The missing bridge for this workflow was:
 
 ```text
 raster MBTiles → Esri Compact Cache V2 / TPKX
 ```
 
-That bridge now exists as a custom Python converter and is integrated into **TPKX Map Factory v1.0.0**.
+That bridge now exists.
 
-The converter does **not** rerender the map. It preserves the existing raster tile bytes, converts the addressing/container structure, builds Compact Cache V2 bundles, writes TPKX metadata, and packages the result.
+The converter does **not** rerender the cartography. It reads the already-rendered raster tile bytes, converts the addressing/container structure, writes Compact Cache V2 bundles and TPKX metadata, and packages the result.
 
-That means a GIS professional can build whatever cartography they want in QGIS and use the advanced converter path to carry those finished pixels into ArcGIS Earth.
+That separation is the point:
+
+- QGIS owns projection, layer composition, labels, symbols, blending, and cartography.
+- MBTiles carries the temporary raster pyramid.
+- The converter owns deterministic indexing, bundle layout, metadata, and packaging.
+- ArcGIS Earth owns runtime display and navigation.
+
+A GIS professional can therefore build parcels, contours, labels, roads, utilities, local imagery, historical scans, forestry layers, or other suitable rasterized layer stacks in QGIS and carry the finished pixels into ArcGIS Earth through the advanced converter path.
 
 ---
 
 ## TPKX Map Factory v1.0.0
 
-**Status: LIVE-PROVEN / RELEASE ACCEPTED — 2026-08-15**
+**Status: LIVE-PROVEN / RELEASE-ACCEPTED — 2026-08-15**
 
 ### Normal-user workflow
 
@@ -94,14 +113,14 @@ That means a GIS professional can build whatever cartography they want in QGIS a
 5. Open the finished .tpkx in ArcGIS Earth
 ```
 
-The normal GUI exposes four frozen map choices:
+The v1.0.0 GUI exposes four frozen map choices:
 
 1. **Google Earth**
 2. **Google Hybrid**
 3. **Esri World**
 4. **Esri World / Google Labels**
 
-The current frozen raster recipe is:
+Frozen raster recipe:
 
 - QGIS **3.44.9**
 - Python **3.14.5** established known-good
@@ -118,10 +137,6 @@ The current frozen raster recipe is:
 The same GUI includes:
 
 **ADVANCED: MBTILES → TPKX**
-
-That path is for people who already know what they are doing in QGIS.
-
-Build parcels, contours, labels, roads, utilities, local imagery, historical scans, forestry layers, or any other suitable rasterized layer stack in QGIS, export compatible raster MBTiles, then let Offline GeoStack package it for ArcGIS Earth.
 
 The beginner does not have to become a GIS operator. The GIS operator does not have to accept beginner limitations.
 
@@ -161,26 +176,24 @@ The result is not a screenshot and not a flattened poster. It is a real multi-zo
 
 ## Live acceptance evidence
 
-This architecture has been tested beyond toy examples.
-
 ### First integrated Factory proof
 
 - Source: Google Hybrid
 - Area: 113.31 sq mi
 - Zooms: Z8–Z18
 - Tiles: 23,119
-- Finished Windows File Explorer size: **3,560,735 KB**
-- Elapsed: 0:13:55
+- Windows File Explorer size: **3,560,735 KB**
+- Elapsed: **0:13:55**
 - ArcGIS Earth: **PASS**
 
 ### Large advanced MBTiles → TPKX proof
 
-- Existing MBTiles supplied directly to the advanced converter
+- Existing raster MBTiles supplied directly to the advanced path
 - Tiles: **271,497**
-- Bundles: 47
+- Bundles: **47**
 - Zooms: Z8–Z18
-- Finished Windows File Explorer size: **25,561,426 KB**
-- Elapsed: 0:17:59
+- Windows File Explorer size: **25,561,426 KB**
+- Elapsed: **0:17:59**
 - ArcGIS Earth: **PASS**
 
 ### Large Esri World / Google Labels Factory proof
@@ -188,8 +201,8 @@ This architecture has been tested beyond toy examples.
 - Area: approximately 1,378.89 sq mi
 - Tiles: **271,242**
 - Zooms: Z8–Z18
-- Finished Windows File Explorer size: **24,291,406 KB**
-- Elapsed: 2:51:52
+- Windows File Explorer size: **24,291,406 KB**
+- Elapsed: **2:51:52**
 - ArcGIS Earth: **PASS**
 
 ### v1.0.0 release smoke test
@@ -198,13 +211,11 @@ This architecture has been tested beyond toy examples.
 - Factory normalized the corners and produced the EPSG:3857 HOME EXTENT
 - Area: approximately 0.12 sq mi
 - Output: `test2 small.tpkx`
-- Windows File Explorer size reported by Factory: **12,852 KB**
-- Elapsed: 0:00:12
+- Windows-visible output size: **12,852 KB**
+- Elapsed: **0:00:12**
 - ArcGIS Earth: **PASS**
 
 For this project, **ArcGIS Earth is the final operational acceptance authority** for finished TPKX output.
-
-If AE opens it, places it correctly, exposes the expected zoom behavior, and renders the cartography correctly, the package answers to the runtime that matters.
 
 ---
 
@@ -212,7 +223,7 @@ If AE opens it, places it correctly, exposes the expected zoom behavior, and ren
 
 ArcGIS Earth is the current primary 3D operational viewer.
 
-Relevant capabilities observed or proven during this project include:
+Relevant capabilities observed or proven in this project include:
 
 - native local TPKX display
 - KML/KMZ support
@@ -224,7 +235,7 @@ Relevant capabilities observed or proven during this project include:
 - session restoration of previously loaded TPKX files
 - online point-to-point driving directions when connectivity exists
 
-The key architectural rule is that online services are enhancements, not dependencies.
+Online services are enhancements, not dependencies.
 
 ---
 
@@ -233,8 +244,6 @@ The key architectural rule is that online services are enhancements, not depende
 > **There can be no operational dependence on Internet connectivity. Period.**
 
 Internet access can be used while preparing or refreshing maps. At incident/showtime, core operation must continue without a hotspot, without cellular coverage, and without a live map service.
-
-The practical operating idea is simple:
 
 ```text
 manufacture the geographic environment beforehand
@@ -248,7 +257,7 @@ operate even if the network disappears
 
 The map is already in the trunk.
 
-The project uses the term **Persistent Geographic Context** for the operating condition in which position, surroundings, routes, and terrain remain continuously visible without having to summon them from a network.
+The project uses **Persistent Geographic Context** for the operating condition in which position, surroundings, routes, and terrain remain continuously visible without having to summon them from a network.
 
 ---
 
@@ -256,11 +265,7 @@ The project uses the term **Persistent Geographic Context** for the operating co
 
 Offline GeoStack is not only a map factory.
 
-### PRAVE → ArcGIS Earth
-
-The `$PRAVE` decoder now has a **LIVE-PROVEN ArcGIS Earth Automation API path**.
-
-Controlled traffic displayed units `7-101` through `7-106` as native ArcGIS Earth drawings using the established fire-truck RSSI icon family.
+The `$PRAVE` decoder has a **LIVE-PROVEN ArcGIS Earth Automation API path**. Controlled traffic displayed units `7-101` through `7-106` as native ArcGIS Earth drawings using the established fire-truck RSSI icon family.
 
 Observed healthy test state included:
 
@@ -273,9 +278,7 @@ BAD_PRAVE=0
 RMC=FRESH
 ```
 
-The forward architecture is protocol-specific decoding at the edge followed by normalization into one live-position manager rather than forcing every transport through KML.
-
-Continuing inputs include:
+Forward inputs include:
 
 - `$PRAVE`
 - F22
@@ -289,18 +292,16 @@ KML remains first-class. It simply no longer has to carry jobs that native TPKX 
 
 ## Required QGIS projects
 
-The two current QGIS reference projects are included in [`required_qgis_projects/`](required_qgis_projects/).
+The current reference projects are included in [`required_qgis_projects/`](required_qgis_projects/):
 
-They are intended to be placed at:
+- `REQUIRED_FACTORY_PROJECT_DO_NOT_EDIT.qgz`
+- `ESRI and Google Labels.qgz`
+
+Install location:
 
 ```text
 C:\Google Earth Project\QGIS\
 ```
-
-Files:
-
-- `REQUIRED_FACTORY_PROJECT_DO_NOT_EDIT.qgz`
-- `ESRI and Google Labels.qgz`
 
 The project uses read-only reference files plus archive recovery rather than a hash-gate workflow.
 
@@ -308,75 +309,26 @@ The project uses read-only reference files plus archive recovery rather than a h
 
 ## Repository map
 
-### Start here
-
 - `README.md` — public front door
 - `docs/README.md` — documentation index and architecture diagram
 - `docs/TECHNICAL_ARCHITECTURE.md` — detailed converter / pipeline engineering
-- `docs/professional_report/` — long-form professional GIS and future-AI technical record
+- `docs/professional_report/` — long-form professional GIS and future-AI record
 - `docs/PRAVE_ARCGIS_EARTH_INTEGRATION.md` — live positioning path
-- `docs/OFFLINE_OPERATION_AND_PERSISTENT_GEOGRAPHIC_CONTEXT.md` — offline doctrine and persistent map/position context
+- `docs/OFFLINE_OPERATION_AND_PERSISTENT_GEOGRAPHIC_CONTEXT.md` — offline doctrine
 - `docs/AI_ENGINEERING_METHOD.md` — human/AI development method
 - `CHANGELOG.md` — release and architecture evolution
-- `CONTRIBUTING.md` — acceptance rules and do-not-regress guidance
-
-### Legacy lineage
-
-- `docs/LEGACY_GOOGLE_EARTH_README_2026-07-23.md`
-- `docs/legacy/`
-
-The old Google Earth material is preserved because it explains how the project learned the tile-pyramid, KML, cache, server, and field-deployment lessons that made the current architecture possible.
-
-It is history, not the current baseline.
+- `CONTRIBUTING.md` — acceptance and do-not-regress rules
+- `required_qgis_projects/` — the two current QGIS reference projects
+- `releases/` — release notes, checklist, lineage, and binary-release status
+- `docs/legacy/` + legacy README — preserved Google Earth lineage
 
 ---
 
-## Current requirements
+## Licensing and source-data boundary
 
-### Windows
+Original Offline GeoStack software and documentation are published under the **MIT License** unless a file states otherwise.
 
-- Windows 10 or Windows 11, 64-bit
-
-### Python
-
-- Python **3.14.5** is the current known-good project baseline.
-- No additional Python libraries are required by the core TPKX converter path.
-
-### QGIS
-
-- QGIS **3.44.9**
-
-### ArcGIS Earth
-
-ArcGIS Earth is the current primary viewer for finished TPKX packages.
-
----
-
-## Engineering rules
-
-- Offline operation is fundamental, not a fallback mode.
-- Core operation must not depend on cellular or Internet availability.
-- Use native TPKX for ArcGIS Earth raster basemaps.
-- Use QGIS as the rendering engine.
-- Preserve finished raster tiles during MBTiles → TPKX conversion.
-- Keep the proven converter stable; integrate around it rather than casually rewriting it.
-- Produce one clean finished TPKX for the operator.
-- Keep temporary manufacturing material out of the destination directory.
-- Keep simple users simple and advanced users powerful.
-- Retain KML for the jobs KML does well.
-- Treat Google Earth work as valuable lineage, not the current baseline.
-- Distinguish DESIGNED, BUILT, BENCH-PROVEN, LIVE-PROVEN, and RELEASE-ACCEPTED states.
-- Document enough detail that future GIS professionals and AI systems can reconstruct the system without inventing history.
-
----
-
-## Source-data note
-
-Offline GeoStack is a map-manufacturing, format-conversion, and field-display workflow. It does not grant rights to imagery, labels, basemaps, or other source data.
-
-Users are responsible for complying with the terms, licenses, caching rules, export restrictions, attribution requirements, and redistribution rules that apply to each source they use.
-
-Technical capability and source-data rights are separate questions.
+That does **not** grant rights to third-party imagery, labels, basemaps, vendor software, or external services. Map-source licensing, caching, export, attribution, and redistribution rules remain source-specific. See [`NOTICE.md`](NOTICE.md) and [`docs/SOURCE_AND_LICENSING_NOTE.md`](docs/SOURCE_AND_LICENSING_NOTE.md).
 
 ---
 
