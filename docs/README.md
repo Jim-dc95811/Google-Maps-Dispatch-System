@@ -12,6 +12,7 @@ For the stripped-down block diagram, see [current_architecture.svg](current_arch
 
 - [Professional GIS Engineering Record](professional_report/README.md) — long-form architecture, implementation, validation, operational doctrine, appendices, and future-AI continuity reference.
 - [Technical Architecture](TECHNICAL_ARCHITECTURE.md) — converter mechanics, TMS/Compact Cache V2 structure, workflows, acceptance evidence, and do-not-regress rules.
+- [Technical FAQ](FAQ.md) — direct answers to the questions GIS developers are most likely to ask first.
 - [Notes for GIS Professionals](NOTES_FOR_GIS_PROFESSIONALS.md) — condensed interoperability interpretation.
 - [Quick Start](QUICK_START.md) — normal-user and advanced-user operation.
 - [Project Status — 2026-08-15](PROJECT_STATUS_2026-08-15.md) — frozen release checkpoint.
@@ -19,8 +20,9 @@ For the stripped-down block diagram, see [current_architecture.svg](current_arch
 - [PRAVE → ArcGIS Earth Integration](PRAVE_ARCGIS_EARTH_INTEGRATION.md) — live-proven native Automation API path and RSSI display rules.
 - [AI-Assisted Engineering Method](AI_ENGINEERING_METHOD.md) — how the human/AI closed-loop workflow compressed cross-domain engineering work.
 - [AI Continuity / Restart Note](AI_CONTINUITY_RESTART_NOTE.md) — current baseline for future maintainers and future AI systems.
-- [Historical Timeline](HISTORICAL_TIMELINE.md) — how the project moved from terrestrial chartplotter work through Google Earth and into ArcGIS Earth / TPKX.
+- [Historical Timeline](HISTORICAL_TIMELINE.md) — how the project moved from terrestrial chartplotter work through Google Earth and into Offline GeoStack.
 - [Source and Licensing Note](SOURCE_AND_LICENSING_NOTE.md) — technical capability versus source-data rights.
+- [Roadmap](../ROADMAP.md) — frozen baseline and next field/integration targets.
 
 ## Required production assets
 
