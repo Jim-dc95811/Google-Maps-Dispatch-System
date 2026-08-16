@@ -4,7 +4,7 @@
 
 **A Windows-first offline geospatial stack for manufacturing raster map pyramids, carrying them as native TPKX, serving them locally as MBTiles/WMTS, and feeding live GNSS / PRAVE / F22 / QR field data without depending on the Internet at showtime.**
 
-![Offline GeoStack architecture](docs/current_architecture.svg)
+![System architecture](https://raw.githubusercontent.com/Jim-dc95811/Map-Fountain/main/docs/ChatGPT%20Image%20Aug%2016%2C%202026%2C%2007_11_25%20PM.png)
 
 This repository began life as the **Google Maps Dispatch System**. That lineage is preserved, but the 2026 architecture has outgrown the old name.
 
