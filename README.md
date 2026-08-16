@@ -27,7 +27,7 @@ This repository began life as the **Google Maps Dispatch System**. That lineage 
 | ArcGIS Earth native TPKX runtime | ✅ **LIVE-PROVEN** |
 | PRAVE → ArcGIS Earth Automation API | ✅ **LIVE-PROVEN** |
 | AE session restoration of loaded TPKX | ✅ **LIVE-OBSERVED** |
-| Native AE GNSS with actual field receiver | ⏳ **FIELD ACCEPTANCE PENDING** |
+| Native AE GNSS with actual field receiver | ✅ **LIVE-OBSERVED** |
 | Operational Internet dependency | **NONE BY DESIGN** |
 
 ---
