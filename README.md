@@ -224,6 +224,12 @@ For this project, **ArcGIS Earth is the final operational acceptance authority**
 
 ArcGIS Earth is the current primary 3D operational viewer.
 
+### Native GNSS live observation — 2026-08-15
+
+![ArcGIS Earth native GNSS live observation](docs/images/native_gnss_live_2026-08-15.jpg)
+
+*ArcGIS Earth displaying the operator's real-time blue-dot own position from the actual field GNSS receiver. Known-good observed input was 9600 baud with GLL and RMC NMEA sentences. This is a web-resolution copy of the live screen capture; Esri / Earthstar Geographics attribution remains visible.*
+
 Relevant capabilities observed or proven in this project include:
 
 - native local TPKX display
