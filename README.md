@@ -34,9 +34,10 @@ This repository began life as the **Google Maps Dispatch System**. That lineage 
 
 ## Start here
 
+- **[Software & Downloads — exact versions + official links](docs/SOFTWARE_AND_DOWNLOADS.md)**
+- **[Quick Start](docs/QUICK_START.md)**
 - **[TPKX Map Factory v1.0.0 release record](releases/README.md)**
 - **[Required QGIS project files](required_qgis_projects/)**
-- **[Quick Start](docs/QUICK_START.md)**
 - **[Professional GIS Engineering Record](docs/professional_report/README.md)**
 - **[Technical Architecture](docs/TECHNICAL_ARCHITECTURE.md)**
 - **[PRAVE → ArcGIS Earth live integration](docs/PRAVE_ARCGIS_EARTH_INTEGRATION.md)**
@@ -310,6 +311,7 @@ The project uses read-only reference files plus archive recovery rather than a h
 ## Repository map
 
 - `README.md` — public front door
+- `docs/SOFTWARE_AND_DOWNLOADS.md` — exact dependency versions and official download links
 - `docs/README.md` — documentation index and architecture diagram
 - `docs/TECHNICAL_ARCHITECTURE.md` — detailed converter / pipeline engineering
 - `docs/professional_report/` — long-form professional GIS and future-AI record
