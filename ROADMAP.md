@@ -16,9 +16,9 @@ The v1.0 map-manufacturing baseline is frozen. The roadmap expands the stack **a
 
 ### Native GNSS acceptance
 
-**Status:** ✅ LIVE-PROVEN — 2026-08-15
+**Status:** ✅ LIVE-OBSERVED — 2026-08-15
 
-The actual field GNSS receiver successfully drove ArcGIS Earth native realtime location on Windows. Known-good bench configuration is **9600 baud** with **GLL and RMC NMEA sentences** present in the stream. ArcGIS Earth displayed the native blue-dot own position without Python or a custom ME plotting path.
+The actual field GNSS receiver was observed successfully driving ArcGIS Earth native realtime location on Windows. Known-good observed configuration is **9600 baud** with **GLL and RMC NMEA sentences** present in the stream. ArcGIS Earth displayed the native blue-dot own position without Python or a custom ME plotting path.
 
 Keep this simple for normal operators: prefer ArcGIS Earth native GNSS when the actual field receiver and serial architecture permit it.
 
