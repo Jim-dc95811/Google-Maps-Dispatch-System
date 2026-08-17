@@ -4,7 +4,7 @@
 
 **A Windows-first offline geospatial stack for manufacturing native raster map products, carrying them into the field, serving them through simple local infrastructure, and feeding live GNSS / PRAVE / F22 / QR data without depending on the public Internet at showtime.**
 
-![ArcGIS Earth Systems — router-only Map Fountain architecture](https://raw.githubusercontent.com/Jim-dc95811/Map-Fountain/main/docs/map_fountain_router_architecture_2026-08-17.svg)
+![Canonical ArcGIS Earth Systems router flowchart](https://raw.githubusercontent.com/Jim-dc95811/Map-Fountain/main/docs/arcgis_system_router_flowchart_2026-08-17.svg)
 
 **Offline GeoStack** is the master operational project identity.
 
@@ -27,6 +27,7 @@
 | Large TPKX Ethernet storage benchmark | ✅ **LIVE-PROVEN** |
 | Large TPKX Wi-Fi storage benchmark | ✅ **LIVE-PROVEN** |
 | ArcGIS Earth direct network-hosted TPKX over Wi-Fi | ✅ **LIVE-PROVEN** |
+| Router-only ArcGIS Earth Mobile path | 🟡 **NEXT ACCEPTANCE GATE** |
 | Historical Windows MBTiles → HTTPS WMTS → Android path | ✅ **LIVE-PROVEN HISTORY** |
 | PRAVE → ArcGIS Earth Automation API | ✅ **LIVE-PROVEN** |
 | AE session restoration of loaded TPKX | ✅ **LIVE-OBSERVED** |
@@ -259,6 +260,14 @@ raster MBTiles
 It proved local/offline mobile tile consumption, HTTPS, QR loading, per-map service identity, multiple substantial MBTiles, and continued operation with outside Internet removed.
 
 That remains engineering history and a useful compatibility technique. **The current field-appliance direction is router-only.**
+
+---
+
+## Android is next
+
+The router-only Windows path is proven. **ArcGIS Earth Mobile is now the immediate target.**
+
+The Android client must be tested against the router-attached SSD over private Wi-Fi without assuming the historical Windows WMTS server needs to return. Use the simplest path the mobile client actually accepts, and promote nothing until the real target passes.
 
 ---
 
