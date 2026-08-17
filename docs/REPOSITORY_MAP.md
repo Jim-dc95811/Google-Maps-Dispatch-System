@@ -2,7 +2,7 @@
 
 ```text
 README.md
-  Public front door, current architecture, proof status, and operator/GIS entry points
+  Public front door, current router-only architecture, proof status, and operator/GIS entry points
 
 LICENSE
   MIT license for original Offline GeoStack software/documentation
@@ -14,23 +14,20 @@ CHANGELOG.md
   Architecture and release evolution
 
 ROADMAP.md
-  Frozen baseline plus next integration targets
+  Frozen baseline plus Android-first current integration target
 
 CONTRIBUTING.md
   Evidence language, acceptance rules, and do-not-regress guidance
 
 docs/
   README.md
-    Documentation index and visual architecture entry point
+    Documentation index and current architecture entry point
 
   offline_geostack_banner.svg
-    Public/technical hero diagram
-
-  current_architecture.svg
-    Compact system block diagram
+    Public/technical project banner
 
   TECHNICAL_ARCHITECTURE.md
-    Detailed GIS/software architecture, converter math, Compact Cache V2, acceptance evidence
+    Current Factory → native products → router-only Map Fountain → ArcGIS Earth architecture
 
   professional_report/
     Long-form GIS engineering + future-AI continuity record
@@ -39,10 +36,13 @@ docs/
     Short professional interpretation of the interoperability design
 
   QUICK_START.md
-    Normal-user and advanced-user workflow
+    Normal-user and advanced-user Factory workflow
 
   PROJECT_STATUS_2026-08-15.md
     Frozen release/status checkpoint
+
+  PROJECT_STATUS_2026-08-16.md
+    Historical mobile/Factory checkpoint immediately before the router-only breakthrough
 
   OFFLINE_OPERATION_AND_PERSISTENT_GEOGRAPHIC_CONTEXT.md
     Offline doctrine and persistent map/position context
@@ -54,7 +54,7 @@ docs/
     Human/AI closed-loop engineering method
 
   AI_CONTINUITY_RESTART_NOTE.md
-    Restart context and do-not-regress rules for future maintainers / AI systems
+    Current restart truth and do-not-regress rules for future maintainers / AI systems
 
   HISTORICAL_TIMELINE.md
     Project evolution from terrestrial chartplotter through Google Earth to Offline GeoStack
@@ -91,10 +91,18 @@ src/
     Canonical-source publication note; exact v1.0 source remains tied to accepted ZIP
 ```
 
+## Canonical system drawing
+
+The current Factory / PC / Android router-only flowchart is maintained in the Map Fountain repository:
+
+`Jim-dc95811/Map-Fountain/docs/arcgis_system_router_flowchart_2026-08-17.svg`
+
+The older local `current_architecture.svg` was removed after the router-only breakthrough so future maintainers do not mistake the historical USB-WMTS path for current architecture.
+
 The exact accepted Windows package is `TPKX_MAP_FACTORY_v1_0_0.zip`. It remains preserved in the canonical project archive. A connector-truncated GitHub copy was deliberately removed; attach the exact archive directly before public binary distribution.
 
-The repository slug reflects project origin. The current master identity is:
+Current master identity:
 
 # **Offline GeoStack**
 
-**QGIS → TPKX → ArcGIS Earth + Live Field Positioning**
+**QGIS → native map products → router-only local delivery → ArcGIS Earth + Live Field Positioning**
