@@ -14,9 +14,7 @@ The release-accepted **TPKX Map Factory v1.0.0** remains frozen. New capability 
 
 ## 2026-08-17 router-only Map Fountain breakthrough
 
-**Status: ✅ LIVE-PROVEN**
-
-Proven chain:
+**Status: ✅ LIVE-PROVEN on Windows ArcGIS Earth**
 
 ```text
 native TPKX on USB SSD
@@ -27,20 +25,35 @@ native TPKX on USB SSD
 → ArcGIS Earth
 ```
 
-The production-scale `ESG1N.tpkx` package was benchmarked through the router over both Ethernet and Wi-Fi, then opened directly from the Samba share and rendered interactively in ArcGIS Earth over Wi-Fi.
+The production-scale `ESG1N.tpkx` package was benchmarked through the router over Ethernet and Wi-Fi, then opened directly from the Samba share and rendered interactively in ArcGIS Earth over Wi-Fi.
 
-The field delivery architecture is now **router only**. The router provides storage/network/file sharing; ArcGIS Earth provides the GIS intelligence.
+The field delivery architecture is **router only**. The router provides storage, DHCP/local networking, and file sharing. ArcGIS Earth provides the GIS intelligence.
 
-### Next Map Fountain gates
+Canonical drawing:
 
-1. Repeat the successful ArcGIS Earth application test over Ethernet for direct comparison.
-2. Characterize real ArcGIS Earth deliberate pan/zoom behavior over Wi-Fi.
+`Map-Fountain/docs/arcgis_system_router_flowchart_2026-08-17.svg`
+
+### Immediate next gate — Android
+
+**ArcGIS Earth Mobile must now earn router-only acceptance.**
+
+Start from the simplest way the mobile client can consume a useful map from the router-attached SSD over private Wi-Fi. Do not revive an active field GIS-server appliance by default.
+
+Questions:
+
+- Can ArcGIS Earth Mobile access a useful router-hosted map directly?
+- Which native or standards-based input path does it actually accept?
+- Can the map remain on the SSD rather than being copied wholesale to the phone?
+- What thin compatibility layer, if any, is truly necessary?
+- Does the result survive outside-Internet removal?
+
+After Android:
+
+1. Repeat the ArcGIS Earth Windows application test over Ethernet for comparison.
+2. Characterize deliberate ArcGIS Earth navigation over Wi-Fi.
 3. Test cold close/reopen and Wi-Fi reconnect behavior.
 4. Test multiple simultaneous Eaters.
-5. Test the simplest router-only ArcGIS Earth Mobile path separately.
-6. Build the basecamp Feeder only after consumption behavior is stable.
-
-Do not add a field GIS-server layer unless real target evidence proves one is necessary.
+5. Build the basecamp Feeder after consumption behavior is stable.
 
 ## Historical mobile breakthrough — 2026-08-16
 
@@ -56,8 +69,6 @@ One larger Google Hybrid package returned `spatial reference not supported`. Kee
 
 **Status: ✅ LIVE-PROVEN HISTORY**
 
-Historical proven chain:
-
 ```text
 MBTiles on Windows PC / SSD
 → local HTTPS WMTS
@@ -67,7 +78,7 @@ MBTiles on Windows PC / SSD
 
 That work proved local mobile tile delivery, operation with outside Internet removed, HTTPS, QR loading, multiple substantial MBTiles, and a large Lago panorama.
 
-It remains a useful compatibility technique, but it is **not** the current field-appliance architecture.
+It remains a useful compatibility technique, but it is **not the current field-appliance architecture**.
 
 ## Map-production expansion
 
@@ -80,8 +91,6 @@ TPKX
 MBTiles
 Both
 ```
-
-Behavior:
 
 - **TPKX** — manufacture MBTiles, run the frozen proven converter, publish TPKX.
 - **MBTiles** — manufacture and verify MBTiles, publish directly.
@@ -103,35 +112,13 @@ Decision:
 
 ### More QGIS recipes
 
-**Status: open for later TEST branches**
-
 The four-source v1.0 menu stays frozen. Add sources only after small-area visual acceptance and without burdening the beginner workflow.
 
 ## Reliability / fortification candidates
 
-### One controlled QGIS manufacturing retry
-
-Allow at most one visible retry only for a clearly failed QGIS manufacturing stage before conversion begins. No infinite loops or hidden restarts.
-
-### Large-build free-space preflight
-
-Perform a conservative free-space sanity check for work/output volumes before hours-long builds.
-
-### Explicit stage/status preservation
-
-Long operations must say what is actually happening. Do not show `COMPLETE` while verification/publishing is still running.
-
-Suggested stages:
-
-```text
-QGIS manufacturing
-MBTiles verification
-TPKX conversion
-TPKX verification
-Publishing MBTiles
-Publishing TPKX
-Complete
-```
+- one controlled QGIS manufacturing retry for a clearly failed manufacturing stage;
+- conservative large-build free-space preflight;
+- explicit stage/status wording so `COMPLETE` appears only after final verification/publishing.
 
 ## Field integration
 
@@ -149,16 +136,14 @@ Normalize F22 at the protocol edge and feed the same ArcGIS Earth live-position 
 
 ### QR → ArcGIS Earth
 
-**Status: active interoperability path**
-
 QR remains a bounded dispatch/data-input method and was also live-proven for historical mobile service loading.
 
 ## Public documentation / community
 
 - attach the exact accepted `TPKX_MAP_FACTORY_v1_0_0.zip` as the public v1.0 binary;
-- keep the router-only architecture drawing at the top of all three active repositories;
-- publish the 2026-08-17 Map Fountain benchmark and ArcGIS Earth Wi-Fi acceptance evidence;
-- document the exact prior-art search boundary without making unsupported worldwide-first claims;
+- keep the canonical Factory / PC / Android router-only flowchart at the top of all three active repositories;
+- publish and preserve the 2026-08-17 Map Fountain benchmark and ArcGIS Earth Wi-Fi acceptance evidence;
+- document the prior-art search boundary without making unsupported worldwide-first claims;
 - finish live acceptance of later Factory output modes before promoting them;
 - publish a clean field demonstration of Factory → SSD → router → ArcGIS Earth;
 - retain Google Earth / KML work as lineage, not current baseline.
@@ -169,6 +154,7 @@ QR remains a bounded dispatch/data-input method and was also live-proven for his
 - rebuilding ArcGIS Earth;
 - making public Internet connectivity mandatory;
 - turning the consumer router into a GIS computer;
+- reviving Raspberry Pi / Pi-server architecture in the active field design;
 - requiring a field GIS-server process for the proven desktop TPKX path;
 - marketing unmeasured multi-client behavior as supported;
 - hiding evidence status behind marketing language;
