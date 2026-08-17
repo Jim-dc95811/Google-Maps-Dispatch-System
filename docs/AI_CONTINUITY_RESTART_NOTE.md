@@ -6,11 +6,11 @@ This repository is intended to be understandable by future human maintainers and
 
 **Offline GeoStack — QGIS → MBTiles / TPKX → ArcGIS Earth Desktop + Mobile + Live Field Positioning**
 
-The repository is now actually named `Offline-GeoStack`. Older Google Maps Dispatch System names are lineage only.
+The repository is named `Offline-GeoStack`. Older Google Maps Dispatch System names are lineage only.
 
-## Current truth — 2026-08-16
+## Current truth — 2026-08-17
 
-The accepted v1.0.0 desktop map baseline remains frozen:
+The accepted desktop map baseline remains frozen:
 
 ```text
 QGIS 3.44.9
@@ -20,88 +20,115 @@ QGIS 3.44.9
 → ArcGIS Earth Windows
 ```
 
-A second local mobile delivery path is now **LIVE-PROVEN**:
+The current field delivery appliance is now **router only**:
 
 ```text
-raster MBTiles on Windows PC / SSD
-→ local HTTPS WMTS
-→ Android USB tether / Remote NDIS
-→ ArcGIS Earth Mobile
+native TPKX on USB SSD
+→ GL.iNet Flint 2
+→ Samba / SMB
+→ Ethernet or Wi-Fi
+→ Windows
+→ ArcGIS Earth
 ```
 
-ArcGIS Earth is abbreviated **AE** throughout current project work.
+This router-only path is **LIVE-PROVEN**. ArcGIS Earth opened `ESG1N.tpkx` directly from the router-attached SSD over Wi-Fi and rendered/navigated it successfully.
+
+Do not reintroduce a field GIS-server appliance from older design history unless a new real-target failure proves additional software is necessary.
+
+ArcGIS Earth is abbreviated **AE** throughout project work.
 
 ## Evidence-status snapshot
 
 - TPKX Map Factory v1.0.0: **RELEASE-ACCEPTED / LIVE-PROVEN**.
 - MBTiles → TPKX frozen converter: **LIVE-PROVEN**.
 - ArcGIS Earth Windows local TPKX: **LIVE-PROVEN**.
+- Router-only Map Fountain: **LIVE-PROVEN**.
+- Large TPKX Ethernet storage benchmark: **LIVE-PROVEN**.
+- Large TPKX Wi-Fi storage benchmark: **LIVE-PROVEN**.
+- ArcGIS Earth direct network-hosted TPKX over Wi-Fi: **LIVE-PROVEN**.
 - ArcGIS Earth Mobile local TPKX: **LIVE-PROVEN on multiple packages**.
-- USB Map Fountain v0.2.1 TEST: **LIVE-PROVEN**.
-- Map Fountain with outside Internet removed: **LIVE-PROVEN**.
-- Three different substantial MBTiles through Map Fountain: **LIVE-PROVEN**.
+- Historical Windows-hosted HTTPS WMTS to Android: **LIVE-PROVEN HISTORY**.
 - Native Windows AE GNSS with actual receiver: **LIVE-OBSERVED**, known-good 9600 baud with GLL + RMC present.
 - PRAVE → AE Automation API: **LIVE-PROVEN**.
-- TPKX Map Factory v1.2.0 TEST: **BUILT / SELF-TESTED; Windows live acceptance underway**.
+- Later TPKX Map Factory output-choice branch: **TEST branch; do not confuse with frozen v1.0.0**.
 - TPKX → MBTiles recovery: **REJECTED as production path** after mobile visual defects in a recovered production map.
 
 ## Hard requirement
 
 > There can be no operational dependence on Internet connectivity. Period.
 
-This means **outside/public Internet dependency**. It does not prohibit a private local data link.
+This means outside/public Internet dependency. It does not prohibit private local networking.
 
-Both of these satisfy the doctrine:
-
-```text
-local TPKX already on device
-```
-
-and
+The current router-only path satisfies the doctrine:
 
 ```text
-local map depot
-→ private USB/local link
-→ local WMTS
-→ ArcGIS Earth Mobile
+local SSD
+→ private router LAN
+→ Samba
+→ ArcGIS Earth
 ```
 
-The USB Map Fountain path was specifically observed working after outside Internet connectivity was removed.
+No public map service is required for the proven TPKX read path.
+
+## Router-only Map Fountain milestone
+
+Large specimen:
+
+- `ESG1N.tpkx`
+- 26,174,899,216 bytes by benchmark script
+- 25,561,426 KB Windows File Explorer identification
+
+Ethernet baseline:
+
+- random 25.33 MiB/s
+- random p95 9.98 ms
+- four-client aggregate 51.21 MiB/s
+- sequential 42.58 MiB/s
+
+Wi-Fi baseline:
+
+- random 5.19 MiB/s
+- random p95 50.56 ms
+- four-client aggregate 5.31 MiB/s
+- sequential 6.14 MiB/s
+
+The real acceptance event came afterward: AE opened the same network-hosted TPKX over Wi-Fi and rendered the Jacksonville map.
 
 ## Current desktop/mobile map architecture
 
-The MBTiles stage has become a useful branch point rather than merely disposable manufacturing material:
+The MBTiles stage remains a useful manufacturing branch point:
 
 ```text
 QGIS
 → verified raster MBTiles
-    ├─→ frozen converter → TPKX → ArcGIS Earth local file
-    └─→ Map Fountain → HTTPS WMTS → Android USB tether → ArcGIS Earth Mobile
+    ├─→ preserve MBTiles
+    └─→ frozen converter → TPKX
 ```
 
-## TPKX Map Factory v1.2 direction
-
-v1.2 TEST exposes normal output choices:
+Field delivery then uses the simplest target-compatible form:
 
 ```text
-TPKX
-MBTiles
-Both
+TPKX on router-attached SSD
+→ Samba
+→ ArcGIS Earth Windows
 ```
 
-`Both` is the current TEST default so one QGIS-manufactured tile pyramid can support both local TPKX use and Map Fountain use.
+For mobile, compatible local TPKX is already proven. Additional router-only mobile delivery remains a separate acceptance gate.
 
-The accepted v1.0.0 baseline remains separate and frozen. Do not silently overwrite history and call v1.2 accepted until the real Windows target accepts it.
+## Historical Windows Map Fountain lesson
 
-## Map Fountain operator lesson
+On 2026-08-16, a Windows-hosted HTTPS WMTS implementation proved local mobile raster delivery over Android USB tether.
 
-v0.2.1 fixed a stale-cache problem by assigning each selected MBTiles a unique service/map ID and unique tile URL namespace.
+That branch taught important lessons about:
 
-Live operator behavior:
+- local mobile networking;
+- HTTPS acceptance;
+- QR service loading;
+- per-map service identity and cache isolation;
+- deliberate versus rapid navigation;
+- operation with outside Internet removed.
 
-> Deliberate pan/zoom is smooth and reliable. Rapid repeated zooming or whipping the view around can outrun the current mobile delivery/render path.
-
-Do not erase this observation merely because later hardware seems faster; re-test before changing operator guidance.
+Keep those lessons. Do not confuse that historical software path with the current router-only field appliance.
 
 ## TPKX recovery lesson
 
@@ -112,23 +139,21 @@ A recovered production MBTiles later showed blurred/missing regions on ArcGIS Ea
 Decision:
 
 - recovery is not the production path;
-- the tool was removed from v1.2;
 - rebuild important MBTiles directly from QGIS;
-- preserve MBTiles going forward when mobile Map Fountain use is expected.
-
-This is an important example of why byte-level internal success does not replace target-viewer acceptance.
+- preserve MBTiles at manufacture time when needed;
+- target-viewer acceptance outranks internal byte-level cleverness.
 
 ## Acceptance authority
 
-For TPKX, the intended ArcGIS Earth runtime remains the operational authority.
+For TPKX, the intended ArcGIS Earth runtime is the operational authority.
 
-For mobile Map Fountain, acceptance requires all of the following:
+For the router-only path, acceptance requires:
 
-- selected MBTiles is actually the map being served;
-- ArcGIS Earth Mobile consumes the service;
-- requested tiles return correctly;
-- visual result is correct through useful zoom/pan;
-- outside Internet removal does not break the local path.
+- the share is stable;
+- the intended native file opens from the router-attached SSD;
+- AE renders the correct map;
+- useful navigation works;
+- the path remains local/offline.
 
 ## Do not regress
 
@@ -136,12 +161,14 @@ For mobile Map Fountain, acceptance requires all of the following:
 - Do not present KML Super Overlay / Blooming Onion as the current basemap architecture.
 - Do not casually rewrite the frozen MBTiles→TPKX converter.
 - Do not revive TPKX→MBTiles recovery as a production shortcut without solving and live-proving the defect.
-- Do not discard MBTiles automatically when the operator may need Map Fountain deployment.
-- Do not reintroduce removed Neighbor Extent/Grid-ID complexity into the normal-user Factory.
+- Do not add a field GIS server to the proven router-only TPKX path without evidence that one is required.
+- Do not make public Internet mandatory.
+- Do not make normal consumers use manual static IP configuration.
 - Keep advanced GIS freedom through existing-MBTiles → TPKX.
 - Retain KML for interoperability, NetworkLinks, external feeds, and saved content.
-- Do not turn incidental multi-client capability into a supported multi-user product claim.
+- Do not turn incidental multi-client capability into a supported multi-user product claim until measured.
 - Do not show `FINISHED`, a full progress bar, or `COMPLETE` before final verification/publishing is actually done.
+- Do not confuse Windows cache/read-ahead throughput with raw network speed.
 
 ## Current known-good environment
 
@@ -150,6 +177,7 @@ For mobile Map Fountain, acceptance requires all of the following:
 - QGIS 3.44.9
 - ArcGIS Earth Windows
 - ArcGIS Earth Mobile Android
+- GL.iNet Flint 2 GL-MT6000 for router-only Map Fountain proof
 - Factory raster recipe: PNG, 96 DPI, antialiasing ON, metatile 4, Z0–Z20
 
 No additional Python libraries are required by the frozen TPKX converter path.
@@ -158,10 +186,11 @@ No additional Python libraries are required by the frozen TPKX converter path.
 
 1. Frozen normal Factory: source → area → zoom → QGIS → MBTiles → TPKX → AE Windows.
 2. Advanced Factory: existing raster MBTiles → TPKX → AE Windows.
-3. Local Android file: compatible TPKX → ArcGIS Earth Mobile.
-4. Mobile Map Fountain: MBTiles → HTTPS WMTS → USB tether → ArcGIS Earth Mobile.
-5. PRAVE → ArcGIS Earth Automation API with native drawings / RSSI fire-truck icons.
-6. Native AE GNSS own-position on Windows.
+3. Router-only Map Fountain: USB SSD → Flint 2 → Samba → Wi-Fi → AE Windows → native TPKX.
+4. Local Android file: compatible TPKX → ArcGIS Earth Mobile.
+5. Historical mobile WMTS: MBTiles → HTTPS WMTS → USB tether → ArcGIS Earth Mobile.
+6. PRAVE → ArcGIS Earth Automation API with native drawings / RSSI fire-truck icons.
+7. Native AE GNSS own-position on Windows.
 
 ## Persistent Geographic Context
 
@@ -169,16 +198,16 @@ Current operational language uses **Persistent Geographic Context**: keeping pos
 
 ## Historical archive rule
 
-Legacy Google Earth, KML forest/Blooming Onion, Network Earth, and Google Earth Enterprise work is technically valuable lineage. Preserve it as history. Do not treat old material as current merely because it exists.
+Legacy Google Earth, KML forest/Blooming Onion, Network Earth, and other superseded server experiments are technically valuable lineage. Preserve them as history. Do not treat old material as current merely because it exists.
 
 ## Binary-release truth
 
-The exact accepted `TPKX_MAP_FACTORY_v1_0_0.zip` remains preserved in the canonical project archive. A connector-truncated GitHub copy was removed. Do not mistake v1.2 TEST, a reconstructed archive, or a partial upload for the release-accepted binary.
+The exact accepted `TPKX_MAP_FACTORY_v1_0_0.zip` remains preserved in the canonical project archive. A connector-truncated GitHub copy was removed. Do not mistake a TEST branch, reconstructed archive, or partial upload for the release-accepted binary.
 
 ## Cold-start reading order
 
 1. `README.md`
-2. `docs/ARCGIS_EARTH_MOBILE_MAP_FOUNTAIN.md`
+2. Map Fountain `README.md` and `docs/ACCEPTANCE_RECORD.md`
 3. `ROADMAP.md`
 4. `CHANGELOG.md`
 5. `docs/TECHNICAL_ARCHITECTURE.md`
@@ -186,4 +215,8 @@ The exact accepted `TPKX_MAP_FACTORY_v1_0_0.zip` remains preserved in the canoni
 7. `releases/README.md`
 8. newest commits / issues
 
-Report the current status before changing behavior.
+Report the current evidence status before changing behavior.
+
+## Governing principle
+
+> **Keep the router dumb. Keep the maps native. Let ArcGIS Earth do the GIS work.**
