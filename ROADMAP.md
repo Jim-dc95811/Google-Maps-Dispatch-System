@@ -12,86 +12,68 @@ The release-accepted **TPKX Map Factory v1.0.0** remains frozen. New capability 
 - ✅ PRAVE → ArcGIS Earth Automation API proof
 - ✅ no operational Internet dependency for core map display
 
-## 2026-08-16 mobile breakthrough
+## 2026-08-17 router-only Map Fountain breakthrough
+
+**Status: ✅ LIVE-PROVEN**
+
+Proven chain:
+
+```text
+native TPKX on USB SSD
+→ GL.iNet Flint 2
+→ Samba / SMB
+→ Wi-Fi
+→ Windows
+→ ArcGIS Earth
+```
+
+The production-scale `ESG1N.tpkx` package was benchmarked through the router over both Ethernet and Wi-Fi, then opened directly from the Samba share and rendered interactively in ArcGIS Earth over Wi-Fi.
+
+The field delivery architecture is now **router only**. The router provides storage/network/file sharing; ArcGIS Earth provides the GIS intelligence.
+
+### Next Map Fountain gates
+
+1. Repeat the successful ArcGIS Earth application test over Ethernet for direct comparison.
+2. Characterize real ArcGIS Earth deliberate pan/zoom behavior over Wi-Fi.
+3. Test cold close/reopen and Wi-Fi reconnect behavior.
+4. Test multiple simultaneous Eaters.
+5. Test the simplest router-only ArcGIS Earth Mobile path separately.
+6. Build the basecamp Feeder only after consumption behavior is stable.
+
+Do not add a field GIS-server layer unless real target evidence proves one is necessary.
+
+## Historical mobile breakthrough — 2026-08-16
 
 ### ArcGIS Earth Mobile local TPKX
 
 **Status: ✅ LIVE-PROVEN on multiple packages**
 
-Observed successful local-file packages include a Rasta Thames Bridge TPKX plus smaller Esri and Google Hybrid TPKX files copied into Android storage and opened through ArcGIS Earth Mobile.
+Observed successful local packages include a Rasta Thames Bridge TPKX plus smaller Esri and Google Hybrid packages.
 
-One larger Google Hybrid package returned `spatial reference not supported`. Because other TPKX packages loaded successfully, keep this as a package-level compatibility question rather than a blanket mobile limitation.
+One larger Google Hybrid package returned `spatial reference not supported`. Keep that as a package-level compatibility question rather than a blanket mobile limitation.
 
-### USB Map Fountain
+### Windows-hosted local WMTS proof
 
-**Status: ✅ LIVE-PROVEN — v0.2.1 TEST**
+**Status: ✅ LIVE-PROVEN HISTORY**
 
-Live-proven chain:
+Historical proven chain:
 
 ```text
 MBTiles on Windows PC / SSD
-        ↓
-local HTTPS WMTS
-        ↓
-Android USB tether / Remote NDIS
-        ↓
-ArcGIS Earth Mobile
+→ local HTTPS WMTS
+→ Android USB tether
+→ ArcGIS Earth Mobile
 ```
 
-Proven behavior:
+That work proved local mobile tile delivery, operation with outside Internet removed, HTTPS, QR loading, multiple substantial MBTiles, and a large Lago panorama.
 
-- phone reaches Windows PC over USB tether;
-- ArcGIS Earth Mobile consumes WMTS tiles from the PC;
-- service works with outside Internet removed;
-- HTTPS works;
-- QR service loading works;
-- GUI can select different MBTiles from the PC / SSD;
-- unique service IDs prevent stale-map cache reuse;
-- three different substantial MBTiles have displayed successfully;
-- large Lago panorama displayed smoothly on mobile.
-
-Live operator envelope:
-
-> **Deliberate pan/zoom is reliable. Rapid repeated zooming or whipping the view around can outrun the current delivery/render path.**
-
-Near-term Map Fountain work:
-
-1. generalize HTTPS certificate/IP lifecycle beyond the current test address;
-2. controlled cold-restart / reconnect test;
-3. repeat with additional large production map libraries;
-4. measure throughput and latency on practical field hardware;
-5. decide whether the appliance transport should be USB, Wi-Fi, or both;
-6. preserve the single-user/private-depot positioning unless multi-user behavior is deliberately accepted.
-
-### Wi-Fi / vehicle appliance follow-on
-
-**Status: architecture candidate informed by live USB proof**
-
-The earlier concept remains useful, but it is no longer hypothetical at the application layer. WMTS → ArcGIS Earth Mobile is proven. The remaining Wi-Fi/Pi question is transport/appliance packaging.
-
-Candidate:
-
-```text
-Pi / Windows map depot + SSD
-        ↓
-private local Wi-Fi or USB link
-        ↓
-HTTPS WMTS
-        ↓
-ArcGIS Earth Mobile
-```
-
-Do not add appliance complexity until the software and operator workflow are stable.
+It remains a useful compatibility technique, but it is **not** the current field-appliance architecture.
 
 ## Map-production expansion
 
-### TPKX Map Factory v1.2.0 TEST — output choice
+### Later TPKX Map Factory output-choice branch
 
-**Status: 🟡 BUILT / SELF-TESTED; Windows live acceptance underway — 2026-08-16**
-
-The Map Fountain proof changed MBTiles from disposable manufacturing material into a useful deployment product.
-
-Normal operator choices in v1.2 TEST:
+Normal operator choices:
 
 ```text
 TPKX
@@ -102,11 +84,8 @@ Both
 Behavior:
 
 - **TPKX** — manufacture MBTiles, run the frozen proven converter, publish TPKX.
-- **MBTiles** — manufacture and verify MBTiles, publish it directly, skip TPKX conversion.
-- **Both** — preserve the QGIS-built MBTiles and create TPKX from the exact same tile pyramid.
-- **Both is the current TEST default.**
-
-Advanced **MBTiles → TPKX** remains available.
+- **MBTiles** — manufacture and verify MBTiles, publish directly.
+- **Both** — preserve the QGIS-built MBTiles and create TPKX from the same pyramid.
 
 The accepted v1.0.0 baseline stays separate and unchanged.
 
@@ -114,47 +93,35 @@ The accepted v1.0.0 baseline stays separate and unchanged.
 
 **Status: ❌ REJECTED AS PRODUCTION PATH**
 
-A reverse Compact Cache V2 recovery experiment could recover exact raster tile bytes from a controlled fixture. A recovered production map later showed blurred/missing regions on ArcGIS Earth Mobile.
+A reverse Compact Cache V2 recovery experiment worked on a controlled fixture but a recovered production map later showed blurred/missing regions on ArcGIS Earth Mobile.
 
 Decision:
 
-- remove the recovery tool from v1.2;
-- rebuild important MBTiles directly from QGIS instead;
-- preserve MBTiles going forward when Map Fountain deployment may be needed.
+- do not use recovery as the production shortcut;
+- rebuild important MBTiles directly from QGIS;
+- preserve MBTiles at manufacture time when they may be needed later.
 
 ### More QGIS recipes
 
-**Status: open for v1.2+**
+**Status: open for later TEST branches**
 
 The four-source v1.0 menu stays frozen. Add sources only after small-area visual acceptance and without burdening the beginner workflow.
-
-### Advanced raster compatibility
-
-**Status: potential**
-
-Current converter baseline remains raster PNG/JPEG MBTiles. Additional raster variations require controlled fixtures and target-viewer acceptance. Vector/PBF support is not a current goal.
 
 ## Reliability / fortification candidates
 
 ### One controlled QGIS manufacturing retry
 
-**Status: candidate**
-
-Allow at most one visible retry only for a clearly failed QGIS manufacturing stage before conversion begins. No infinite loops; no hidden restarts.
+Allow at most one visible retry only for a clearly failed QGIS manufacturing stage before conversion begins. No infinite loops or hidden restarts.
 
 ### Large-build free-space preflight
-
-**Status: candidate**
 
 Perform a conservative free-space sanity check for work/output volumes before hours-long builds.
 
 ### Explicit stage/status preservation
 
-**Status: required principle**
+Long operations must say what is actually happening. Do not show `COMPLETE` while verification/publishing is still running.
 
-Long operations must tell the operator what is actually happening. Do not show `FINISHED`, a full green bar, or `COMPLETE` while final verification/publishing is still running.
-
-Suggested stage vocabulary:
+Suggested stages:
 
 ```text
 QGIS manufacturing
@@ -184,15 +151,16 @@ Normalize F22 at the protocol edge and feed the same ArcGIS Earth live-position 
 
 **Status: active interoperability path**
 
-QR is now live-proven for Map Fountain service loading on ArcGIS Earth Mobile. Dispatch/command QR remains a separate bounded-command modernization candidate.
+QR remains a bounded dispatch/data-input method and was also live-proven for historical mobile service loading.
 
 ## Public documentation / community
 
 - attach the exact accepted `TPKX_MAP_FACTORY_v1_0_0.zip` as the public v1.0 binary;
-- finish live acceptance of v1.2 output modes before promoting it;
-- publish a clean desktop + mobile demonstration showing both TPKX and Map Fountain paths;
-- document the USB Map Fountain operator workflow and practical navigation envelope;
-- present the MBTiles → TPKX bridge and local mobile serving path to GIS/QGIS/ArcGIS Earth audiences;
+- keep the router-only architecture drawing at the top of all three active repositories;
+- publish the 2026-08-17 Map Fountain benchmark and ArcGIS Earth Wi-Fi acceptance evidence;
+- document the exact prior-art search boundary without making unsupported worldwide-first claims;
+- finish live acceptance of later Factory output modes before promoting them;
+- publish a clean field demonstration of Factory → SSD → router → ArcGIS Earth;
 - retain Google Earth / KML work as lineage, not current baseline.
 
 ## Non-goals
@@ -200,12 +168,18 @@ QR is now live-proven for Map Fountain service loading on ArcGIS Earth Mobile. D
 - rebuilding QGIS inside the Factory;
 - rebuilding ArcGIS Earth;
 - making public Internet connectivity mandatory;
-- marketing incidental multi-client behavior as a supported multi-user product;
+- turning the consumer router into a GIS computer;
+- requiring a field GIS-server process for the proven desktop TPKX path;
+- marketing unmeasured multi-client behavior as supported;
 - hiding evidence status behind marketing language;
 - rewriting proven components without a verified defect;
-- using TPKX recovery as a shortcut after it failed the live mobile visual gate;
+- using rejected TPKX recovery as a shortcut;
 - adding unbounded restart loops or invisible automatic recovery.
 
 ## Governing rule
 
 > **New capability must earn its way into the baseline by answering to the real target.**
+
+For field map delivery:
+
+> **Keep the router dumb. Keep the maps native. Let ArcGIS Earth do the GIS work.**
