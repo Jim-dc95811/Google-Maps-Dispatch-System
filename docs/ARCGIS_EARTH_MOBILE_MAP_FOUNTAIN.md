@@ -1,23 +1,29 @@
 # ArcGIS Earth Mobile + USB Map Fountain
 
+> **HISTORICAL PROOF RECORD — 2026-08-16.** This document preserves the Windows-hosted USB-tether WMTS path that was live-proven before the router-only Map Fountain breakthroughs and before the current personal-phone / microSD deployment direction. Do not treat the word “current” inside the preserved chronology below as current 2026-08-18 architecture.
+
 ## Standalone project home
 
-Map Fountain now has its own repository:
+Map Fountain has its own repository:
 
 **https://github.com/Jim-dc95811/Map-Fountain**
 
-This Offline GeoStack document remains the integration/evidence record for how Map Fountain fits the master operational system.
+Current personal-phone deployment work now lives in:
 
-## Status
+**https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-**
+
+This Offline GeoStack document remains an integration/evidence record for the historical USB Map Fountain proof.
+
+## Status at the recorded milestone
 
 **LIVE-PROVEN — 2026-08-16**
 
-Offline GeoStack now has two independently proven ArcGIS Earth Mobile data paths:
+Offline GeoStack proved two ArcGIS Earth Mobile data paths at that stage:
 
-1. **Local TPKX file** — copy a compatible `.tpkx` to Android storage and open it through ArcGIS Earth Mobile `Add Data → File`.
-2. **Live local WMTS** — serve raster MBTiles from a Windows PC/SSD over the Android USB-tether network and add the service to ArcGIS Earth Mobile over HTTPS.
+1. **Local TPKX file** — compatible `.tpkx` opened through ArcGIS Earth Mobile.
+2. **Live local WMTS** — raster MBTiles served from a Windows PC/SSD over the Android USB-tether network and added to ArcGIS Earth Mobile over HTTPS.
 
-The second path is the current **USB Map Fountain** proof.
+The second path was the USB Map Fountain proof.
 
 ## Live-proven chain
 
@@ -35,7 +41,7 @@ ArcGIS Earth Mobile
 on-demand raster tiles
 ```
 
-No outside Internet connection is required for map delivery or display.
+No outside Internet connection was required for map delivery or display.
 
 ## What was actually observed
 
@@ -50,23 +56,17 @@ No outside Internet connection is required for map delivery or display.
 
 ## Operator behavior observed on mobile
 
-The mobile viewer has a practical navigation envelope.
-
 **Deliberate pan/zoom:** smooth and reliable in live testing.
 
-**Rapid repeated zooming or whipping the view around:** can outrun the delivery/render path and make the viewer unhappy.
+**Rapid repeated zooming or whipping the view around:** could outrun the tested delivery/render path.
 
-Current operator guidance is therefore simple:
-
-> **Move deliberately. Let the map settle. Then continue.**
-
-This is a live-observed operating characteristic, not a claim about a hard technical limit.
+This was an observed characteristic of that specific active-server/USB-tether path.
 
 ## QR / service identity lesson
 
 The first multi-map GUI reused one WMTS layer identity and tile URL space, which allowed ArcGIS Earth Mobile to reuse stale cached test tiles. v0.2.1 corrected this by assigning each selected MBTiles a unique map/service identity and unique tile URL namespace.
 
-The working operator sequence became:
+Recorded working sequence:
 
 ```text
 USB tether ON
@@ -79,56 +79,29 @@ USB tether ON
 → map loads
 ```
 
-The GUI can point at MBTiles on the PC or attached SSD; the map is not hard-coded into the server.
-
 ## Local TPKX acceptance
 
 ArcGIS Earth Mobile also successfully opened multiple local TPKX files directly from Android storage, including a Rasta-produced Thames Bridge package and smaller Esri / Google Hybrid packages.
 
-One larger Google Hybrid TPKX was rejected by the mobile app with `spatial reference not supported`. Because other TPKX files from the same broader project opened successfully, do not generalize that failure into a blanket mobile TPKX limitation. Treat package-level compatibility as something that still deserves controlled acceptance testing.
+One larger Google Hybrid TPKX was rejected by the mobile app with `spatial reference not supported`. Because other TPKX files opened successfully, that failure was not generalized into a blanket mobile TPKX limitation.
 
 ## TPKX → MBTiles recovery experiment
 
-A reverse Compact Cache V2 recovery tool was prototyped and could recover exact raster tile bytes from a controlled TPKX fixture. However, a recovered production MBTiles displayed visual defects on ArcGIS Earth Mobile: blurred/missing regions appeared even though other areas looked correct.
+A reverse Compact Cache V2 recovery tool could recover exact raster tile bytes from a controlled TPKX fixture. A recovered production MBTiles later displayed blurred/missing regions on ArcGIS Earth Mobile.
 
 Decision:
 
 - **Do not use TPKX recovery as the production path.**
-- The recovery tool was removed from TPKX Map Factory v1.2.
-- New map production should preserve MBTiles directly when Map Fountain use is expected.
+- New map production should preserve direct QGIS MBTiles when MBTiles is needed.
 
-## TPKX Map Factory v1.2 direction
+## What happened afterward
 
-**Status: BUILT / SELF-TESTED; Windows live acceptance underway as of 2026-08-16.**
+Chronology after this proof:
 
-v1.2 changes the normal build choice to:
+1. Map Fountain moved from the Windows-hosted server to a router-only Flint 2 + SSD design.
+2. Windows ArcGIS Earth opened a production-scale native TPKX directly over SMB/Wi-Fi.
+3. ArcGIS Earth Mobile consumed a pre-generated Static REST WMTS directly from Flint 2 HTTPS/WebDAV.
+4. Both router paths were LIVE-PROVEN.
+5. The broader project then simplified the normal personal-phone direction again: local TPKX on microSD, with Field Maps/ArcGIS Earth as downstream apps.
 
-```text
-TPKX
-MBTiles
-Both
-```
-
-`Both` is the default in the current TEST build so the same QGIS-manufactured raster pyramid can support both deployment paths:
-
-```text
-TPKX    → local ArcGIS Earth / ArcGIS Earth Mobile file use
-MBTiles → USB Map Fountain → ArcGIS Earth Mobile live local service
-```
-
-The accepted v1.0.0 baseline remains preserved separately.
-
-## Current engineering boundary
-
-The Map Fountain proof is **single-device / private local serving**, not a claim of a production multi-user map server.
-
-The current HTTPS prototype also used a certificate tied to the observed USB-tether PC address during live testing. General certificate/IP lifecycle handling remains future productization work.
-
-## Next useful gates
-
-- complete live acceptance of TPKX Map Factory v1.2 output modes;
-- repeat Map Fountain with the newly produced direct MBTiles for a map whose recovered MBTiles showed defects;
-- decide whether the next appliance transport should remain USB, move to local Wi-Fi, or support both;
-- generalize HTTPS certificate handling without making setup burdensome;
-- measure practical throughput/latency on larger production map libraries;
-- test cold restart and reconnection behavior deliberately.
+So this document is important engineering lineage, but **USB Map Fountain is not current deployment architecture.**
