@@ -12,34 +12,37 @@ Before proposing a change, read:
 - `docs/AI_CONTINUITY_RESTART_NOTE.md`
 - `CHANGELOG.md`
 - `ROADMAP.md`
-- the current Map Fountain repository
+- the Android deployment repository
+- Map Fountain only when router/network-storage history is relevant
 
 Master project identity:
 
-**Offline GeoStack — QGIS → MBTiles / TPKX → router-only local delivery → ArcGIS Earth + Live Field Positioning**
+**Offline GeoStack — QGIS → MBTiles / TPKX → offline field deployment + live field positioning**
 
-Current field-map architecture:
+Current normal-user mobile direction:
 
 ```text
-Factory makes native MBTiles / TPKX products
-→ USB SSD stores them
-→ consumer router shares them
-→ ArcGIS Earth consumes them
+Factory-built TPKX
+→ microSD card
+→ Android
+→ ArcGIS Field Maps / ArcGIS Earth
 ```
 
 `TPKX Map Factory v1.0.0` remains RELEASE-ACCEPTED and frozen. New Factory functionality belongs in later TEST branches until it earns live target acceptance.
 
-## Current router-only boundary
+## Current deployment boundary
 
-Windows ArcGIS Earth direct network-hosted TPKX over Wi-Fi is LIVE-PROVEN.
+Local TPKX in ArcGIS Earth Mobile is LIVE-PROVEN on multiple project packages.
 
-ArcGIS Earth Mobile on the router-only architecture is the next acceptance gate.
+Esri documents sideloaded TPKX basemaps on Android/device microSD for ArcGIS Field Maps, but Offline GeoStack's own Field Maps phone acceptance is still pending.
 
-Do not revive Raspberry Pi / Pi-server architecture or another active field GIS-server appliance by default. Add compatibility logic only after the real target demonstrates that a simpler client path is insufficient.
+Map Fountain's Windows TPKX-over-SMB and Android Static REST WMTS paths are both LIVE-PROVEN, but Map Fountain is parked from the primary personal-phone deployment direction.
+
+Do not make yesterday's successful experiment tomorrow's mandatory architecture without a current operational reason.
 
 ## Do not regress the public workflow
 
-The normal-user Factory is intentionally simple. Advanced functionality should not force ordinary operators to understand GIS internals.
+The normal-user Factory and deployment procedure are intentionally simple. Advanced functionality should not force ordinary operators to understand GIS internals.
 
 In particular:
 
@@ -50,31 +53,50 @@ In particular:
 - do not add an operational Internet dependency to essential map use;
 - do not modify locked QGIS reference projects in place during production;
 - do not invent protocol metadata the source protocol did not provide;
-- do not turn the field router into a GIS computer;
-- do not make ordinary Map Fountain Eaters use manual static IP configuration.
-
-MBTiles and TPKX are both legitimate finished products in later TEST branches. Which one is useful depends on the accepted target workflow.
+- do not require router/server infrastructure for the normal personal-phone map path;
+- do not add Field Maps features merely because they exist if the target users do not need them.
 
 ## Advanced GIS work
 
 The supported escape hatch for advanced cartography remains the **existing raster MBTiles → TPKX** path. Build the desired raster layer stack in QGIS, export suitable raster MBTiles, then convert/package it.
 
-A proposed new cartographic recipe should be tested first on a small geographic area and visually accepted in ArcGIS Earth before being treated as production-ready.
+A proposed new cartographic recipe should be tested first on a small geographic area and visually accepted in the intended target application before being treated as production-ready.
+
+## Android deployment work
+
+The deployment repository is:
+
+`Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-`
+
+For microSD / Field Maps changes, record as applicable:
+
+- phone model and Android version;
+- Field Maps / ArcGIS Earth version;
+- card capacity/filesystem;
+- exact TPKX identity and Windows File Explorer size;
+- whether the file was internal or microSD storage;
+- whether Field Maps was restricted to Wi-Fi only;
+- whether Wi-Fi was physically off during the proof;
+- own-position behavior;
+- close/reopen behavior;
+- what was directly observed versus inferred.
+
+Vendor documentation establishes a supported path. The real phone establishes project acceptance.
 
 ## Map Fountain work
 
-For router/storage changes, record:
+Map Fountain is currently parked as proof/reference, with a possible future Starlink/basecamp NAS role.
+
+If reopened, record:
 
 - router model / relevant firmware state;
 - storage device;
-- exact Windows File Explorer map size when identifying a production file;
+- exact Windows File Explorer map size;
 - Ethernet versus Wi-Fi;
 - DHCP/static-address state;
 - Wireshark evidence when network behavior matters;
-- real ArcGIS Earth behavior;
+- real target application behavior;
 - what was observed versus inferred.
-
-The intended viewer decides acceptance. A fast synthetic benchmark is not enough by itself.
 
 ## Live-position / protocol work
 
@@ -101,19 +123,17 @@ Use explicit labels:
 - **LIVE-PROVEN** — accepted on the real target system or field hardware;
 - **RELEASE-ACCEPTED** — exact release package passed the defined live smoke test and was frozen.
 
-Do not promote a feature because it merely compiles or passes a synthetic fixture.
+Do not promote a feature because it merely compiles, passes a synthetic fixture, or appears in vendor documentation.
 
 ## Finished TPKX acceptance
 
-ArcGIS Earth is the project's final operational acceptance authority for TPKX output. A package should:
+A package should:
 
-- open without complaint;
+- open without complaint in the intended target;
 - land in the correct geographic location;
 - expose the expected zoom behavior;
 - render the expected cartography;
 - behave normally during navigation.
-
-For router-hosted TPKX, the file must remain on the router-attached SSD during the proof.
 
 ## Source-data rights
 
@@ -132,4 +152,4 @@ Offline GeoStack favors:
 - reproducible behavior;
 - open technical documentation;
 - practical field proof over theoretical claims;
-- preserving live-proven components until replacements earn the same acceptance status.
+- preserving live-proven components without making every proven component mandatory forever.
