@@ -4,8 +4,6 @@
 
 **A Windows-first offline geospatial stack for manufacturing large raster map pyramids, packaging them as native TPKX, and putting the finished geography where the field user can reach it without depending on the public Internet.**
 
-![Canonical ArcGIS Earth Systems router flowchart](https://raw.githubusercontent.com/Jim-dc95811/Map-Fountain/main/docs/arcgis_system_router_flowchart_2026-08-17.svg)
-
 **Offline GeoStack** is the master operational project identity.
 
 > **QGIS makes the pixels. The deployment path decides where those pixels live when the user needs them.**
@@ -291,6 +289,7 @@ The intended target decides acceptance. A clever converter, clean self-test, ven
 
 ## Start here
 
+- **[Current Project Status — 2026-08-18](docs/PROJECT_STATUS_2026-08-18.md)**
 - **[Android deployment / SD-card project](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-)**
 - **[Software & Downloads](docs/SOFTWARE_AND_DOWNLOADS.md)**
 - **[Quick Start](docs/QUICK_START.md)**
