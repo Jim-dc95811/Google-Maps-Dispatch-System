@@ -1,6 +1,95 @@
 # Offline GeoStack — Changelog
 
-This file records public architecture milestones. It intentionally distinguishes major design pivots from ordinary code edits and preserves the older Google Maps Dispatch System / Google Earth work as lineage rather than current branding.
+This file records public architecture milestones. It intentionally distinguishes major design pivots from ordinary code edits and preserves older experiments as lineage rather than silently treating every explored branch as current.
+
+## 2026-08-18 — personal-phone / microSD deployment direction
+
+A fourth sibling repository was established as the deployment end of the system:
+
+**Android Field Maps + ArcGIS Earth**
+
+Current personal-phone direction:
+
+```text
+Factory-built TPKX
+→ microSD card
+→ Android
+→ ArcGIS Field Maps / ArcGIS Earth
+```
+
+Key decisions:
+
+- normal field users should receive prepared cards rather than be expected to learn the Factory;
+- card capacity planning is based on real finished byte counts;
+- current menu direction is district Z17, county Z18, and selected State Forest/high-value Z20 coverage;
+- Google Hybrid and Esri imagery/labels may both be carried when capacity permits;
+- protecting personal cellular data plans is a first-class requirement;
+- Esri documents Android/device-microSD TPKX sideloading in Field Maps, but this project's own Field Maps acceptance test is still pending;
+- local TPKX on ArcGIS Earth Mobile remains LIVE-PROVEN on multiple project packages.
+
+### Map Fountain disposition
+
+Map Fountain's router-only Windows and Android paths remain **LIVE-PROVEN**, but the project has parked Map Fountain from the primary personal-phone deployment path.
+
+Preserved proof:
+
+- native TPKX → Flint 2 / SMB → ArcGIS Earth Windows;
+- Static REST WMTS → Flint 2 HTTPS/WebDAV → ArcGIS Earth Mobile.
+
+Possible future role: Starlink-connected basecamp storage / poor-man's NAS.
+
+### TPKX Map Factory v1.3 / v1.4 REST exploration
+
+Production-scale Static REST work exposed the cost of giant expanded tile trees.
+
+A v1.3.2 specimen reached 271,506 REST tiles and spent hours in expansion/packaging/finalization work.
+
+`TPKX_MAP_FACTORY_v1_4_0_TEST` reset the experimental REST transport around a compact `.restmap` seed:
+
+```text
+verified MBTiles
+→ <map>_REST.restmap
+→ move one file
+→ deploy/expand the runtime WMTS tree at the final SSD
+```
+
+The actual-user-MBTiles lifecycle fixture passed self-test with byte-for-byte tile comparison and no temporary restored MBTiles. v1.4.0 remains a TEST branch and does not replace the frozen v1.0.0 baseline.
+
+---
+
+## 2026-08-17 — router-only Map Fountain proofs
+
+The field map appliance was simplified to a consumer router plus USB SSD and then live-proven on both Windows and Android.
+
+### Windows ArcGIS Earth
+
+```text
+native TPKX on USB SSD
+→ GL.iNet Flint 2
+→ Samba / SMB
+→ private Ethernet or Wi-Fi
+→ Windows
+→ ArcGIS Earth
+```
+
+A production-scale `ESG1N.tpkx` remained on router-attached storage while ArcGIS Earth opened and rendered it over Wi-Fi.
+
+### Android ArcGIS Earth Mobile
+
+```text
+Static REST WMTS folder
+→ USB SSD
+→ Flint 2 local HTTPS/WebDAV
+→ Wi-Fi
+→ Android
+→ ArcGIS Earth Mobile
+```
+
+The Android map rendered, then rendered again after ArcGIS Earth app cache clear and force-stop/reopen.
+
+No Python runtime, helper app, QGIS Server, Windows map server, or Raspberry Pi was required in the accepted Android router path.
+
+---
 
 ## 2026-08-16 — ArcGIS Earth Mobile + local Map Fountain path LIVE-PROVEN
 
@@ -36,7 +125,7 @@ Live observations:
 - large Lago panorama streamed and navigated smoothly on Android;
 - deliberate pan/zoom is reliable; rapid repeated zoom/pan can outrun the current mobile delivery/render path.
 
-This converts the earlier Map Fountain concept from architecture candidate to a real local mobile map-delivery mechanism.
+This branch remains useful engineering history but is no longer the default deployment direction.
 
 ### TPKX → MBTiles recovery experiment rejected
 
@@ -45,33 +134,20 @@ A reverse Compact Cache V2 recovery tool was prototyped. Controlled testing show
 Decision:
 
 - do not use TPKX recovery as the production MBTiles path;
-- remove recovery from the next Factory branch;
 - rebuild important MBTiles directly from QGIS;
-- preserve MBTiles going forward when Map Fountain use is expected.
+- preserve MBTiles going forward when MBTiles is needed.
 
 ### TPKX Map Factory v1.2.0 TEST built
 
-v1.2 changes normal output choice to:
-
-```text
-TPKX
-MBTiles
-Both
-```
-
-`Both` is the current TEST default. The accepted v1.0.0 baseline remains frozen. v1.2 is BUILT / SELF-TESTED and entered Windows live acceptance on 2026-08-16.
+v1.2 changed normal output choice to TPKX / MBTiles / Both. The accepted v1.0.0 baseline remained frozen.
 
 ---
 
 ## 2026-08-15 — Master project renamed **Offline GeoStack**
 
-The project had grown beyond the original repository name. The current master identity is:
+The project had grown beyond the original repository name. The current master identity became **Offline GeoStack**.
 
-**Offline GeoStack — QGIS → TPKX → ArcGIS Earth + Live Field Positioning**
-
-`TPKX Map Factory` remains the map-manufacturing subsystem. ArcGIS Earth remains the primary runtime. GNSS, PRAVE, F22, QR, and KML are field/live/interoperability inputs around that runtime.
-
-Public documentation was reorganized around the new identity, the required QGIS projects were published, a professional GIS/future-AI engineering record was added, and the former Google Earth architecture was retained as historical lineage.
+`TPKX Map Factory` remains the map-manufacturing subsystem. ArcGIS Earth remains a primary runtime. GNSS, PRAVE, F22, QR, and KML are field/live/interoperability inputs around that runtime.
 
 ---
 
@@ -102,9 +178,9 @@ First frozen public baseline of the **TPKX Map Factory + ArcGIS Earth** architec
 
 ### Architecture
 
-- ArcGIS Earth is the primary viewer/runtime.
-- TPKX is the primary raster basemap deployment format in the frozen v1.0 workflow.
-- MBTiles is the QGIS manufacturing intermediate.
+- ArcGIS Earth became the primary viewer/runtime.
+- TPKX became the primary raster basemap deployment format in the frozen v1.0 workflow.
+- MBTiles remained the QGIS manufacturing intermediate.
 - Hard rule established: no operational dependence on Internet connectivity.
 
 ---
@@ -180,15 +256,7 @@ The standalone converter was live-proven in ArcGIS Earth before Factory integrat
 
 The project moved away from Google Earth Pro as the primary viewer after extensive offline, cache, local-server, and Google Earth Enterprise exploration.
 
-ArcGIS Earth proved to provide a better modern fit through:
-
-- native TPKX support;
-- native KML/KMZ and NetworkLinks;
-- native GNSS/NMEA support;
-- local Automation API;
-- native drawings / markers;
-- modern 3D globe operation;
-- session restoration.
+ArcGIS Earth provided a better modern fit through native TPKX support, KML/KMZ/NetworkLinks, GNSS/NMEA, local Automation API, drawings/markers, 3D globe operation, and session restoration.
 
 PRAVE display was subsequently live-proven through the ArcGIS Earth Automation API.
 
