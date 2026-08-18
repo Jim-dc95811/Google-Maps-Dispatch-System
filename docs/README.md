@@ -66,13 +66,14 @@ Both Windows native TPKX-over-SMB and Android Static REST WMTS router paths pass
 
 ## Start here
 
+- **[Current Project Status — 2026-08-18](PROJECT_STATUS_2026-08-18.md)** — the fastest complete checkpoint for the four-project architecture, current deployment direction, and next gates.
 - **[Offline GeoStack README](../README.md)** — current public architecture and status.
 - **[Android deployment repository](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-)** — current personal-phone deployment direction.
 - **[Software & Downloads](SOFTWARE_AND_DOWNLOADS.md)** — pinned QGIS 3.44.9, Python 3.14.5, ArcGIS Earth, required QGIS projects, and release records.
 - [Quick Start](QUICK_START.md) — normal-user and advanced-user operation for the frozen v1.0 Factory baseline.
 - [Professional GIS Engineering Record](professional_report/README.md) — long-form record frozen at the v1.0.0 milestone; historical baseline, not a substitute for current README/roadmap.
 - [Technical Architecture](TECHNICAL_ARCHITECTURE.md) — current Factory/converter/runtime/deployment engineering record.
-- [Technical FAQ](FAQ.md) — direct answers for GIS developers; some dated wording is historical and should be read with the current README.
+- [Technical FAQ](FAQ.md) — direct answers for GIS developers.
 - [Notes for GIS Professionals](NOTES_FOR_GIS_PROFESSIONALS.md) — condensed converter/cartography interpretation.
 - [Offline Operation and Persistent Geographic Context](OFFLINE_OPERATION_AND_PERSISTENT_GEOGRAPHIC_CONTEXT.md) — offline doctrine.
 - [PRAVE → ArcGIS Earth Integration](PRAVE_ARCGIS_EARTH_INTEGRATION.md) — live-proven Automation API path and RSSI display rules.
