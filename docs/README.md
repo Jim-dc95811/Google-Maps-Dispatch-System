@@ -2,73 +2,100 @@
 
 ![Offline GeoStack](offline_geostack_banner.svg)
 
-Current architecture:
+## Current architecture
 
-**QGIS → native MBTiles / TPKX products → router-only Map Fountain → ArcGIS Earth → live field-position inputs.**
+```text
+MAP MANUFACTURING
+QGIS / Factory
+→ MBTiles / TPKX
 
-Canonical system drawing:
+PERSONAL MOBILE DEPLOYMENT
+TPKX
+→ microSD
+→ Android
+→ ArcGIS Field Maps / ArcGIS Earth
 
-**[Factory / PC / Android router-only flowchart](https://github.com/Jim-dc95811/Map-Fountain/blob/main/docs/arcgis_system_router_flowchart_2026-08-17.svg)**
+OPTIONAL SHARED STORAGE HISTORY
+TPKX / Static REST WMTS
+→ Map Fountain router/SSD proof
+```
 
-Do not revive the older local `current_architecture.svg` / USB-WMTS diagram as current truth.
+The current normal-user mobile direction is **local removable storage**, not mandatory router infrastructure.
+
+## Four-project family
+
+- **[Offline GeoStack](../README.md)** — master field-mapping and TPKX manufacturing system.
+- **[Rasta Pyramid Factory](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory)** — giant raster / deep-zoom pyramid manufacturing.
+- **[Map Fountain](https://github.com/Jim-dc95811/Map-Fountain)** — LIVE-PROVEN router/storage delivery experiments; parked from the primary personal-phone path, possible future Starlink/basecamp NAS.
+- **[Android Field Maps + ArcGIS Earth](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-)** — microSD deployment, Field Maps acceptance work, cellular-data protection, and operator handoff.
 
 ## Current state
 
-### Windows field map path — LIVE-PROVEN
+### TPKX manufacturing — LIVE-PROVEN / frozen baseline
 
 ```text
-native TPKX on USB SSD
-→ GL.iNet Flint 2
-→ Samba / SMB
-→ private Wi-Fi or Ethernet
-→ ArcGIS Earth Windows
+QGIS 3.44.9
+→ raster MBTiles
+→ frozen Compact Cache V2 converter
+→ TPKX
 ```
 
-### Android router path — NEXT ACCEPTANCE GATE
+TPKX Map Factory v1.0.0 remains RELEASE-ACCEPTED / FROZEN.
 
-```text
-router-attached SSD
-→ private Wi-Fi
-→ ArcGIS Earth Mobile
-```
+### ArcGIS Earth — LIVE-PROVEN / observed
 
-The client must decide the simplest compatible consumption path. Do not assume the historical Windows WMTS service needs to return.
+- local native TPKX: LIVE-PROVEN;
+- local TPKX on ArcGIS Earth Mobile: LIVE-PROVEN on multiple packages;
+- PRAVE → AE Automation API: LIVE-PROVEN;
+- native GNSS own-position: LIVE-OBSERVED.
+
+### ArcGIS Field Maps + microSD — next real target gate
+
+Esri documents TPKX basemaps copied directly to Android/device microSD. Project-specific live acceptance is still pending.
+
+Current card-menu experiment:
+
+- district Z17;
+- county Z18;
+- selected State Forest / high-value Z20;
+- Google Hybrid and Esri imagery/labels where useful.
+
+### Map Fountain — LIVE-PROVEN / PARKED REFERENCE
+
+Both Windows native TPKX-over-SMB and Android Static REST WMTS router paths passed real-target acceptance. They remain engineering proof, not required personal-phone infrastructure.
 
 ## Start here
 
 - **[Offline GeoStack README](../README.md)** — current public architecture and status.
-- **[Map Fountain](https://github.com/Jim-dc95811/Map-Fountain)** — router-only acceptance record, benchmarks, evidence hashes, and Android next gate.
+- **[Android deployment repository](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-)** — current personal-phone deployment direction.
 - **[Software & Downloads](SOFTWARE_AND_DOWNLOADS.md)** — pinned QGIS 3.44.9, Python 3.14.5, ArcGIS Earth, required QGIS projects, and release records.
-- [Quick Start](QUICK_START.md) — normal-user and advanced-user operation for the frozen Factory baseline.
-- [Professional GIS Engineering Record](professional_report/README.md) — long-form architecture, implementation, validation, operational doctrine, appendices, and future-AI continuity reference.
-- [Technical Architecture](TECHNICAL_ARCHITECTURE.md) — Factory/converter/runtime engineering record.
-- [Technical FAQ](FAQ.md) — direct answers for GIS developers.
-- [Notes for GIS Professionals](NOTES_FOR_GIS_PROFESSIONALS.md) — condensed interoperability interpretation.
+- [Quick Start](QUICK_START.md) — normal-user and advanced-user operation for the frozen v1.0 Factory baseline.
+- [Professional GIS Engineering Record](professional_report/README.md) — long-form record frozen at the v1.0.0 milestone; historical baseline, not a substitute for current README/roadmap.
+- [Technical Architecture](TECHNICAL_ARCHITECTURE.md) — current Factory/converter/runtime/deployment engineering record.
+- [Technical FAQ](FAQ.md) — direct answers for GIS developers; some dated wording is historical and should be read with the current README.
+- [Notes for GIS Professionals](NOTES_FOR_GIS_PROFESSIONALS.md) — condensed converter/cartography interpretation.
 - [Offline Operation and Persistent Geographic Context](OFFLINE_OPERATION_AND_PERSISTENT_GEOGRAPHIC_CONTEXT.md) — offline doctrine.
 - [PRAVE → ArcGIS Earth Integration](PRAVE_ARCGIS_EARTH_INTEGRATION.md) — live-proven Automation API path and RSSI display rules.
 - [AI-Assisted Engineering Method](AI_ENGINEERING_METHOD.md) — human/AI closed-loop method.
 - [AI Continuity / Restart Note](AI_CONTINUITY_RESTART_NOTE.md) — current baseline and do-not-regress rules.
 - [Historical Timeline](HISTORICAL_TIMELINE.md) — project lineage.
 - [Source and Licensing Note](SOURCE_AND_LICENSING_NOTE.md) — technical capability versus source-data rights.
-- [Roadmap](../ROADMAP.md) — Android-first current gate and later work.
+- [Roadmap](../ROADMAP.md) — current mobile/card gates and later work.
 
-## Historical mobile material
+## Historical mobile/router material
 
-The following 2026-08-16 documents are retained as engineering lineage, not the current field architecture:
+The 2026-08-16 Windows-hosted WMTS documents and the 2026-08-17 router-only Map Fountain documents remain useful engineering evidence.
 
-- `ARCGIS_EARTH_MOBILE_MAP_FOUNTAIN.md`
-- `mobile_map_fountain_live_proof_2026-08-16.md`
-- `PROJECT_STATUS_2026-08-16.md`
+They are not the default personal-phone deployment architecture.
 
-They record the Windows-hosted HTTPS WMTS → Android USB-tether proof that preceded the router-only breakthrough.
+Do not delete them merely because the project simplified afterward. Clearly label history rather than erasing chronology.
 
 ## Current deployment principle
 
 ```text
-Factory makes native products
-→ SSD stores them
-→ router shares them
-→ ArcGIS Earth consumes them
+Factory makes the map
+→ local storage carries it
+→ the target app consumes it
 ```
 
-> **Keep the router dumb. Keep the maps native. Let ArcGIS Earth do the GIS work.**
+> **Have the data ready before the user asks the screen to move.**
