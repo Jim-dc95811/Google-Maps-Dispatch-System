@@ -2,17 +2,11 @@
 
 ## Purpose
 
-This document records the **current** Offline GeoStack architecture after the 2026-08-17 router-only Map Fountain breakthrough.
+This document records the **current** Offline GeoStack architecture after the router-only Map Fountain proofs and the subsequent simplification toward direct local mobile storage.
 
 Master identity:
 
-**Offline GeoStack — QGIS → MBTiles / TPKX → ArcGIS Earth Desktop + Mobile + Live Field Positioning**
-
-Canonical system drawing:
-
-**[Factory / PC / Android router-only flowchart](https://github.com/Jim-dc95811/Map-Fountain/blob/main/docs/arcgis_system_router_flowchart_2026-08-17.svg)**
-
-The field router is deliberately dumb. It stores and shares finished native map products. ArcGIS Earth supplies the GIS intelligence.
+**Offline GeoStack — QGIS → MBTiles / TPKX → offline field deployment + live field positioning**
 
 ---
 
@@ -26,23 +20,24 @@ QGIS 3.44.9 rendering engine
         ↓
 verified raster MBTiles
         ↓
-        ├─→ preserve MBTiles
+        ├─→ preserve MBTiles when useful
         └─→ frozen Compact Cache V2 converter → native TPKX
 
-WINDOWS FIELD DELIVERY — LIVE-PROVEN
+PERSONAL MOBILE DEPLOYMENT — CURRENT DIRECTION
 native TPKX
         ↓
-USB SSD
+microSD card
         ↓
-GL.iNet Flint 2
+Android
         ↓
-Samba / SMB
+ArcGIS Field Maps / ArcGIS Earth
+
+WINDOWS / SHARED-STORAGE PROOF
+native TPKX
         ↓
-private Wi-Fi or Ethernet
+USB SSD → Flint 2 → SMB
         ↓
-Windows
-        ↓
-ArcGIS Earth
+Windows ArcGIS Earth
 
 LIVE FIELD INPUTS
 GNSS / PRAVE / F22 / QR / KML
@@ -50,7 +45,7 @@ GNSS / PRAVE / F22 / QR / KML
 ArcGIS Earth native inputs / Automation API
 ```
 
-No outside Internet connection is required for the proven Windows field map path.
+No outside Internet connection is required for the local TPKX display path.
 
 ---
 
@@ -83,9 +78,9 @@ Current known-good render baseline:
 
 ## 3. MBTiles and TPKX roles
 
-MBTiles contains the already-rendered raster pyramid. It remains useful as both manufacturing material and a deliberate finished product.
+MBTiles contains the already-rendered raster pyramid.
 
-The frozen forward converter changes the addressing/container structure without rerendering the map:
+The frozen forward converter changes addressing/container structure without rerendering the map:
 
 ```text
 MBTiles raster tiles
@@ -102,82 +97,177 @@ y_arcgis = (2^z - 1) - y_tms
 
 The raster image bytes produced by QGIS are preserved.
 
-Current finished-product choices in later TEST branches:
+Production rule:
+
+- preserve direct QGIS MBTiles when MBTiles is needed;
+- do not use reverse TPKX → MBTiles recovery as the production shortcut.
+
+---
+
+## 4. Frozen Factory baseline versus TEST branches
+
+### v1.0.0
+
+TPKX Map Factory v1.0.0 is **RELEASE-ACCEPTED / FROZEN**.
+
+Do not silently modify or reconstruct that exact accepted package.
+
+### Later output-choice branches
+
+Later TEST branches introduced combinations of:
 
 ```text
 TPKX
 MBTiles
-Both
+REST
 ```
 
-The accepted v1.0.0 Factory baseline remains frozen and separate from later TEST work.
+These branches do not redefine the frozen baseline until they pass the applicable live target acceptance.
 
----
+### v1.4.0 REST-seed experiment
 
-## 4. Router-only Map Fountain
+A production-scale v1.3 Static REST WMTS run exposed the cost of handling hundreds of thousands of loose files and then packaging/copying them.
 
-Current proven field appliance:
-
-- GL.iNet Flint 2 (`GL-MT6000`);
-- USB-attached SSD;
-- stock Samba network storage;
-- private Ethernet/Wi-Fi LAN;
-- DHCP for ordinary clients.
-
-The router does **not**:
-
-- parse TPKX;
-- understand map projections;
-- query MBTiles SQLite;
-- generate tiles;
-- run Python;
-- run a GIS server;
-- rerender imagery.
-
-Its job is:
+v1.4.0 TEST changed the experimental REST transport to:
 
 ```text
-storage + local network + file sharing
+verified MBTiles
+→ <map>_REST.restmap
+→ move one compact seed
+→ expand runtime Static REST WMTS tree at final SSD
 ```
 
-ArcGIS Earth opens the native file through the normal Windows file interface.
+The `.restmap` seed remains internally a valid SQLite/MBTiles-style database with unchanged raster payloads. The small lifecycle fixture passed self-test.
+
+This remains a TEST branch and is no longer the primary mobile deployment path.
 
 ---
 
-## 5. 2026-08-17 large-file proof
+## 5. Personal Android deployment
 
-Specimen:
+The current preferred human-facing path is local removable storage.
 
-- `ESG1N.tpkx`
-- benchmark-observed size: **26,174,899,216 bytes**
-- Windows File Explorer identification: **25,561,426 KB**
-- accepted share path: `\\192.168.8.1\New TPKX\Esri and Label\ESG1N.tpkx`
+```text
+TPKX
+→ microSD
+→ Android
+→ map app
+```
 
-### Ethernet benchmark
+### ArcGIS Earth Mobile
 
-- random seek: **25.33 MiB/s**
-- random average latency: **9.34 ms**
-- random p95: **9.98 ms**
-- four-client aggregate: **51.21 MiB/s**
-- sequential sample: **42.58 MiB/s**
+Local TPKX has been **LIVE-PROVEN on multiple project packages**.
 
-### Wi-Fi benchmark
+### ArcGIS Field Maps
 
-- random seek: **5.19 MiB/s**
-- random average latency: **46.36 ms**
-- random p95: **50.56 ms**
-- four-client aggregate: **5.31 MiB/s**
-- sequential sample: **6.14 MiB/s**
+Esri documents sideloaded TPKX basemaps on Android device storage or microSD.
 
-Wi-Fi was substantially slower but completed cleanly.
+Documented Android basemap folder:
 
-The decisive proof was not the benchmark: **ArcGIS Earth opened the same TPKX directly from the router share over Wi-Fi and rendered/navigated the Jacksonville map.**
+```text
+\Android\data\com.esri.fieldmaps\files\basemaps
+```
+
+Project status:
+
+- vendor support: **DOCUMENTED**;
+- Offline GeoStack real-phone Field Maps acceptance: **PENDING**.
+
+A Field Maps live test must verify local basemap visibility/selection, offline pan/zoom, own position, and restart behavior on the intended phone.
+
+### Cellular-data boundary
+
+The target audience may use personal phones and personal data plans.
+
+Esri documents that the Field Maps in-app Cellular Data option does not block every cellular-data use. To block Field Maps cellular traffic entirely on Android, use the device app-level network control and set Field Maps to Wi-Fi only.
+
+The normal phone can retain cellular service while Field Maps is prevented from consuming the personal data plan.
 
 ---
 
-## 6. Packet-analysis boundary
+## 6. Card-sizing model
 
-The tested SMB session uses SMB3 encryption.
+Do not estimate the final deployment menu from source file megabytes alone.
+
+Current practical coverage ladder:
+
+```text
+district      → Z17
+county        → Z18
+State Forests / selected hotspots → Z20
+```
+
+Where card capacity permits, Google Hybrid and Esri imagery/labels may coexist as alternate views.
+
+Final tiers are chosen from real finished byte counts.
+
+The underlying scaling matters: over the same ground area, one additional raster zoom level can create roughly four times as many deepest-level tile positions.
+
+---
+
+## 7. Map Fountain — accepted proof, parked deployment
+
+Map Fountain proved that a deliberately dumb consumer router could serve useful map bytes without becoming a GIS server.
+
+### Windows — LIVE-PROVEN
+
+```text
+native TPKX
+→ USB SSD
+→ GL.iNet Flint 2
+→ Samba / SMB
+→ private Wi-Fi or Ethernet
+→ Windows
+→ ArcGIS Earth
+```
+
+Production-scale specimen:
+
+- `ESG1N.tpkx`;
+- benchmark-observed size: **26,174,899,216 bytes**;
+- Windows File Explorer identification: **25,561,426 KB**.
+
+Ethernet benchmark:
+
+- random seek: 25.33 MiB/s;
+- random average latency: 9.34 ms;
+- random p95: 9.98 ms;
+- four-client aggregate: 51.21 MiB/s;
+- sequential sample: 42.58 MiB/s.
+
+Wi-Fi benchmark:
+
+- random seek: 5.19 MiB/s;
+- random average latency: 46.36 ms;
+- random p95: 50.56 ms;
+- four-client aggregate: 5.31 MiB/s;
+- sequential sample: 6.14 MiB/s.
+
+The decisive proof was application behavior: ArcGIS Earth opened and rendered the same TPKX directly from the router share over Wi-Fi.
+
+### Android — LIVE-PROVEN
+
+```text
+Static REST WMTS
+→ USB SSD
+→ Flint 2 local HTTPS/WebDAV
+→ Wi-Fi
+→ ArcGIS Earth Mobile
+```
+
+That path passed, including cache-clear/restart retesting.
+
+### Current disposition
+
+Map Fountain is **parked from the primary personal-phone path**.
+
+Potential future role: Starlink-connected basecamp storage / poor-man's NAS.
+
+---
+
+## 8. Packet-analysis boundary
+
+The tested Windows SMB session used SMB3 encryption.
 
 Wireshark can still validate:
 
@@ -191,25 +281,15 @@ Wireshark can still validate:
 
 Without SMB session keys it cannot decode individual encrypted file-read commands.
 
-The controlled benchmark supplies logical request timing; Wireshark validates the transport; ArcGIS Earth decides application acceptance.
+The controlled benchmark supplies logical request timing; Wireshark validates transport; the real viewer decides application acceptance.
 
 ---
 
-## 7. DHCP / addressing rule
+## 9. ArcGIS Earth runtime
 
-Normal consumers use DHCP.
+ArcGIS Earth remains the current terrestrial chart plotter and one of the primary operational viewers.
 
-Do not manually assign static IP addresses simply to consume maps.
-
-The router supplies a predictable LAN/share address. If a future client needs a stable address for a separate service, prefer a router-side DHCP reservation over manual Windows static configuration.
-
----
-
-## 8. ArcGIS Earth runtime
-
-ArcGIS Earth is the current terrestrial chart plotter and primary operational viewer.
-
-Live-proven / observed project capabilities include:
+Live-proven / observed capabilities include:
 
 - native local TPKX;
 - native TPKX opened directly from router Samba storage;
@@ -222,7 +302,7 @@ Live-proven / observed project capabilities include:
 
 ---
 
-## 9. Live field positioning
+## 10. Live field positioning
 
 ### Native GNSS
 
@@ -236,54 +316,31 @@ Known-good live observation:
 
 The `$PRAVE` decoder has a LIVE-PROVEN ArcGIS Earth Automation API path. Controlled traffic displayed six native ArcGIS Earth unit drawings using the established RSSI fire-truck icon family.
 
-### F22
+### F22 / QR / KML
 
-F22 remains a designed input to the same common live-position abstraction.
-
-### QR
-
-QR remains useful for bounded dispatch/data input. Historical Map Fountain work also proved QR service loading, but that is not the current field map-delivery architecture.
+Remain designed or interoperable input paths around the same runtime. Do not create a second viewer merely because the transport differs.
 
 ---
 
-## 10. Android — immediate next gate
+## 11. Four-project separation
 
-ArcGIS Earth Mobile is the next router-only acceptance target.
+### Offline GeoStack
 
-Current truth:
+Owns the master field-mapping architecture and TPKX manufacturing lineage.
 
-- local-file TPKX on Android is LIVE-PROVEN on multiple packages;
-- historical Windows HTTPS WMTS → Android USB tether is LIVE-PROVEN history;
-- **router-only Android consumption from the Flint 2 SSD is not yet accepted.**
+### Rasta Pyramid Factory
 
-The next investigation should begin with the simplest client-compatible path available from the router-attached SSD over private Wi-Fi.
+Owns general arbitrary-raster pyramid manufacturing.
 
-Do **not** revive Raspberry Pi / Pi-server architecture or the historical Windows WMTS server as the default solution. Add compatibility logic only if the real Android target demonstrates that it is necessary.
+### Map Fountain
 
----
+Owns the historical/proven router/network-storage delivery evidence and any future shared-storage/basecamp revival.
 
-## 11. Historical Windows WMTS path
+### Android Field Maps + ArcGIS Earth
 
-On 2026-08-16, before the router-only proof, the project demonstrated:
+Owns the final personal-phone/microSD deployment workflow and normal-user procedure.
 
-```text
-MBTiles on Windows
-→ local HTTPS WMTS
-→ Android USB tether
-→ ArcGIS Earth Mobile
-```
-
-That experiment established useful lessons about:
-
-- local mobile networking;
-- WMTS/TMS row handling;
-- HTTPS acceptance;
-- QR ingestion;
-- per-map service identity and cache isolation;
-- deliberate versus rapid navigation;
-- operation with outside Internet removed.
-
-Preserve those lessons as lineage and fallback reference material. Do not present that software path as the active field appliance.
+This separation prevents yesterday's exploration branch from becoming tomorrow's accidental architecture.
 
 ---
 
@@ -291,30 +348,24 @@ Preserve those lessons as lineage and fallback reference material. Do not presen
 
 There can be no operational dependence on public Internet connectivity.
 
-Private local networking is allowed and useful:
+Private local networking is allowed when useful. Direct local storage is preferred when it solves the job more simply.
 
-```text
-local SSD
-→ private router LAN
-→ Samba
-→ ArcGIS Earth
-```
-
-Online services may assist preparation or optional enhancement, but the core field map path must remain functional when outside connectivity disappears.
+Online services may assist manufacturing, imagery refresh, or optional enhancements. They must not be the only place the prepared field basemap exists.
 
 ---
 
 ## 13. Do-not-regress rules
 
-1. Keep the field appliance router-only unless real target evidence proves more is necessary.
-2. Do not revive Raspberry Pi / Pi-server architecture in the active system.
-3. Do not make public Internet part of the core map path.
-4. Preserve native map products; do not rerender them in the router.
-5. Keep the frozen MBTiles → TPKX converter stable unless a verified defect is established.
-6. Do not revive rejected TPKX → MBTiles recovery as a shortcut.
-7. Keep ordinary Eaters on DHCP.
-8. Do not confuse Windows cache/read-ahead throughput with raw network speed.
-9. Change one major variable at a time during controlled acceptance tests.
-10. Let packet evidence validate the network and the real ArcGIS Earth runtime decide acceptance.
+1. Keep TPKX Map Factory v1.0.0 frozen.
+2. Keep the proven MBTiles → TPKX converter stable unless a verified defect is established.
+3. Do not revive rejected TPKX → MBTiles recovery as a production shortcut.
+4. Do not require Map Fountain/router infrastructure for the normal personal-phone path.
+5. Do not make public Internet part of the core map path.
+6. Do not confuse vendor documentation with project live proof.
+7. Do not bury the normal user under GIS features they did not ask for.
+8. Keep exact file sizes/build evidence for deployment planning.
+9. Do not confuse cache/read-ahead throughput with raw network speed.
+10. Change one major test variable at a time.
+11. Let the real target application decide acceptance.
 
-> **Keep the router dumb. Keep the maps native. Let ArcGIS Earth do the GIS work.**
+> **Manufacture the geography once. Put the bytes where the user will need them.**
