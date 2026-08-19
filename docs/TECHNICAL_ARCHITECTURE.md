@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document records the **current** Offline GeoStack architecture after the router-only Map Fountain proofs and the subsequent simplification toward direct local mobile storage.
+This document records the current Offline GeoStack architecture after the product-line cleanup that created **Offline Map Factory 1.0**.
 
 Master identity:
 
@@ -16,28 +16,23 @@ Master identity:
 MAP MANUFACTURING
 source imagery / QGIS layer stack
         ↓
+Offline Map Factory 1.0
+        ↓
 QGIS 3.44.9 rendering engine
         ↓
 verified raster MBTiles
         ↓
-        ├─→ preserve MBTiles when useful
-        └─→ frozen Compact Cache V2 converter → native TPKX
+        ├─→ publish MBTiles
+        └─→ proven Compact Cache V2 converter → native TPKX
 
-PERSONAL MOBILE DEPLOYMENT — CURRENT DIRECTION
+PERSONAL MOBILE DEPLOYMENT
 native TPKX
         ↓
-microSD card
+microSD
         ↓
 Android
         ↓
 ArcGIS Field Maps / ArcGIS Earth
-
-WINDOWS / SHARED-STORAGE PROOF
-native TPKX
-        ↓
-USB SSD → Flint 2 → SMB
-        ↓
-Windows ArcGIS Earth
 
 LIVE FIELD INPUTS
 GNSS / PRAVE / F22 / QR / KML
@@ -45,42 +40,61 @@ GNSS / PRAVE / F22 / QR / KML
 ArcGIS Earth native inputs / Automation API
 ```
 
-No outside Internet connection is required for the local TPKX display path.
+No public Internet connection is required for prepared local-map display.
 
 ---
 
-## 2. Why QGIS remains the rendering engine
+## 2. Offline Map Factory 1.0 contract
 
-QGIS already solves the GIS/cartographic work:
+Current normal operator capability:
 
-- reprojection;
-- raster/vector compositing;
-- label rendering;
-- antialiasing;
+- Google Earth;
+- Google Hybrid;
+- Esri World;
+- Esri World / Google Labels;
+- area from HOME EXTENT, Clipboard History diagonal points, or two manual GPS points;
+- Z0–Z20;
+- output: TPKX / MBTiles / Both;
+- one Advanced Tool: existing MBTiles → TPKX.
+
+REST / Static WMTS is not part of the current Factory.
+
+Current status: **BUILT / SELF-TESTED — LIVE ACCEPTANCE PENDING**.
+
+---
+
+## 3. Why QGIS remains the rendering engine
+
+QGIS already solves:
+
+- projection/reprojection;
 - source access;
-- zoom-dependent cartography;
+- layer composition;
+- labels/symbology;
+- antialiasing;
+- zoom-dependent rendering;
 - tile-pyramid generation;
 - MBTiles output.
 
-The Factory uses QGIS as a headless rendering engine rather than rebuilding GIS behavior.
+Offline Map Factory uses QGIS as the rendering engine rather than rebuilding GIS behavior.
 
-Current known-good render baseline:
+Known-good render baseline:
 
 - QGIS 3.44.9;
 - EPSG:3857 / Web Mercator tile scheme;
-- PNG raster tiles;
+- PNG;
 - 96 DPI;
 - antialiasing ON;
 - metatile 4;
-- operator-selectable Z0–Z20.
+- Z0–Z20.
 
 ---
 
-## 3. MBTiles and TPKX roles
+## 4. MBTiles and TPKX roles
 
 MBTiles contains the already-rendered raster pyramid.
 
-The frozen forward converter changes addressing/container structure without rerendering the map:
+The forward converter changes addressing/container structure without rerendering the map:
 
 ```text
 MBTiles raster tiles
@@ -95,157 +109,137 @@ Critical row conversion:
 y_arcgis = (2^z - 1) - y_tms
 ```
 
-The raster image bytes produced by QGIS are preserved.
-
 Production rule:
 
-- preserve direct QGIS MBTiles when MBTiles is needed;
-- do not use reverse TPKX → MBTiles recovery as the production shortcut.
+- preserve direct QGIS-built MBTiles when MBTiles is wanted;
+- use the proven forward MBTiles → TPKX converter for TPKX;
+- do not use reverse TPKX → MBTiles recovery as a production shortcut.
 
 ---
 
-## 4. Frozen Factory baseline versus TEST branches
+## 5. Factory product lineage
 
-### v1.0.0
+### Historical TPKX Map Factory v1.0.0
 
-TPKX Map Factory v1.0.0 is **RELEASE-ACCEPTED / FROZEN**.
+**RELEASE-ACCEPTED / FROZEN — 2026-08-15**.
 
-Do not silently modify or reconstruct that exact accepted package.
+It established the four-source QGIS workflow, Z0–Z20 manufacturing, the custom converter, advanced existing-MBTiles conversion, and ArcGIS Earth acceptance.
 
-### Later output-choice branches
+Preserve that record exactly as history.
 
-Later TEST branches introduced combinations of:
+### Offline Map Factory 1.0
 
-```text
-TPKX
-MBTiles
-REST
-```
+New clean product line with reset numbering.
 
-These branches do not redefine the frozen baseline until they pass the applicable live target acceptance.
+Current status: **BUILT / SELF-TESTED — LIVE ACCEPTANCE PENDING**.
 
-### v1.4.0 REST-seed experiment
+The live gate must separately prove:
 
-A production-scale v1.3 Static REST WMTS run exposed the cost of handling hundreds of thousands of loose files and then packaging/copying them.
+- MBTiles-only;
+- TPKX-only;
+- Both;
+- Advanced MBTiles → TPKX;
+- ArcGIS Earth acceptance of the produced TPKX;
+- cleanup/finalization behavior.
 
-v1.4.0 TEST changed the experimental REST transport to:
+### REST / Static WMTS experiments
 
-```text
-verified MBTiles
-→ <map>_REST.restmap
-→ move one compact seed
-→ expand runtime Static REST WMTS tree at final SSD
-```
+The v1.3/v1.4 REST branches are **PARKED ENGINEERING HISTORY**.
 
-The `.restmap` seed remains internally a valid SQLite/MBTiles-style database with unchanged raster payloads. The small lifecycle fixture passed self-test.
-
-This remains a TEST branch and is no longer the primary mobile deployment path.
+They produced useful lessons around large directory trees, packaging overhead, Static REST WMTS, and `.restmap` transport seeds, but they do not define the current Factory.
 
 ---
 
-## 5. Personal Android deployment
+## 6. Finished-package architecture
 
-The current preferred human-facing path is local removable storage.
+User-facing top level:
+
+```text
+OFFLINE MAP FACTORY 1.0 - Installation Guide.pdf
+OFFLINE MAP FACTORY 1.0 - User Guide.pdf
+REQUIRED_FACTORY_PROJECT_DO_NOT_EDIT.qgz
+ESRI and Google Labels.qgz
+RUN OFFLINE MAP FACTORY.bat
+System Files\
+```
+
+Internal implementation/support files belong behind `System Files`.
+
+Required QGIS project placement:
+
+```text
+C:\Google Earth Project\QGIS\
+```
+
+with exact filenames:
+
+```text
+REQUIRED_FACTORY_PROJECT_DO_NOT_EDIT.qgz
+ESRI and Google Labels.qgz
+```
+
+This separation is deliberate human-factors engineering: the operator sees only what the operator needs.
+
+---
+
+## 7. Personal Android deployment
+
+Preferred normal-user path:
 
 ```text
 TPKX
 → microSD
 → Android
-→ map app
+→ map application
 ```
 
 ### ArcGIS Earth Mobile
 
-Local TPKX has been **LIVE-PROVEN on multiple project packages**.
+Local TPKX is **LIVE-PROVEN on multiple project packages**.
 
 ### ArcGIS Field Maps
 
 Esri documents sideloaded TPKX basemaps on Android device storage or microSD.
 
-Documented Android basemap folder:
+Project status: **LIVE TEST PENDING**.
 
-```text
-\Android\data\com.esri.fieldmaps\files\basemaps
-```
-
-Project status:
-
-- vendor support: **DOCUMENTED**;
-- Offline GeoStack real-phone Field Maps acceptance: **PENDING**.
-
-A Field Maps live test must verify local basemap visibility/selection, offline pan/zoom, own position, and restart behavior on the intended phone.
-
-### Cellular-data boundary
-
-The target audience may use personal phones and personal data plans.
-
-Esri documents that the Field Maps in-app Cellular Data option does not block every cellular-data use. To block Field Maps cellular traffic entirely on Android, use the device app-level network control and set Field Maps to Wi-Fi only.
-
-The normal phone can retain cellular service while Field Maps is prevented from consuming the personal data plan.
+Acceptance must verify local basemap visibility/selection, offline pan/zoom, own position, and restart behavior.
 
 ---
 
-## 6. Card-sizing model
-
-Do not estimate the final deployment menu from source file megabytes alone.
+## 8. Card-sizing model
 
 Current practical coverage ladder:
 
 ```text
-district      → Z17
-county        → Z18
+district → Z17
+county → Z18
 State Forests / selected hotspots → Z20
 ```
 
-Where card capacity permits, Google Hybrid and Esri imagery/labels may coexist as alternate views.
+Where storage permits, Google Hybrid and Esri imagery/labels may coexist.
 
-Final tiers are chosen from real finished byte counts.
-
-The underlying scaling matters: over the same ground area, one additional raster zoom level can create roughly four times as many deepest-level tile positions.
+Final card tiers are chosen from real finished byte counts, not theory.
 
 ---
 
-## 7. Map Fountain — accepted proof, parked deployment
+## 9. Map Fountain — accepted proof / parked deployment
 
-Map Fountain proved that a deliberately dumb consumer router could serve useful map bytes without becoming a GIS server.
+Map Fountain proved:
 
-### Windows — LIVE-PROVEN
+### Windows
 
 ```text
 native TPKX
 → USB SSD
 → GL.iNet Flint 2
-→ Samba / SMB
-→ private Wi-Fi or Ethernet
-→ Windows
-→ ArcGIS Earth
+→ SMB / Wi-Fi
+→ Windows ArcGIS Earth
 ```
 
-Production-scale specimen:
+Status: **LIVE-PROVEN**.
 
-- `ESG1N.tpkx`;
-- benchmark-observed size: **26,174,899,216 bytes**;
-- Windows File Explorer identification: **25,561,426 KB**.
-
-Ethernet benchmark:
-
-- random seek: 25.33 MiB/s;
-- random average latency: 9.34 ms;
-- random p95: 9.98 ms;
-- four-client aggregate: 51.21 MiB/s;
-- sequential sample: 42.58 MiB/s.
-
-Wi-Fi benchmark:
-
-- random seek: 5.19 MiB/s;
-- random average latency: 46.36 ms;
-- random p95: 50.56 ms;
-- four-client aggregate: 5.31 MiB/s;
-- sequential sample: 6.14 MiB/s.
-
-The decisive proof was application behavior: ArcGIS Earth opened and rendered the same TPKX directly from the router share over Wi-Fi.
-
-### Android — LIVE-PROVEN
+### Android
 
 ```text
 Static REST WMTS
@@ -255,92 +249,44 @@ Static REST WMTS
 → ArcGIS Earth Mobile
 ```
 
-That path passed, including cache-clear/restart retesting.
+Status: **LIVE-PROVEN**.
 
-### Current disposition
+Current disposition: parked from the primary personal-phone path.
 
-Map Fountain is **parked from the primary personal-phone path**.
-
-Potential future role: Starlink-connected basecamp storage / poor-man's NAS.
+Possible future role: Starlink-connected basecamp storage / poor-man's NAS.
 
 ---
 
-## 8. Packet-analysis boundary
-
-The tested Windows SMB session used SMB3 encryption.
-
-Wireshark can still validate:
-
-- endpoints;
-- timing;
-- traffic volume;
-- connection continuity;
-- resets;
-- TCP-visible retransmission behavior;
-- overall traffic shape.
-
-Without SMB session keys it cannot decode individual encrypted file-read commands.
-
-The controlled benchmark supplies logical request timing; Wireshark validates transport; the real viewer decides application acceptance.
-
----
-
-## 9. ArcGIS Earth runtime
-
-ArcGIS Earth remains the current terrestrial chart plotter and one of the primary operational viewers.
+## 10. ArcGIS Earth runtime and live positioning
 
 Live-proven / observed capabilities include:
 
-- native local TPKX;
-- native TPKX opened directly from router Samba storage;
-- local TPKX on ArcGIS Earth Mobile for compatible packages;
+- local native TPKX;
+- router-hosted TPKX over SMB;
+- local TPKX on ArcGIS Earth Mobile;
 - KML / KMZ / NetworkLinks;
 - native GNSS/NMEA own-position display;
-- local Automation API;
+- Automation API;
 - native drawings/markers;
-- session restoration of loaded desktop TPKX files.
+- PRAVE remote-unit display.
 
----
-
-## 10. Live field positioning
-
-### Native GNSS
-
-Known-good live observation:
+Known-good GNSS observation:
 
 - 9600 baud;
-- GLL and RMC NMEA sentences;
-- ArcGIS Earth native blue-dot own position.
+- GLL and RMC present.
 
-### PRAVE
-
-The `$PRAVE` decoder has a LIVE-PROVEN ArcGIS Earth Automation API path. Controlled traffic displayed six native ArcGIS Earth unit drawings using the established RSSI fire-truck icon family.
-
-### F22 / QR / KML
-
-Remain designed or interoperable input paths around the same runtime. Do not create a second viewer merely because the transport differs.
+PRAVE → ArcGIS Earth Automation API remains **LIVE-PROVEN**.
 
 ---
 
 ## 11. Four-project separation
 
-### Offline GeoStack
+- **Offline GeoStack** — master field-mapping / Factory architecture.
+- **Rasta Pyramid Factory** — general giant-raster pyramid manufacturing.
+- **Map Fountain** — router/network-storage proof history and possible shared-storage revival.
+- **Android Field Maps + ArcGIS Earth** — final personal-phone / microSD deployment workflow.
 
-Owns the master field-mapping architecture and TPKX manufacturing lineage.
-
-### Rasta Pyramid Factory
-
-Owns general arbitrary-raster pyramid manufacturing.
-
-### Map Fountain
-
-Owns the historical/proven router/network-storage delivery evidence and any future shared-storage/basecamp revival.
-
-### Android Field Maps + ArcGIS Earth
-
-Owns the final personal-phone/microSD deployment workflow and normal-user procedure.
-
-This separation prevents yesterday's exploration branch from becoming tomorrow's accidental architecture.
+This prevents yesterday's experiment from becoming tomorrow's accidental baseline.
 
 ---
 
@@ -348,24 +294,21 @@ This separation prevents yesterday's exploration branch from becoming tomorrow's
 
 There can be no operational dependence on public Internet connectivity.
 
-Private local networking is allowed when useful. Direct local storage is preferred when it solves the job more simply.
-
-Online services may assist manufacturing, imagery refresh, or optional enhancements. They must not be the only place the prepared field basemap exists.
+Online services may assist map manufacture, imagery refresh, or optional enhancements. Prepared field maps must remain available when outside connectivity disappears.
 
 ---
 
 ## 13. Do-not-regress rules
 
-1. Keep TPKX Map Factory v1.0.0 frozen.
-2. Keep the proven MBTiles → TPKX converter stable unless a verified defect is established.
-3. Do not revive rejected TPKX → MBTiles recovery as a production shortcut.
-4. Do not require Map Fountain/router infrastructure for the normal personal-phone path.
-5. Do not make public Internet part of the core map path.
-6. Do not confuse vendor documentation with project live proof.
-7. Do not bury the normal user under GIS features they did not ask for.
-8. Keep exact file sizes/build evidence for deployment planning.
-9. Do not confuse cache/read-ahead throughput with raw network speed.
-10. Change one major test variable at a time.
-11. Let the real target application decide acceptance.
+1. Keep Offline Map Factory 1.0 free of REST unless a real target demonstrates the need.
+2. Preserve historical TPKX Map Factory v1.0.0 as a frozen accepted milestone.
+3. Keep the proven MBTiles → TPKX converter stable unless a verified defect is established.
+4. Do not revive reverse TPKX → MBTiles recovery as a production shortcut.
+5. Keep the user-facing package root clean; internal machinery belongs behind `System Files`.
+6. Do not require Map Fountain/router infrastructure for normal personal-phone deployment.
+7. Do not make public Internet part of the core map path.
+8. Do not confuse vendor documentation or self-test success with project live proof.
+9. Change one major test variable at a time.
+10. Let the real target decide acceptance.
 
-> **Manufacture the geography once. Put the bytes where the user will need them.**
+> **Keep the Factory simple. Keep the package clean. Let the target prove the release.**
