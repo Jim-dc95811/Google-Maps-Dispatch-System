@@ -1,6 +1,53 @@
 # Offline GeoStack — Changelog
 
-This file records public architecture milestones. It intentionally distinguishes major design pivots from ordinary code edits and preserves older experiments as lineage rather than silently treating every explored branch as current.
+This file records public architecture milestones and preserves explored branches as lineage without confusing them with the current product.
+
+## 2026-08-18 — Offline Map Factory 1.0 product reset
+
+A new clean finished-product line was created:
+
+**OFFLINE MAP FACTORY 1.0**
+
+Status: **BUILT / SELF-TESTED — LIVE ACCEPTANCE PENDING**.
+
+Current operator feature set:
+
+- four map sources: Google Earth, Google Hybrid, Esri World, Esri World / Google Labels;
+- Z0–Z20;
+- output choice: TPKX / MBTiles / Both;
+- one Advanced Tool: existing MBTiles → TPKX.
+
+The experimental REST / Static WMTS output path was removed from the current Factory.
+
+### Packaging standard
+
+The finished distribution root was simplified to exactly:
+
+```text
+OFFLINE MAP FACTORY 1.0 - Installation Guide.pdf
+OFFLINE MAP FACTORY 1.0 - User Guide.pdf
+REQUIRED_FACTORY_PROJECT_DO_NOT_EDIT.qgz
+ESRI and Google Labels.qgz
+RUN OFFLINE MAP FACTORY.bat
+System Files\
+```
+
+Internal implementation/support files remain behind `System Files` rather than cluttering the operator-facing root.
+
+### Documentation
+
+- one-page Installation Guide created;
+- one-page User Guide created;
+- both PDFs published in `docs/guides/`;
+- Quick Start, Software & Downloads, QGIS project placement, Technical Architecture, Roadmap, continuity, release records, and contribution rules updated to the new product line.
+
+### Release discipline
+
+The prior **TPKX Map Factory v1.0.0** remains a separate RELEASE-ACCEPTED / FROZEN historical milestone.
+
+Offline Map Factory 1.0 must earn its own live acceptance on the real Windows/QGIS target before release promotion.
+
+---
 
 ## 2026-08-18 — personal-phone / microSD deployment direction
 
@@ -53,7 +100,7 @@ verified MBTiles
 → deploy/expand the runtime WMTS tree at the final SSD
 ```
 
-The actual-user-MBTiles lifecycle fixture passed self-test with byte-for-byte tile comparison and no temporary restored MBTiles. v1.4.0 remains a TEST branch and does not replace the frozen v1.0.0 baseline.
+The actual-user-MBTiles lifecycle fixture passed self-test with byte-for-byte tile comparison and no temporary restored MBTiles. v1.4.0 remained a TEST branch and did not replace the frozen v1.0.0 baseline.
 
 ---
 
@@ -93,19 +140,15 @@ No Python runtime, helper app, QGIS Server, Windows map server, or Raspberry Pi 
 
 ## 2026-08-16 — ArcGIS Earth Mobile + local Map Fountain path LIVE-PROVEN
 
-A second offline deployment path was proven alongside local TPKX.
-
 ### ArcGIS Earth Mobile local TPKX
 
 - ArcGIS Earth Mobile opened multiple locally stored TPKX packages on Android.
 - Successful examples included a Rasta Thames Bridge package and smaller Esri / Google Hybrid map packages.
-- One larger Google Hybrid package returned `spatial reference not supported`; package-level compatibility remains a controlled test item.
+- One larger Google Hybrid package returned `spatial reference not supported`; package-level compatibility remained a controlled test item.
 
 ### USB Map Fountain
 
 `Rasta USB Map Fountain v0.2.1 TEST` was live-proven serving raster MBTiles from Windows to ArcGIS Earth Mobile over the Android USB-tether network.
-
-Proven chain:
 
 ```text
 MBTiles on PC / SSD
@@ -114,124 +157,58 @@ MBTiles on PC / SSD
 → ArcGIS Earth Mobile
 ```
 
-Live observations:
-
-- outside Internet removed: **PASS**;
-- HTTPS: **PASS**;
-- QR service loading: **PASS**;
-- selectable MBTiles GUI: **PASS**;
-- unique per-map WMTS identity fixed stale test-map reuse;
-- three different substantial MBTiles: **PASS**;
-- large Lago panorama streamed and navigated smoothly on Android;
-- deliberate pan/zoom is reliable; rapid repeated zoom/pan can outrun the current mobile delivery/render path.
-
-This branch remains useful engineering history but is no longer the default deployment direction.
+Live observations included outside-Internet removal PASS, HTTPS PASS, QR loading PASS, selectable MBTiles PASS, multiple substantial MBTiles PASS, and large Lago panorama PASS.
 
 ### TPKX → MBTiles recovery experiment rejected
 
-A reverse Compact Cache V2 recovery tool was prototyped. Controlled testing showed exact tile-byte recovery on a Thames Bridge fixture, but a recovered production map displayed blurred/missing regions on ArcGIS Earth Mobile.
+A reverse Compact Cache V2 recovery tool worked on a controlled fixture, but a recovered production map displayed blurred/missing regions on ArcGIS Earth Mobile.
 
-Decision:
+Decision: preserve direct QGIS-built MBTiles when MBTiles is needed; do not use reverse recovery as the production shortcut.
 
-- do not use TPKX recovery as the production MBTiles path;
-- rebuild important MBTiles directly from QGIS;
-- preserve MBTiles going forward when MBTiles is needed.
+### TPKX Map Factory v1.2.0 TEST
 
-### TPKX Map Factory v1.2.0 TEST built
-
-v1.2 changed normal output choice to TPKX / MBTiles / Both. The accepted v1.0.0 baseline remained frozen.
+v1.2 introduced TPKX / MBTiles / Both output choices while the accepted v1.0.0 baseline remained frozen.
 
 ---
 
-## 2026-08-15 — Master project renamed **Offline GeoStack**
+## 2026-08-15 — Master project renamed Offline GeoStack
 
-The project had grown beyond the original repository name. The current master identity became **Offline GeoStack**.
+The master project identity became **Offline GeoStack**.
 
-`TPKX Map Factory` remains the map-manufacturing subsystem. ArcGIS Earth remains a primary runtime. GNSS, PRAVE, F22, QR, and KML are field/live/interoperability inputs around that runtime.
+`TPKX Map Factory` remained the map-manufacturing subsystem. ArcGIS Earth became the primary runtime; GNSS, PRAVE, F22, QR, and KML remained field/live/interoperability inputs around that runtime.
 
 ---
 
-## v1.0.0 — 2026-08-15 — RELEASE ACCEPTED
+## TPKX Map Factory v1.0.0 — 2026-08-15 — RELEASE ACCEPTED
 
-First frozen public baseline of the **TPKX Map Factory + ArcGIS Earth** architecture now carried by Offline GeoStack.
+First frozen public baseline of the TPKX Map Factory + ArcGIS Earth architecture.
 
 ### Added
 
-- Four-source normal-user Factory workflow.
-- Manual decimal-degree GPS diagonal-point entry.
-- Clipboard-history coordinate workflow.
-- Direct HOME EXTENT input.
-- Z0–Z20 operator zoom selection.
-- QGIS 3.44.9 raster manufacturing stage.
-- 96 DPI / PNG / antialiasing ON / metatile 4 frozen recipe.
-- Custom MBTiles → TPKX converter using Esri Compact Cache V2.
-- Advanced **MBTILES → TPKX** path for GIS professionals.
-- Colored GUI icons and strong visual landmarks.
-- Progress indication and clear completion state.
-- One-finished-TPKX destination behavior.
+- four-source normal-user Factory workflow;
+- manual decimal-degree GPS diagonal-point entry;
+- Clipboard History coordinate workflow;
+- direct HOME EXTENT input;
+- Z0–Z20;
+- QGIS 3.44.9 raster manufacturing;
+- 96 DPI / PNG / antialiasing ON / metatile 4;
+- custom MBTiles → TPKX converter using Esri Compact Cache V2;
+- Advanced MBTiles → TPKX path;
+- progress indication and completion state;
+- cleaned destination behavior.
 
 ### Live acceptance
 
-- Small v1.0 smoke build accepted by ArcGIS Earth.
-- Large Esri World / Google Labels Factory build accepted by ArcGIS Earth.
-- Large existing-MBTiles advanced conversion accepted by ArcGIS Earth.
+- small v1.0 smoke build → ArcGIS Earth PASS;
+- large Esri World / Google Labels Factory build → PASS;
+- large existing-MBTiles advanced conversion → PASS.
 
 ### Architecture
 
-- ArcGIS Earth became the primary viewer/runtime.
-- TPKX became the primary raster basemap deployment format in the frozen v1.0 workflow.
-- MBTiles remained the QGIS manufacturing intermediate.
-- Hard rule established: no operational dependence on Internet connectivity.
-
----
-
-## v0.1.6 TEST — 2026-08-15
-
-- Advanced MBTiles → TPKX control moved into an always-visible bottom command area.
-- Large existing-MBTiles conversion live-proven.
-- Large Esri World / Google Labels Factory run live-proven.
-- Established the mechanics later frozen into v1.0.0.
-
-## v0.1.5 TEST — 2026-08-15
-
-- Added GUI access to the existing-MBTiles → TPKX converter.
-- First advanced-user integration build.
-- Initial control placement proved too low for the real target screen and was corrected in v0.1.6.
-
-## v0.1.4 TEST — 2026-08-15
-
-- Finalized temporary-work cleanup behavior.
-- Moved manufacturing artifacts out of the user-selected destination.
-- Established the requirement that the destination contain only the finished TPKX.
-- First large production-style Factory run passed.
-
-## v0.1.3 TEST — 2026-08-15
-
-- Removed SHA/fingerprint gates from the public Factory workflow.
-- Simplified source-project handling.
-- Esri World / Google Labels small test passed in ArcGIS Earth.
-
-## v0.1.2 TEST — 2026-08-15
-
-- Removed Neighbor Extent from the beginner-facing Factory.
-- Renamed map-area section for normal users.
-- Added two manual diagonal GPS coordinate fields.
-- Removed Grid ID.
-- Removed automatic filename suggestions.
-- Made the HOME EXTENT order visible to the operator.
-
-## v0.1.1 TEST — 2026-08-14/15
-
-- Switched current public raster recipe to 96 DPI.
-- Added the Esri World / Google Labels source path.
-- Removed unnecessary Factory behavior text from the GUI.
-- Narrowed the source menu toward the final four-source design.
-
-## v0.1.0 TEST — 2026-08-13/14
-
-- First integrated QGIS → temporary MBTiles → custom converter → TPKX Factory.
-- Google Hybrid acceptance run succeeded.
-- Output opened directly in ArcGIS Earth.
+- ArcGIS Earth became the primary viewer/runtime;
+- TPKX became the primary raster deployment format in the frozen v1.0 workflow;
+- MBTiles remained the QGIS manufacturing intermediate;
+- hard rule established: no operational dependence on public Internet connectivity.
 
 ---
 
@@ -254,25 +231,14 @@ The standalone converter was live-proven in ArcGIS Earth before Factory integrat
 
 ## ArcGIS Earth pivot — August 2026
 
-The project moved away from Google Earth Pro as the primary viewer after extensive offline, cache, local-server, and Google Earth Enterprise exploration.
+The project moved away from Google Earth Pro as the primary viewer after extensive offline/cache/local-server/Enterprise exploration.
 
-ArcGIS Earth provided a better modern fit through native TPKX support, KML/KMZ/NetworkLinks, GNSS/NMEA, local Automation API, drawings/markers, 3D globe operation, and session restoration.
-
-PRAVE display was subsequently live-proven through the ArcGIS Earth Automation API.
+ArcGIS Earth provided native TPKX support, KML/KMZ/NetworkLinks, GNSS/NMEA, local Automation API, drawings/markers, 3D globe operation, and session restoration.
 
 ---
 
-## Google Earth / KML Super Overlay era — 2026 legacy lineage
+## Google Earth / KML Super Overlay era — legacy lineage
 
-Earlier architecture included:
+Earlier architecture included QGIS MBTiles manufacturing, MBTiles → KML Super Overlay conversion, KML forest/Blooming Onion deployment, warm-cache recovery, Network Earth local serving, Google Earth Enterprise exploration, and packet-capture diagnostics.
 
-- QGIS MBTiles manufacturing;
-- direct MBTiles → KML Super Overlay conversion;
-- KML forest / Blooming Onion deployment;
-- map depot production;
-- warm-cache recovery;
-- Network Earth local serving;
-- Google Earth Enterprise exploration;
-- packet-capture diagnostics.
-
-These branches remain important engineering history but are no longer the current primary viewer/deployment baseline.
+These remain engineering history, not the current primary viewer/deployment baseline.
