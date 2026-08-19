@@ -6,7 +6,23 @@
 
 > **QGIS makes the pixels. The Factory packages them. The deployment project puts the finished capability in the user’s hands.**
 
-**Keywords:** offline GIS, offline maps, field mapping, QGIS, ArcGIS Earth, ArcGIS Field Maps, TPKX, MBTiles, Compact Cache V2, raster tiles, GNSS, PRAVE, microSD, Windows GIS
+**Keywords:** offline GIS, offline maps, field mapping, QGIS, ArcGIS Earth, ArcGIS Field Maps, TPKX, MBTiles, Compact Cache V2, raster tiles, GNSS, PRAVE, microSD, Windows GIS, wildland fire, dispatch mapping, human AI engineering
+
+---
+
+## Why this exists
+
+The machinery is only half the story.
+
+This project grew from field and dispatch problems: getting useful geography to firefighters, moving operational locations without forcing everyone into one proprietary platform, keeping maps useful when coverage disappears, and teaching people how to interpret the imagery once they have it.
+
+It is also a documented experiment in **human-led, AI-assisted engineering**: field experience and operational judgment define the mission; AI supplies much of the cross-domain coding, GIS, protocol, diagnostic, packaging, and documentation work; real-world testing decides what survives.
+
+Start with the story:
+
+- **[The Journey of Ideas](docs/JOURNEY_OF_IDEAS.md)** — firefighters, dispatch, offline imagery, terrain judgment, and the human + AI collaboration model.
+- **[The Bridges We Had to Build](docs/THE_BRIDGES_WE_HAD_TO_BUILD.md)** — sixteen cross-domain bridges from terrestrial chart plotting and QR handoff to MBTiles → TPKX and PRAVE → ArcGIS Earth.
+- **[Wildland Imagery University](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-/blob/main/training/WILDLAND_IMAGERY_UNIVERSITY.md)** — teaching firefighters to SEE → THINK → DECIDE from imagery rather than merely teaching software buttons.
 
 ---
 
@@ -194,12 +210,15 @@ The real target decides acceptance.
 
 ## Start here
 
+- **[The Journey of Ideas](docs/JOURNEY_OF_IDEAS.md)**
+- **[The Bridges We Had to Build](docs/THE_BRIDGES_WE_HAD_TO_BUILD.md)**
 - [Current Project Status](docs/PROJECT_STATUS_2026-08-18.md)
 - [Software & Downloads](docs/SOFTWARE_AND_DOWNLOADS.md)
 - [Quick Start](docs/QUICK_START.md)
 - [Required QGIS Projects](required_qgis_projects/)
 - [Release / candidate records](releases/README.md)
 - [Technical Architecture](docs/TECHNICAL_ARCHITECTURE.md)
+- [Contributors / human + AI development model](CONTRIBUTORS.md)
 - [Android deployment + ArcGIS Earth user features](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-)
 - [Map Fountain proof archive](https://github.com/Jim-dc95811/Map-Fountain)
 
