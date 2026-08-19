@@ -382,7 +382,7 @@ See [Wildland Imagery University](https://github.com/Jim-dc95811/Android-Field-M
 
 ## 17. Invisible viewer LOD behavior → self-identifying calibration geography
 
-**Status: BUILT / SELF-TESTED — ARCGIS EARTH LIVE ACCEPTANCE PENDING**
+**Status: LIVE-PROVEN — WINDOWS ARCGIS EARTH, Z16–Z20**
 
 Normal aerial imagery is terrible at answering a diagnostic question such as:
 
@@ -403,7 +403,7 @@ one exact Z16 Web Mercator tile
 
 Every tile identifies its level, local row/column, and XYZ address and carries intentional borders, crosshairs, rings, and high-frequency patterns for resampling inspection.
 
-The resulting candidate TPKX contains 341 raster tiles. Internal verification proved all 341 PNG tile byte hashes survived the MBTiles → Compact Cache V2 bridge exactly.
+The resulting TPKX contains 341 raster tiles. Internal verification proved all 341 PNG tile byte hashes survived the MBTiles → Compact Cache V2 bridge exactly.
 
 The bridge here is diagnostic rather than operational:
 
@@ -417,7 +417,7 @@ The practical deployment idea is equally simple:
 
 > **Put a known-good SYSTEM CHECK TPKX on every prepared SD card. Open it first. Make the gear prove itself before blaming the mission map.**
 
-Candidate identity:
+Exact accepted specimen:
 
 ```text
 AE_SYSTEM_CHECK_v0_1_0.tpkx
@@ -425,7 +425,15 @@ AE_SYSTEM_CHECK_v0_1_0.tpkx
 SHA-256 7843afedb94fdc3654be9eadd1c8d18d14bd2c70abd3d5a1d88f5278c1776390
 ```
 
-ArcGIS Earth itself has not yet cast the live-acceptance vote, so this remains **BUILT / SELF-TESTED** rather than LIVE-PROVEN.
+### Live acceptance — 2026-08-18
+
+The exact specimen was opened on the real Windows ArcGIS Earth target. The operator directly confirmed that **all five intended levels work: Z16, Z17, Z18, Z19, and Z20**.
+
+The live screenshots captured the two ends of the ladder particularly clearly: the single red Z16 parent panel and the ordered purple Z20 16 × 16 child grid. The intermediate blue, green, and orange levels were also observed and confirmed working.
+
+That closes the Windows rendering acceptance gate and promotes this bridge to **LIVE-PROVEN**.
+
+ArcGIS Earth Mobile, microSD, and network-hosted use remain separate future acceptance paths for the same frozen specimen.
 
 See [AE SYSTEM CHECK](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-/tree/main/features/ae-system-check).
 
