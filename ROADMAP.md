@@ -1,27 +1,90 @@
 # Offline GeoStack Roadmap
 
-The release-accepted **TPKX Map Factory v1.0.0** remains frozen. New capability is developed in later TEST branches and promoted only after real-target acceptance.
+## Current Factory product line
 
-## Frozen v1.0 baseline
+**Offline Map Factory 1.0** is the current clean product direction.
 
-- ✅ TPKX Map Factory v1.0.0 release accepted
-- ✅ QGIS 3.44.9 raster manufacturing
-- ✅ custom MBTiles → Compact Cache V2 / TPKX bridge
-- ✅ advanced existing-MBTiles conversion
-- ✅ ArcGIS Earth Windows native TPKX runtime
-- ✅ PRAVE → ArcGIS Earth Automation API proof
-- ✅ no operational Internet dependency for core map display
+Status: **BUILT / SELF-TESTED — LIVE ACCEPTANCE PENDING**.
+
+Current operator feature set:
+
+- 4 sources: Google Earth, Google Hybrid, Esri World, Esri World / Google Labels;
+- map area by HOME EXTENT, Clipboard History diagonal points, or two manual GPS points;
+- Z0–Z20;
+- output choice: TPKX / MBTiles / Both;
+- one Advanced Tool: existing MBTiles → TPKX;
+- no REST / Static WMTS output in the current Factory.
+
+The prior **TPKX Map Factory v1.0.0** remains a RELEASE-ACCEPTED / FROZEN historical milestone. Do not erase or relabel that acceptance record.
 
 ---
 
-## Current primary direction — local removable deployment
+## Immediate Factory gate
 
-The active field question is no longer whether a router can serve maps. That has been proven.
+Run Offline Map Factory 1.0 on the real Windows/QGIS target.
 
-The current question is how much useful geography can be put directly on ordinary Android phones with the least possible operator complexity.
+Acceptance sequence:
+
+1. launch from `RUN OFFLINE MAP FACTORY.bat`;
+2. verify both required QGZ references are found;
+3. build a small **MBTiles-only** map;
+4. build a small **TPKX-only** map;
+5. build a small **Both** map;
+6. run **Advanced MBTiles → TPKX**;
+7. open the produced TPKX in ArcGIS Earth;
+8. confirm expected location, cartography, zoom behavior, navigation, cleanup, and final output state.
+
+Only after that passes should Offline Map Factory 1.0 be promoted to LIVE-PROVEN / RELEASE-ACCEPTED.
+
+### Fortification after acceptance
+
+Fortify only where evidence says it is useful. Candidates:
+
+- failed/cancelled-build cleanup;
+- existing-output protection;
+- conservative free-space preflight for large jobs;
+- final output verification;
+- clear completion state only after publication/verification.
+
+Do not redesign the proven manufacturing architecture while doing reliability work.
+
+---
+
+## Finished distribution standard
+
+The public package top level is intentionally limited to:
 
 ```text
-Factory-built TPKX
+OFFLINE MAP FACTORY 1.0 - Installation Guide.pdf
+OFFLINE MAP FACTORY 1.0 - User Guide.pdf
+REQUIRED_FACTORY_PROJECT_DO_NOT_EDIT.qgz
+ESRI and Google Labels.qgz
+RUN OFFLINE MAP FACTORY.bat
+System Files\
+```
+
+All internal implementation files stay behind `System Files`.
+
+---
+
+## REST / Static WMTS exploration — PARKED HISTORY
+
+The Map Fountain Android proof triggered a series of REST/Static WMTS Factory experiments.
+
+Those experiments established useful engineering lessons about giant file trees, packaging overhead, and compact `.restmap` transport seeds.
+
+Current decision:
+
+- preserve the history;
+- do not include REST in Offline Map Factory 1.0;
+- do not revive REST in the normal Factory unless a real target again demonstrates the need.
+
+---
+
+## Current primary field direction — local removable deployment
+
+```text
+Offline Map Factory TPKX
 → microSD card
 → Android
 → ArcGIS Field Maps / ArcGIS Earth
@@ -31,107 +94,30 @@ Deployment work lives in:
 
 **[Android Field Maps + ArcGIS Earth](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-)**
 
-### Immediate map-size gates
+### Map-size gates
 
 Measure real finished products before freezing card tiers:
 
 1. district-wide Z17;
 2. county-level Z18;
 3. selected State Forest / high-value Z20 areas;
-4. Google Hybrid versus Esri imagery/labels equivalents where both are useful.
+4. Google Hybrid versus Esri imagery/labels where both are useful.
 
 Record exact finished sizes and elapsed build times.
 
-### Immediate Field Maps gate
+### Field Maps gate
 
-Esri documents sideloaded TPKX basemaps on Android/device microSD. The project must still run its own controlled target test.
-
-Acceptance requires:
-
-- known-good TPKX placed in the Field Maps basemap folder on microSD;
-- Field Maps sees and selects the local basemap;
-- Android app-level network setting blocks Field Maps cellular data;
-- Wi-Fi removed;
-- local imagery continues to pan/zoom;
-- own-position behavior checked;
-- close/reopen persistence checked.
-
-Do not promote this project path to LIVE-PROVEN before that test passes.
-
----
-
-## Factory development
-
-### v1.0.0
-
-Remains **RELEASE-ACCEPTED / FROZEN**.
-
-### Direct MBTiles output
-
-Preserve direct QGIS-built MBTiles when MBTiles is needed. Reverse TPKX → MBTiles recovery remains rejected as a production shortcut.
-
-### v1.3 / v1.4 Static REST exploration
-
-Map Fountain's Android proof triggered a Static REST WMTS manufacturing branch.
-
-The v1.3 production-scale giant-tree/ZIP experiment exposed major file-count and packaging overhead.
-
-`TPKX_MAP_FACTORY_v1_4_0_TEST` moved to a compact portable `.restmap` seed that expands the disposable WMTS tree at the final SSD location.
-
-Status:
-
-- small lifecycle fixture: **SELF-TESTED**;
-- full production acceptance: **NOT FROZEN**;
-- current priority: **lower than direct local TPKX / microSD deployment**.
-
-Keep the branch as engineering work. Do not let it redefine the accepted Factory baseline by inertia.
+Esri documents sideloaded TPKX basemaps on Android/device microSD. Project acceptance still requires a real-phone test proving local basemap selection, Wi-Fi-only app restriction, offline pan/zoom, own position, and close/reopen behavior.
 
 ---
 
 ## Map Fountain — proven / parked
 
-Map Fountain remains a valuable proof record, not the current default personal-phone architecture.
+Windows native TPKX-over-SMB and Android Static REST WMTS router paths are both LIVE-PROVEN.
 
-### Windows proof
+Map Fountain remains proof/reference, not mandatory personal-phone infrastructure.
 
-```text
-native TPKX on USB SSD
-→ GL.iNet Flint 2
-→ Samba / SMB
-→ Wi-Fi
-→ Windows
-→ ArcGIS Earth
-```
-
-Status: ✅ **LIVE-PROVEN**.
-
-### Android router proof
-
-```text
-Static REST WMTS
-→ USB SSD
-→ Flint 2 local HTTPS/WebDAV
-→ Wi-Fi
-→ ArcGIS Earth Mobile
-```
-
-Status: ✅ **LIVE-PROVEN**.
-
-### Current disposition
-
-**PARKED from the primary personal-phone deployment path.**
-
-Possible future role:
-
-```text
-Starlink
-→ Flint 2 WAN
-→ USB SSD
-→ local SMB / Wi-Fi / Ethernet
-→ basecamp laptops and local consumers
-```
-
-That would be a practical poor-man's NAS / incident map reservoir, not a reason to complicate every phone.
+Possible future role: Starlink-connected basecamp storage / poor-man's NAS.
 
 ---
 
@@ -141,58 +127,31 @@ Rasta remains the sibling project for arbitrary giant rasters and deep-zoom imag
 
 Current live-proven baseline: v0.1.3.
 
-A later v0.1.4 TEST added independent TPKX / MBTiles / REST outputs, but its REST branch remains a TEST branch tied to the Map Fountain exploration. Rasta's core value does not depend on REST or router delivery.
-
-Potential deployment use: spare SD-card capacity can carry deep-zoom cityscapes, historical scans, specialty maps, or other large raster pyramids when useful.
+The v0.1.4 REST branch remains TEST history tied to Map Fountain exploration; Rasta's core value does not depend on REST.
 
 ---
 
 ## Field integration
 
-### Native GNSS
-
-**Status: ✅ LIVE-OBSERVED — 2026-08-15**
-
-Known-good observed input: **9600 baud**, GLL + RMC present.
-
-### PRAVE
-
-PRAVE → ArcGIS Earth Automation API remains **LIVE-PROVEN**.
-
-### F22 / QR / KML
-
-Keep as field/live/interoperability input paths. Add only when the real operational use calls for them.
-
----
-
-## Public documentation priorities
-
-- keep the four repositories cross-linked and role-specific;
-- keep v1.0.0 clearly separated from TEST branches;
-- preserve Map Fountain as proof history without presenting it as mandatory field hardware;
-- document the Android microSD workflow without turning the public guide into a GIS encyclopedia;
-- preserve the one-page Field Maps procedure as the normal-user handoff;
-- publish real card-size results after the district/county/Z20 builds finish;
-- retain Google Earth / KML work as lineage, not current baseline.
+- Native GNSS: **LIVE-OBSERVED**, 9600 baud, GLL + RMC present.
+- PRAVE → ArcGIS Earth Automation API: **LIVE-PROVEN**.
+- F22 / QR / KML: retain as bounded field/live/interoperability paths and expand only when real use demands it.
 
 ---
 
 ## Non-goals
 
 - forcing ordinary field users to run the Factory;
-- requiring a router/server for the normal personal-phone map path;
-- rebuilding QGIS inside the Factory;
-- rebuilding ArcGIS Earth or Field Maps;
-- making public Internet connectivity mandatory;
+- restoring REST to the clean Factory without a demonstrated need;
+- requiring router/server infrastructure for normal personal-phone deployment;
+- rebuilding QGIS;
+- making public Internet mandatory;
 - reviving Raspberry Pi / Pi-server architecture by default;
 - using rejected TPKX recovery as a shortcut;
-- promoting vendor documentation to project LIVE-PROVEN status without target testing;
-- adding GIS features merely because the software exposes them.
+- adding features because they exist rather than because users need them.
 
 ## Governing rules
 
-> **New capability must earn its way into the baseline by answering to the real target.**
+> **The real target decides acceptance.**
 
-For personal mobile deployment:
-
-> **Make the map once. Put it on the card. Let the phone read local bytes.**
+> **Keep the Factory simple. Keep the user-facing folder clean.**
