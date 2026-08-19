@@ -35,6 +35,12 @@ Current Factory:
 
 The prior **TPKX Map Factory v1.0.0** remains a RELEASE-ACCEPTED / FROZEN historical milestone.
 
+## Operator guides
+
+- **[Offline Map Factory 1.0 — Installation Guide (PDF)](guides/OFFLINE_MAP_FACTORY_1_0_INSTALLATION_GUIDE.pdf)**
+- **[Offline Map Factory 1.0 — User Guide (PDF)](guides/OFFLINE_MAP_FACTORY_1_0_USER_GUIDE.pdf)**
+- [Quick Start — Markdown](QUICK_START.md)
+
 ## Four-project family
 
 - **[Offline GeoStack](../README.md)** — master field-mapping / Factory project.
@@ -46,10 +52,10 @@ The prior **TPKX Map Factory v1.0.0** remains a RELEASE-ACCEPTED / FROZEN histor
 
 - **[Current Project Status — 2026-08-18](PROJECT_STATUS_2026-08-18.md)**
 - **[Offline GeoStack README](../README.md)**
-- **[Quick Start — Offline Map Factory 1.0](QUICK_START.md)**
 - **[Software & Downloads](SOFTWARE_AND_DOWNLOADS.md)**
 - **[Required QGIS Projects](../required_qgis_projects/)**
 - **[Release / candidate records](../releases/README.md)**
+- **[Offline Map Factory 1.0 Candidate Notes](../releases/OFFLINE_MAP_FACTORY_1_0_CANDIDATE_NOTES.md)**
 - **[Technical Architecture](TECHNICAL_ARCHITECTURE.md)**
 - **[AI Continuity / Restart Note](AI_CONTINUITY_RESTART_NOTE.md)**
 - **[Android deployment repository](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-)**
