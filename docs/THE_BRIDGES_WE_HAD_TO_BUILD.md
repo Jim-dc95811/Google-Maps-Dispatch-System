@@ -380,6 +380,57 @@ See [Wildland Imagery University](https://github.com/Jim-dc95811/Android-Field-M
 
 ---
 
+## 17. Invisible viewer LOD behavior → self-identifying calibration geography
+
+**Status: BUILT / SELF-TESTED — ARCGIS EARTH LIVE ACCEPTANCE PENDING**
+
+Normal aerial imagery is terrible at answering a diagnostic question such as:
+
+> **Which tile level is the viewer actually showing me right now?**
+
+During the earlier Google Earth / Network Earth laboratories, the project learned to replace ambiguous real imagery with conspicuous color-coded spatial cells so the renderer could not hide its mathematical behavior.
+
+AE SYSTEM CHECK turns that old laboratory trick into a field-user product.
+
+```text
+one exact Z16 Web Mercator tile
+→ Z16 RED      1 tile
+→ Z17 BLUE     4 tiles
+→ Z18 GREEN   16 tiles
+→ Z19 ORANGE  64 tiles
+→ Z20 PURPLE 256 tiles
+```
+
+Every tile identifies its level, local row/column, and XYZ address and carries intentional borders, crosshairs, rings, and high-frequency patterns for resampling inspection.
+
+The resulting candidate TPKX contains 341 raster tiles. Internal verification proved all 341 PNG tile byte hashes survived the MBTiles → Compact Cache V2 bridge exactly.
+
+The bridge here is diagnostic rather than operational:
+
+```text
+opaque viewer behavior
+→ synthetic self-identifying map pyramid
+→ visually obvious LOD / tile / resampling state
+```
+
+The practical deployment idea is equally simple:
+
+> **Put a known-good SYSTEM CHECK TPKX on every prepared SD card. Open it first. Make the gear prove itself before blaming the mission map.**
+
+Candidate identity:
+
+```text
+AE_SYSTEM_CHECK_v0_1_0.tpkx
+4,196,743 bytes
+SHA-256 7843afedb94fdc3654be9eadd1c8d18d14bd2c70abd3d5a1d88f5278c1776390
+```
+
+ArcGIS Earth itself has not yet cast the live-acceptance vote, so this remains **BUILT / SELF-TESTED** rather than LIVE-PROVEN.
+
+See [AE SYSTEM CHECK](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-/tree/main/features/ae-system-check).
+
+---
+
 # The recurring pattern
 
 Across radio, GIS, mobile phones, QR, networking, raster imaging, and viewer APIs, the same engineering pattern keeps appearing:
