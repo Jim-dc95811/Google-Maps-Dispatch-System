@@ -2,6 +2,15 @@
 
 ![Offline GeoStack](offline_geostack_banner.svg)
 
+## The story behind the engineering
+
+Before diving into implementation details, these pages explain why the project exists and what the long chain of experiments produced:
+
+- **[The Journey of Ideas](JOURNEY_OF_IDEAS.md)** — field problems, dispatch, offline imagery, terrain judgment, and the human + AI engineering model.
+- **[The Bridges We Had to Build](THE_BRIDGES_WE_HAD_TO_BUILD.md)** — the cross-domain interoperability bridges that connected radio, GIS, QR, networks, raster pyramids, and ArcGIS Earth.
+- **[Wildland Imagery University](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-/blob/main/training/WILDLAND_IMAGERY_UNIVERSITY.md)** — imagery-based terrain-judgment training for firefighters.
+- **[Contributors / collaboration model](../CONTRIBUTORS.md)** — explicit human and AI engineering roles.
+
 ## Current architecture
 
 ```text
@@ -14,6 +23,10 @@ TPKX
 → microSD
 → Android
 → ArcGIS Field Maps / ArcGIS Earth
+
+WINDOWS ARCGIS EARTH FIELD FEATURES
+PRAVE Live / QR Command Bridge
+→ local Automation API / controlled local actions
 
 OPTIONAL SHARED STORAGE HISTORY
 Map Fountain router/SSD proofs
@@ -43,13 +56,15 @@ The prior **TPKX Map Factory v1.0.0** remains a RELEASE-ACCEPTED / FROZEN histor
 
 ## Four-project family
 
-- **[Offline GeoStack](../README.md)** — master field-mapping / Factory project.
-- **[Rasta Pyramid Factory](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory)** — giant-raster / deep-zoom manufacturing.
-- **[Map Fountain](https://github.com/Jim-dc95811/Map-Fountain)** — LIVE-PROVEN router/storage experiments; parked reference / possible future Starlink NAS.
-- **[Android Field Maps + ArcGIS Earth](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-)** — microSD deployment and normal-user procedure.
+- **[Offline GeoStack](../README.md)** — master map manufacturing + field-system integration.
+- **[Rasta Pyramid Factory](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory)** — giant-raster / deep-zoom pyramid manufacturing.
+- **[Map Fountain](https://github.com/Jim-dc95811/Map-Fountain)** — LIVE-PROVEN shared-storage/network delivery evidence; parked from the normal personal-phone path.
+- **[Android Field Maps + ArcGIS Earth](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-)** — deployment to the user: Android offline maps + Windows ArcGIS Earth field features + imagery training.
 
 ## Start here
 
+- **[The Journey of Ideas](JOURNEY_OF_IDEAS.md)**
+- **[The Bridges We Had to Build](THE_BRIDGES_WE_HAD_TO_BUILD.md)**
 - **[Current Project Status — 2026-08-18](PROJECT_STATUS_2026-08-18.md)**
 - **[Offline GeoStack README](../README.md)**
 - **[Software & Downloads](SOFTWARE_AND_DOWNLOADS.md)**
@@ -80,6 +95,7 @@ Do not delete the history. Do not present it as today's operator workflow.
 Factory makes the map
 → local storage carries it
 → target application consumes it
+→ trained human interprets it
 ```
 
-> **Keep the Factory simple. Keep the package clean.**
+> **Keep the Factory simple. Keep the package clean. Keep the purpose visible.**
