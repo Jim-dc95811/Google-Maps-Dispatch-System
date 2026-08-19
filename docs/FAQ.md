@@ -2,117 +2,151 @@
 
 ## What is Offline GeoStack?
 
-A Windows-first offline geospatial stack that uses QGIS for cartographic rendering, raster MBTiles as the tile-pyramid handoff/master when useful, a custom MBTiles → TPKX interoperability bridge for native packaging, and local field deployment that does not depend on the public Internet at showtime.
+A Windows-first offline geospatial stack that uses QGIS for cartographic rendering, raster MBTiles as the tile-pyramid handoff/master, a custom MBTiles → TPKX bridge for native packaging, and local field deployment that does not depend on the public Internet at showtime.
 
-ArcGIS Earth remains a primary runtime. Android deployment work now also includes ArcGIS Field Maps.
+## What is the current Factory?
 
-## Is TPKX Map Factory the whole project?
+**Offline Map Factory 1.0** is the current clean Factory product line.
 
-No. **TPKX Map Factory** is the map-manufacturing subsystem. **Offline GeoStack** is the master project.
+Status: **BUILT / SELF-TESTED — LIVE ACCEPTANCE PENDING**.
+
+Current feature set:
+
+- Google Earth;
+- Google Hybrid;
+- Esri World;
+- Esri World / Google Labels;
+- Z0–Z20;
+- TPKX / MBTiles / Both;
+- Advanced existing MBTiles → TPKX.
+
+REST / Static WMTS output is not part of the current Factory.
+
+## What happened to TPKX Map Factory v1.0.0?
+
+It remains a separate **RELEASE-ACCEPTED / FROZEN historical milestone** from 2026-08-15.
+
+The new product line reset the name and numbering rather than pretending the later REST experiments were still part of the finished operator product.
 
 ## Why QGIS?
 
-Because QGIS already does the hard cartographic work: source access, projection, layer composition, labels, symbols, blending, rasterization, zoom-dependent rendering, and MBTiles generation. Rebuilding that inside the Factory would be pointless and fragile.
+QGIS already handles source access, projection, layer composition, labels, symbols, blending, rasterization, zoom-dependent rendering, and MBTiles generation.
 
-## Why MBTiles if ArcGIS Earth does not open MBTiles directly?
+The Factory uses QGIS as the rendering engine instead of rebuilding GIS behavior.
 
-MBTiles contains the already-rendered raster pyramid. In the frozen v1.0 Factory it is primarily the manufacturing handoff to the converter. In later TEST branches it may also be deliberately preserved as a finished/interchange product.
+## Why MBTiles?
 
-The important rule is that direct QGIS-built MBTiles is the accepted MBTiles source. Reverse TPKX → MBTiles recovery was rejected as a production shortcut after real mobile visual defects.
+MBTiles contains the already-rendered raster pyramid.
 
-## Does the converter redraw or resample the imagery?
+Offline Map Factory 1.0 can:
 
-No. In the proven raster PNG/JPEG path, the converter reads the existing `tile_data` bytes from MBTiles and writes those bytes into Compact Cache V2 bundle records. It changes addressing, indexes, metadata, and container structure—not the cartography.
+- publish MBTiles directly;
+- convert the same MBTiles to TPKX;
+- publish Both.
 
-## What is the critical row conversion?
+If MBTiles is wanted downstream, preserve the direct QGIS-built MBTiles.
 
-MBTiles/TMS rows are bottom-origin while ArcGIS compact-cache rows are top-origin:
+Reverse TPKX → MBTiles recovery was rejected as a production shortcut after real mobile visual defects.
+
+## Does the converter rerender the imagery?
+
+No. In the proven raster PNG/JPEG path, it preserves the existing tile image bytes and changes addressing/container structure.
+
+Critical row conversion:
 
 ```text
 y_arcgis = (2^z - 1) - y_tms
 ```
 
-The addressing/bundle work is integer math.
+## Does QGIS natively create the TPKX used here?
 
-## Is the converter doing coordinate “fudging”?
+Not in this workflow. QGIS creates raster MBTiles. Offline GeoStack supplies the Compact Cache V2 / TPKX packaging bridge.
 
-Not in the tile-placement path. The critical tile and bundle addressing uses integer operations. Web Mercator metadata uses ordinary double-precision floating-point math and Python `math.pi`. Human-readable console formatting does not feed rounded values back into package placement.
+## What is the Advanced Tool?
 
-## Why Compact Cache V2?
+The clean Factory has exactly one Advanced Tool:
 
-That is the tile storage used by TPKX. Bundles cover 128 × 128 possible tile slots, with indexed binary records that ArcGIS applications can address efficiently.
+**existing MBTiles → TPKX**
 
-## Does QGIS natively export the TPKX used here?
+A GIS professional can build custom raster MBTiles in QGIS and use only the packaging stage.
 
-Not in this workflow. QGIS produces raster MBTiles; Offline GeoStack supplies the missing bridge into the Esri TPKX / Compact Cache V2 package structure.
+## What does the finished package look like?
 
-## Why ArcGIS Earth?
+```text
+OFFLINE MAP FACTORY 1.0 - Installation Guide.pdf
+OFFLINE MAP FACTORY 1.0 - User Guide.pdf
+REQUIRED_FACTORY_PROJECT_DO_NOT_EDIT.qgz
+ESRI and Google Labels.qgz
+RUN OFFLINE MAP FACTORY.bat
+System Files\
+```
 
-Because it provides native local TPKX support, KML/KMZ/NetworkLinks, GNSS/NMEA capability, a local Automation API, drawings/markers, useful 3D navigation, and a local map path that can operate without public Internet.
+Internal support material stays behind `System Files` so the operator-facing root remains clean.
 
-## Is ArcGIS Earth required to manufacture the TPKX?
+## Where do the QGZ files go?
 
-No. QGIS + Python + the Factory/converter manufacture the package. ArcGIS Earth is one of the primary target runtimes and has been the final acceptance authority for the proven TPKX work to date.
+```text
+C:\Google Earth Project\QGIS\
+```
 
-## What does “the real target is the acceptance authority” mean?
+with exact filenames:
 
-A structurally plausible package is not enough. The intended app must open it, place it correctly, show the expected zoom behavior, render the expected cartography, and navigate normally.
+```text
+REQUIRED_FACTORY_PROJECT_DO_NOT_EDIT.qgz
+ESRI and Google Labels.qgz
+```
 
-Vendor documentation establishes that a path should exist. It does not substitute for this project's own target test.
+## What versions are pinned?
 
-## How large has this been tested?
+- QGIS 3.44.9
+- Python 3.14.5
+- PNG
+- 96 DPI
+- antialiasing ON
+- metatile 4
+- Z0–Z20
 
-Among the live acceptance runs:
+## What still needs to be proven for Offline Map Factory 1.0?
 
-- 271,497-tile advanced existing-MBTiles conversion → 47 bundles → ArcGIS Earth PASS;
-- 271,242-tile Esri World / Google Labels normal Factory build → ArcGIS Earth PASS;
-- exact v1.0.0 smoke build → ArcGIS Earth PASS;
-- production-scale `ESG1N.tpkx` at **25,561,426 KB** in Windows File Explorer → opened directly from router-attached storage over Wi-Fi → ArcGIS Earth PASS.
+The new product line must pass a real Windows/QGIS acceptance run proving:
 
-## Can I use my own QGIS project?
+1. MBTiles-only;
+2. TPKX-only;
+3. Both;
+4. Advanced MBTiles → TPKX;
+5. produced TPKX opens/renders correctly in ArcGIS Earth;
+6. cleanup and final-output behavior are correct.
 
-Yes. That is the point of **ADVANCED: MBTILES → TPKX**. Build the raster cartography you want in QGIS, produce compatible raster MBTiles, then use the Factory only as the package bridge.
+Self-test success does not automatically equal RELEASE-ACCEPTED.
 
-## Can the advanced path include parcels, roads, contours, flood zones, etc.?
+## What happened to REST / Static WMTS?
 
-If QGIS can render them into the raster MBTiles, the converter does not care what upstream layers produced the pixels. It receives finished raster tiles.
+It worked as an engineering branch and taught useful lessons, but it is now **parked history**.
 
-## Does Offline GeoStack require Internet access in the field?
+The v1.3/v1.4 experiments explored giant Static REST WMTS trees and compact `.restmap` transport seeds for Map Fountain.
 
-Core prepared-map operation is designed specifically not to.
-
-> **There can be no operational dependence on Internet connectivity. Period.**
-
-Connectivity is useful during preparation, imagery refresh, and optional online features. It is not allowed to become the single point of failure for essential map use.
+Current decision: keep the history, leave REST out of Offline Map Factory 1.0, and reopen it only if a real target again requires it.
 
 ## What is the current personal-phone direction?
 
 ```text
 Factory-built TPKX
-→ microSD card
+→ microSD
 → Android
 → ArcGIS Field Maps / ArcGIS Earth
 ```
 
-The current card-sizing experiment is testing district Z17, county Z18, and selected State Forest/high-value Z20 coverage with real finished byte counts.
+Current card-sizing work is measuring district Z17, county Z18, and selected State Forest/high-value Z20 products using real finished byte counts.
 
 ## Does ArcGIS Field Maps support TPKX on Android/microSD?
 
 Esri documents sideloaded `.tpk` / `.tpkx` basemaps on Android device storage or SD card.
 
-Documented Android basemap folder:
+Offline GeoStack's own Field Maps + microSD acceptance test is still pending. Vendor documentation is not the same as project LIVE-PROVEN status.
 
-```text
-\Android\data\com.esri.fieldmaps\files\basemaps
-```
+## Why restrict Field Maps to Wi-Fi only?
 
-Offline GeoStack's own Field Maps + microSD acceptance test is still pending. Do not label it project LIVE-PROVEN until the real target passes.
-
-## Why set Field Maps to Wi-Fi only?
-
-The target audience may be using personal phones and personal data plans. Esri states that the Cellular Data option inside Field Maps does not block every cellular-data use by the app. Android's app-level network setting can restrict Field Maps to Wi-Fi only while leaving ordinary phone cellular service available.
-
-The deployment repository contains the lean field procedure.
+The target audience may be using personal phones and data plans. Android app-level network controls can restrict Field Maps to Wi-Fi while leaving ordinary phone cellular service available.
 
 ## What happened to Map Fountain?
 
@@ -123,62 +157,50 @@ It live-proved:
 1. native TPKX on router-attached SSD → SMB/Wi-Fi → ArcGIS Earth Windows;
 2. Static REST WMTS on router-attached SSD → local HTTPS/Wi-Fi → ArcGIS Earth Mobile.
 
-After proving those paths, the project simplified the normal personal-phone direction further by putting TPKX directly on removable local storage.
+It is now **proven / parked**, not failed. It may return as Starlink-connected basecamp storage / poor-man's NAS.
 
-Map Fountain is therefore **proven / parked**, not a failed branch. It may return as a Starlink-connected basecamp storage / poor-man's NAS package.
+## How large has the TPKX path been tested?
 
-## What is the `.restmap` branch?
+Among the live acceptance runs:
 
-A later TPKX Map Factory v1.4.0 TEST experiment created a compact portable REST seed instead of transporting a giant expanded WMTS file tree:
-
-```text
-verified MBTiles
-→ <map>_REST.restmap
-→ move one file
-→ expand Static REST WMTS at final SSD
-```
-
-The small lifecycle fixture self-tested successfully. It remains experimental and does not replace the frozen v1.0.0 TPKX baseline.
+- 271,497-tile advanced existing-MBTiles conversion → ArcGIS Earth PASS;
+- 271,242-tile Esri World / Google Labels Factory build → PASS;
+- historical v1.0.0 smoke build → PASS;
+- production-scale `ESG1N.tpkx` at **25,561,426 KB** in Windows File Explorer → opened directly from router-attached SMB storage over Wi-Fi → PASS.
 
 ## What is Persistent Geographic Context?
 
-The operating condition where local map content, own position, surrounding roads/terrain, and other spatial context remain continuously present instead of being repeatedly requested from a public network service.
+The operating condition where prepared map content, own position, roads/terrain, and surrounding spatial context remain present instead of being repeatedly requested from a public network service.
 
-## What is PRAVE doing in a map project?
+## What is PRAVE doing here?
 
-PRAVE is one of the live remote-position inputs in the larger field system. The PRAVE → ArcGIS Earth Automation API path is live-proven with native drawings, unit labels, and RSSI fire-truck icons.
+PRAVE is one of the live remote-position inputs in the larger field system. PRAVE → ArcGIS Earth Automation API is LIVE-PROVEN with native drawings, labels, and the RSSI fire-truck icon family.
 
-## What about F22 and QR?
+## What are the four repositories?
 
-They are continuing input paths. The design is to decode protocol-specific input at the edge, normalize it, and feed one ArcGIS Earth live-position/command layer rather than create separate renderers.
+1. **Offline GeoStack** — master Factory / field-mapping project.
+2. **Rasta Pyramid Factory** — giant-raster / deep-zoom manufacturing.
+3. **Map Fountain** — proven router/storage delivery reference.
+4. **Android Field Maps + ArcGIS Earth** — personal-phone / microSD deployment.
 
-## Is KML obsolete here?
+## Does Offline GeoStack require Internet access in the field?
 
-No. KML remains useful for interoperability, saved content, external feeds, placemarks, folders, and NetworkLinks. It is simply no longer required to impersonate the offline raster basemap or every live-position mechanism.
+No.
 
-## What are the four repositories now?
+> **There can be no operational dependence on public Internet connectivity. Period.**
 
-1. **Offline GeoStack** — master map-manufacturing / field-mapping system.
-2. **Rasta Pyramid Factory** — arbitrary giant-raster / deep-zoom pyramid manufacturing.
-3. **Map Fountain** — proven router/storage delivery evidence; parked reference / possible future basecamp NAS.
-4. **Android Field Maps + ArcGIS Earth** — personal-phone / microSD deployment and user procedure.
+Online access may help manufacture or refresh maps. Essential prepared-map use must survive loss of outside connectivity.
 
 ## What does the MIT license cover?
 
-Original Offline GeoStack code and documentation, unless a file states otherwise. It does **not** grant rights to third-party imagery, labels, basemaps, vendor software, or external services. See `NOTICE.md` and `SOURCE_AND_LICENSING_NOTE.md`.
+Original Offline GeoStack code/documentation unless a file states otherwise. It does not grant rights to third-party imagery, labels, basemaps, vendor software, or external services.
 
-## Where is the exact v1.0 ZIP?
-
-The exact release-accepted archive is preserved in the canonical project archive. Do not substitute a TEST branch or reconstructed package and call it the accepted release.
-
-## What should a future AI read first?
+## What should a future maintainer read first?
 
 1. `README.md`
 2. `ROADMAP.md`
-3. `docs/AI_CONTINUITY_RESTART_NOTE.md`
-4. `docs/TECHNICAL_ARCHITECTURE.md`
-5. the Android deployment repository README
-6. `CHANGELOG.md`
-7. the v1.0 professional report when historical release detail is needed
-
-Then inspect legacy material only when chronology matters.
+3. `docs/PROJECT_STATUS_2026-08-18.md`
+4. `docs/AI_CONTINUITY_RESTART_NOTE.md`
+5. `docs/TECHNICAL_ARCHITECTURE.md`
+6. `releases/README.md`
+7. newest commits/issues
