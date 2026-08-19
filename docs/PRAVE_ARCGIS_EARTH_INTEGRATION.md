@@ -4,7 +4,15 @@
 
 **LIVE-PROVEN**
 
-The project’s `$PRAVE` live-position path has been migrated from the earlier Google Earth-oriented display architecture to the **ArcGIS Earth Automation API**.
+The project's `$PRAVE` live-position path has been migrated from the earlier Google Earth-oriented display architecture to the **ArcGIS Earth Automation API**.
+
+### User-facing feature home
+
+The authoritative user-facing PRAVE Live feature, preserved original package, setup notes, and download now live in the deployment repository:
+
+**[Android Field Maps + ArcGIS Earth — PRAVE Live](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-/tree/main/features/prave-live)**
+
+This Offline GeoStack page remains the deeper engineering and acceptance record. Do not duplicate the user package here.
 
 ## Input model
 
