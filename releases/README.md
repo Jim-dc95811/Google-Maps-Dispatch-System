@@ -31,6 +31,13 @@ The next gate is a real Windows/QGIS run proving MBTiles-only, TPKX-only, Both, 
 
 Do not call this a Gold/release-accepted build before that target run passes.
 
+Current candidate records:
+
+- [Offline Map Factory 1.0 Candidate Notes](OFFLINE_MAP_FACTORY_1_0_CANDIDATE_NOTES.md)
+- [Offline Map Factory 1.0 Acceptance Checklist](OFFLINE_MAP_FACTORY_1_0_ACCEPTANCE_CHECKLIST.md)
+- [Installation Guide PDF](../docs/guides/OFFLINE_MAP_FACTORY_1_0_INSTALLATION_GUIDE.pdf)
+- [User Guide PDF](../docs/guides/OFFLINE_MAP_FACTORY_1_0_USER_GUIDE.pdf)
+
 ---
 
 ## Historical milestone — TPKX Map Factory v1.0.0
@@ -48,7 +55,7 @@ That package remains a frozen historical milestone and is not silently replaced 
 The accepted archive is preserved in the canonical working archive. A bad/truncated GitHub copy was deliberately removed rather than leaving a false artifact in public view.
 
 - [v1.0.0 Release Notes](TPKX_MAP_FACTORY_v1_0_0_RELEASE_NOTES.md)
-- [Public Release Checklist](PUBLIC_RELEASE_CHECKLIST.md)
+- [Historical v1.0.0 Public Release Checklist](PUBLIC_RELEASE_CHECKLIST.md)
 - [Release Lineage](RELEASE_LINEAGE.md)
 - [Required QGIS Projects](../required_qgis_projects/)
 
