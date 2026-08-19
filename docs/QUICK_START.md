@@ -1,77 +1,81 @@
-# Offline GeoStack — TPKX Map Factory v1.0.0 Quick Start
+# Offline Map Factory 1.0 — Quick Start
 
-## Before you start — get the exact software
+**Status: BUILT / SELF-TESTED — LIVE ACCEPTANCE PENDING**
 
-**[Open Software & Downloads](SOFTWARE_AND_DOWNLOADS.md)**
-
-That page contains the official download links for the known-good v1.0.0 environment:
-
-- **QGIS 3.44.9 Solothurn — 64-bit Windows**
-- **Python 3.14.5 — 64-bit Windows**
-- **ArcGIS Earth — Windows desktop**
-- the two required Offline GeoStack QGIS project files
-- the TPKX Map Factory v1.0.0 release record
-
-For reproducibility, **QGIS 3.44.9 and Python 3.14.5 are pinned for the v1.0.0 baseline.** Do not silently substitute a newer maintenance release while trying to reproduce the accepted environment.
+For full first-time setup, use the supplied **Offline Map Factory 1.0 Installation Guide**.
 
 ## Install once
 
-1. Install ArcGIS Earth.
-2. Install Python 3.14.5 (64-bit).
-3. Install QGIS 3.44.9 (64-bit).
-4. Create:
+1. Install **Python 3.14.5 (64-bit)**.
+2. Install **QGIS 3.44.9 (64-bit)**.
+3. Create:
 
 ```text
 C:\Google Earth Project\QGIS\
 ```
 
-5. Download the two files from [`required_qgis_projects/`](../required_qgis_projects/) and place them in that folder with their exact filenames.
-6. Obtain the release-accepted `TPKX_MAP_FACTORY_v1_0_0.zip` and extract it completely before use.
+4. Copy these two supplied files into that folder with their exact names:
 
-> **GitHub binary note:** the exact accepted ZIP is preserved in the canonical project archive. The connector used during this repository rebuild could not transmit that ZIP intact, so the bad copy was removed. See [`releases/README.md`](../releases/README.md). The exact ZIP should be attached directly to GitHub before public binary distribution.
+```text
+REQUIRED_FACTORY_PROJECT_DO_NOT_EDIT.qgz
+ESRI and Google Labels.qgz
+```
+
+5. Keep the Factory launcher and `System Files` folder together.
+
+User-facing Factory folder:
+
+```text
+RUN OFFLINE MAP FACTORY.bat
+System Files\
+```
 
 ## Make a map
 
-1. Open the Factory.
-2. Choose one of the four map sources.
-3. Choose the map area using either:
-   - a prepared HOME EXTENT,
-   - two diagonal coordinate pairs from Windows Clipboard History, or
-   - two manually entered decimal-degree GPS coordinate pairs.
-4. Choose minimum and maximum zoom.
-5. Click **BUILD TPKX MAP**.
-6. Choose the output filename when prompted.
-7. Wait for COMPLETE.
-8. Open the finished `.tpkx` directly in ArcGIS Earth.
+1. Double-click **RUN OFFLINE MAP FACTORY.bat**.
+2. Choose one of four sources:
+   - Google Earth
+   - Google Hybrid
+   - Esri World
+   - Esri World / Google Labels
+3. Choose the map area using:
+   - HOME EXTENT;
+   - two diagonal points from Windows Clipboard History; or
+   - two manual Latitude,Longitude points.
+4. Choose minimum and maximum zoom, **Z0–Z20**.
+5. Choose finished output:
+   - **TPKX**;
+   - **MBTiles**; or
+   - **Both**.
+6. Click **BUILD MAP**.
+7. Choose the destination/name.
+8. Review the build summary and begin.
+9. Wait for **COMPLETE**.
 
-The user-selected destination should receive one finished `.tpkx` file. Temporary manufacturing data is not intended to remain there.
+## Output meaning
 
-## Advanced GIS users
+- **TPKX** — compact tile package for ArcGIS Earth and compatible offline deployment.
+- **MBTiles** — compact raster tile master/interchange file.
+- **Both** — preserves the MBTiles and creates the matching TPKX.
 
-If you already have a suitable raster MBTiles file:
+## Advanced Tool
 
-1. Click **ADVANCED: MBTILES → TPKX**.
-2. Select the `.mbtiles` file.
-3. Choose the output `.tpkx` filename.
-4. Wait for COMPLETE.
-5. Open the finished package in ArcGIS Earth.
+If you already have suitable raster MBTiles:
 
-This is the direct interoperability path for GIS professionals: build the desired raster layer stack in QGIS, export suitable raster MBTiles, then let the Factory package those existing tiles into TPKX.
+1. Open **ADVANCED TOOLS**.
+2. Choose **Tool 1 — MBTiles → TPKX**.
+3. Select the MBTiles file.
+4. Name the output TPKX.
+5. Let the converter package the existing raster tiles.
 
-## What the Factory is doing underneath
+The converter does not rerender the cartography.
 
-```text
-Normal path:
-QGIS project → raster MBTiles → Compact Cache V2 → TPKX → ArcGIS Earth
+## Current boundary
 
-Advanced path:
-existing raster MBTiles → Compact Cache V2 → TPKX → ArcGIS Earth
-```
+Offline Map Factory 1.0 deliberately does **not** include REST / Static WMTS output.
 
-The converter does not rerender the cartography. QGIS owns the pixels; the converter owns the package mechanics.
+That work remains engineering history from the Map Fountain exploration.
 
 ## Operational rule
 
-> **There can be no operational dependence on Internet connectivity. Period.**
-
-Build or refresh maps before they are needed. At showtime, the map is already in the trunk.
+> **Build or refresh maps before they are needed. Essential map use must not depend on public Internet connectivity.**
