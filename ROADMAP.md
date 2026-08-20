@@ -2,7 +2,7 @@
 
 ## Current Factory product line
 
-**Offline Map Factory 1.0** is the current clean product direction.
+**Offline Map Factory 1.0** remains the current clean product direction.
 
 Status: **BUILT / SELF-TESTED — LIVE ACCEPTANCE PENDING**.
 
@@ -10,9 +10,9 @@ Current operator feature set:
 
 - 4 sources: Google Earth, Google Hybrid, Esri World, Esri World / Google Labels;
 - map area by HOME EXTENT, Clipboard History diagonal points, or two manual GPS points;
-- Z0–Z20;
+- Z0-Z20;
 - output choice: TPKX / MBTiles / Both;
-- one Advanced Tool: existing MBTiles → TPKX;
+- one Advanced Tool: existing MBTiles -> TPKX;
 - no REST / Static WMTS output in the current Factory.
 
 The prior **TPKX Map Factory v1.0.0** remains a RELEASE-ACCEPTED / FROZEN historical milestone. Do not erase or relabel that acceptance record.
@@ -30,94 +30,122 @@ Acceptance sequence:
 3. build a small **MBTiles-only** map;
 4. build a small **TPKX-only** map;
 5. build a small **Both** map;
-6. run **Advanced MBTiles → TPKX**;
+6. run **Advanced MBTiles -> TPKX**;
 7. open the produced TPKX in ArcGIS Earth;
 8. confirm expected location, cartography, zoom behavior, navigation, cleanup, and final output state.
 
 Only after that passes should Offline Map Factory 1.0 be promoted to LIVE-PROVEN / RELEASE-ACCEPTED.
 
-### Fortification after acceptance
+---
 
-Fortify only where evidence says it is useful. Candidates:
+## Current primary field direction — physical district map card
 
-- failed/cancelled-build cleanup;
-- existing-output protection;
-- conservative free-space preflight for large jobs;
-- final output verification;
-- clear completion state only after publication/verification.
+Mission:
 
-Do not redesign the proven manufacturing architecture while doing reliability work.
+> **A Field Maps user must be able to open the app with zero public Internet and use a district-wide Esri Hybrid map through Z17. The same local map should stop the heavy basemap from burning cellular data when service exists.**
+
+Current field chain:
+
+```text
+Offline Map Factory TPKX
+-> ArcGIS Pro minimal MMPK wrapper
+-> physical microSD
+   +-- Field Maps mappackages\DISTRICT.mmpk
+   +-- Field Maps basemaps\DISTRICT.tpkx
+-> Android
+-> Field Maps + ArcGIS Earth Mobile
+```
+
+### Why both files
+
+The duplication is deliberate.
+
+- MMPK supplies a complete on-device Field Maps map.
+- TPKX remains available as a sideloaded local basemap and direct ArcGIS Earth Mobile product.
+- Storage efficiency ranks below field reliability.
+- MBTiles remains on the manufacturing/master side unless a different downstream use explicitly needs it.
+
+### ArcGIS Pro bridge — PASS
+
+ArcGIS Pro 3.7 has now successfully created:
+
+- a small minimal MMPK from an existing project TPKX;
+- a district-scale approximately 52 GB MMPK from the existing approximately 52 GB district TPKX.
+
+Small specimen observations:
+
+- analyzer: 0 errors / 0 warnings / 0 messages;
+- MMPK version 3.0;
+- original TPKX preserved intact inside the MMPK;
+- no HTTP/HTTPS references found in the small specimen `.mmap` / `.mapx`;
+- Pro-created MMPK rendered in Windows ArcGIS Earth while Earth showed **Not signed in**.
+
+This proves the manufacturing bridge only. Field Maps runtime acceptance remains pending.
+
+### Current gold-test card
+
+- 128 GB physical microSD;
+- exFAT;
+- Windows shows approximately 119 GB usable;
+- approximately 52 GB district TPKX;
+- approximately 52 GB district MMPK;
+- first runtime target: Amazon Fire tablet;
+- later GPS target: GPS-capable personal Android phone.
+
+### Field Maps acceptance gate
+
+1. populate the physical card on Windows while it is outside Android;
+2. insert the prepared card into the Fire;
+3. open Field Maps;
+4. go to **On Device**;
+5. confirm the district MMPK appears;
+6. open and pan/zoom through Z17;
+7. remove public Internet and repeat;
+8. close/reopen Field Maps while still disconnected;
+9. repeat later on a GPS-capable phone and verify own position;
+10. test Field Maps restricted to Wi-Fi only while normal cellular service stays available.
+
+Do not promote before the real device passes.
+
+### Scoped-storage lesson
+
+The Fire investigation proved ordinary ADB/MTP-style injection into another app's protected `Android/data` tree is not a viable normal-user path.
+
+Do not reopen that dead end. Use Esri's documented physical-card sideload method.
 
 ---
 
-## Finished distribution standard
+## User-experience rule
 
-The public package top level is intentionally limited to:
+The strongest selling point is freedom from **map rationing**.
+
+The desired experience is:
 
 ```text
-OFFLINE MAP FACTORY 1.0 - Installation Guide.pdf
-OFFLINE MAP FACTORY 1.0 - User Guide.pdf
-REQUIRED_FACTORY_PROJECT_DO_NOT_EDIT.qgz
-ESRI and Google Labels.qgz
-RUN OFFLINE MAP FACTORY.bat
-System Files\
+Field Maps          -> agency workflow
+ArcGIS Earth Mobile -> fast local direct TPKX viewer
+physical card       -> heavy geography already present
 ```
 
-All internal implementation files stay behind `System Files`.
+Keep cellular data for communication instead of streaming a giant basemap repeatedly.
 
 ---
 
 ## REST / Static WMTS exploration — PARKED HISTORY
 
-The Map Fountain Android proof triggered a series of REST/Static WMTS Factory experiments.
-
-Those experiments established useful engineering lessons about giant file trees, packaging overhead, and compact `.restmap` transport seeds.
+The Map Fountain Android proof remains valid and preserved.
 
 Current decision:
 
 - preserve the history;
 - do not include REST in Offline Map Factory 1.0;
-- do not revive REST in the normal Factory unless a real target again demonstrates the need.
+- do not revive REST in the normal personal-phone path unless a real shared-storage need reopens it.
 
----
+Possible future Map Fountain roles remain:
 
-## Current primary field direction — local removable deployment
-
-```text
-Offline Map Factory TPKX
-→ microSD card
-→ Android
-→ ArcGIS Field Maps / ArcGIS Earth
-```
-
-Deployment work lives in:
-
-**[Android Field Maps + ArcGIS Earth](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-)**
-
-### Map-size gates
-
-Measure real finished products before freezing card tiers:
-
-1. district-wide Z17;
-2. county-level Z18;
-3. selected State Forest / high-value Z20 areas;
-4. Google Hybrid versus Esri imagery/labels where both are useful.
-
-Record exact finished sizes and elapsed build times.
-
-### Field Maps gate
-
-Esri documents sideloaded TPKX basemaps on Android/device microSD. Project acceptance still requires a real-phone test proving local basemap selection, Wi-Fi-only app restriction, offline pan/zoom, own position, and close/reopen behavior.
-
----
-
-## Map Fountain — proven / parked
-
-Windows native TPKX-over-SMB and Android Static REST WMTS router paths are both LIVE-PROVEN.
-
-Map Fountain remains proof/reference, not mandatory personal-phone infrastructure.
-
-Possible future role: Starlink-connected basecamp storage / poor-man's NAS.
+- Starlink/basecamp NAS;
+- true multi-client shared-map need;
+- removable storage proving insufficient.
 
 ---
 
@@ -134,8 +162,9 @@ The v0.1.4 REST branch remains TEST history tied to Map Fountain exploration; Ra
 ## Field integration
 
 - Native GNSS: **LIVE-OBSERVED**, 9600 baud, GLL + RMC present.
-- PRAVE → ArcGIS Earth Automation API: **LIVE-PROVEN**.
-- F22 / QR / KML: retain as bounded field/live/interoperability paths and expand only when real use demands it.
+- PRAVE -> ArcGIS Earth Automation API: **LIVE-PROVEN**.
+- ArcGIS Earth Mobile local TPKX: **LIVE-PROVEN on multiple project packages**.
+- Field Maps MMPK on physical microSD: **VENDOR-DOCUMENTED / PROJECT LIVE TEST PENDING**.
 
 ---
 
@@ -148,10 +177,12 @@ The v0.1.4 REST branch remains TEST history tied to Map Fountain exploration; Ra
 - making public Internet mandatory;
 - reviving Raspberry Pi / Pi-server architecture by default;
 - using rejected TPKX recovery as a shortcut;
+- returning to protected-folder ADB/MTP injection as the normal Android path;
+- optimizing storage elegance ahead of field reliability;
 - adding features because they exist rather than because users need them.
 
 ## Governing rules
 
 > **The real target decides acceptance.**
 
-> **Keep the Factory simple. Keep the user-facing folder clean.**
+> **Keep the Factory simple. Put the heavy map on the card.**
