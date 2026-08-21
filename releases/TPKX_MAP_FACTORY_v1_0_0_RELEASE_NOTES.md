@@ -4,6 +4,23 @@
 
 Date: 2026-08-15
 
+## Compatibility notice added 2026-08-20
+
+This release remains fully accepted for the target actually tested at release time: **Factory manufacture + ArcGIS Earth rendering**.
+
+A later strict ArcGIS Field Maps control test exposed a compatibility defect in the historical MBTiles -> TPKX converter lineage. Field Maps rejected a project-converter TPKX while accepting Esri's official `Usa.tpkx` through the same physical-card/Designer workflow.
+
+Therefore:
+
+- do **not** revoke or rewrite this historical release;
+- do **not** describe v1.0.0 output as Field Maps-conformant;
+- repair belongs in a new converter/product lineage;
+- the exact accepted v1.0.0 archive remains frozen.
+
+See `../docs/TPKX_FIELD_MAPS_CONFORMANCE_2026-08-20.md`.
+
+---
+
 `TPKX Map Factory v1.0.0` is the first release-accepted map-manufacturing baseline inside **Offline GeoStack**.
 
 Master project identity:
@@ -25,7 +42,7 @@ Choose zoom range
    ↓
 QGIS renders temporary MBTiles
    ↓
-proven converter builds TPKX
+historical converter builds TPKX
    ↓
 operator receives one .tpkx
 ```
@@ -37,7 +54,7 @@ Existing MBTiles
    ↓
 ADVANCED: MBTILES → TPKX
    ↓
-ArcGIS-compatible TPKX
+TPKX proven on ArcGIS Earth
 ```
 
 The advanced path is intended for QGIS/GIS users who want to create their own layer stack and use the Factory only as the TPKX packaging bridge.
@@ -124,9 +141,7 @@ It remains preserved in the canonical project archive. During the GitHub reposit
 
 v1.0.0 is feature-frozen.
 
-New features belong in v1.1 or later unless a verified defect requires a maintenance build.
-
-The proven converter should not be casually rewritten.
+New features and verified converter repairs belong in later/new product lines. Do not alter the accepted v1.0.0 binary and call it the same release.
 
 ## Operational doctrine
 
