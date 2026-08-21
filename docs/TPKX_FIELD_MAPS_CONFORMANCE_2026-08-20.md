@@ -103,23 +103,35 @@ Its test converter copies Esri's published/native conventions for:
 
 The Compact Cache V2 bundle writer remains based on the already-tested published format.
 
-Bench status:
+### Bench status
 
 - synthetic MBTiles conversion: PASS;
 - ZIP/package structure checks: PASS;
-- bundle header/index checks: PASS;
-- Field Maps target acceptance: **PENDING**.
+- bundle header/index checks: PASS.
+
+### Live Windows execution — observed 2026-08-20
+
+The actual `ESRI_CANONICAL_TPKX_TEST_v0_2_0` package was run against the selected small MBTiles on the real Windows test machine.
+
+Result:
+
+- converter started normally;
+- conversion completed normally;
+- finished TPKX was produced;
+- operator observation: conversion completed **very quickly**.
+
+Evidence state for the converter itself is therefore upgraded from bench-only to **LIVE-OBSERVED CONVERSION PASS**.
+
+This is **not yet Field Maps proof**. The target acceptance state remains:
+
+**FIELD MAPS PENDING.**
 
 ## Immediate next test — resume here
 
-Do **not** spend time rebuilding the district-scale products first.
-
-Run the smallest controlled acceptance:
+The conversion step is complete. The next action is now only the target vote:
 
 ```text
-small raster MBTiles
--> ESRI_CANONICAL_TPKX_TEST_v0_2_0
--> small new TPKX
+new small canonical TPKX
 -> physical microSD basemaps folder
 -> Field Maps Designer exact filename
 -> Field Maps
@@ -155,6 +167,7 @@ The newly discovered defect changes the compatibility claim, not history:
 
 - ArcGIS Earth compatibility: proven;
 - Field Maps compatibility of the historical converter output: failed on the current real target;
+- canonical converter live execution: passed;
 - canonical Field Maps repair: pending.
 
 ## Side issue — SD reader
