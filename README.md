@@ -21,14 +21,15 @@ Esri official Usa.tpkx  -> Field Maps ACCEPTED
 
 Both used the same physical-card `basemaps` path and the same Field Maps Designer workflow. Therefore the card path, Designer map and general Web Mercator setup are proven; package construction was the engineering subject.
 
-The iterative converter work has now advanced through two repair stages:
+The repair lineage is now:
 
 - **v0.2.0** corrected Esri's exact canonical LOD/spatial-reference values but still had literal package differences;
-- **v0.3.0** copies the actual official `Usa.tpkx` bundle-header, ZIP-layout, ZIP-metadata, root-structure and thumbnail-DPI conventions.
+- **v0.3.0** reproduced the actual Esri bundle-header / ZIP / thumbnail conventions and passed the first full structural bench audit;
+- **v0.3.1** keeps that construction and adds stronger built-in structural verification plus automatic byte-for-byte source-tile verification on bench-sized inputs.
 
-The finished v0.3.0 output passed a **28 / 28 local structural conformance audit** against the official Esri specimen, including **174 / 174 source tiles recovered byte-for-byte**.
+The v0.3.1 output has no currently known structural deviation from the invariant conventions in Esri's official `Usa.tpkx`, and **174 / 174 source tiles were recovered byte-for-byte** from the finished package.
 
-No remaining structural defect is currently known from the bench comparison. One real Field Maps acceptance vote remains.
+One real Field Maps acceptance vote remains.
 
 - [TPKX / Field Maps Conformance — 2026-08-20](docs/TPKX_FIELD_MAPS_CONFORMANCE_2026-08-20.md)
 - [Canonical TPKX test branch](src/esri_canonical_tpkx_test/README.md)
@@ -45,14 +46,14 @@ No remaining structural defect is currently known from the bench comparison. One
 | Historical MBTiles -> TPKX converter in ArcGIS Earth | ✅ **LIVE-PROVEN** |
 | Historical converter output in ArcGIS Field Maps | ❌ **FAILED / SUPERSEDED FOR FIELD MAPS CONFORMANCE** |
 | Esri official `Usa.tpkx` in Field Maps from physical microSD | ✅ **LIVE-PROVEN** |
-| Esri specimen-conformant converter v0.3.0 | ✅ **BENCH 28/28 PASS — FIELD MAPS FINAL VOTE PENDING** |
-| v0.3.0 tile preservation | ✅ **174/174 BYTE-IDENTICAL** |
+| Esri specimen-conformant converter v0.3.1 | ✅ **BENCH STRUCTURAL PASS — FIELD MAPS FINAL VOTE PENDING** |
+| v0.3.1 tile preservation | ✅ **174 / 174 BYTE-IDENTICAL** |
 | ArcGIS Pro existing TPKX -> minimal MMPK | ✅ **PASS — small and district-scale packages created** |
 | Pro-created MMPK in Windows ArcGIS Earth | ✅ **PASS — rendered while Earth showed Not signed in** |
 | ArcGIS Earth Windows native TPKX | ✅ **LIVE-PROVEN** |
 | ArcGIS Earth Mobile local TPKX | ✅ **LIVE-PROVEN on multiple project packages** |
 | Field Maps Designer + physical `basemaps` path | ✅ **LIVE-PROVEN** |
-| Corrected district TPKX + MMPK cold-card acceptance | 🟡 **PENDING v0.3.0 FIELD MAPS PASS** |
+| Corrected district TPKX + MMPK cold-card acceptance | 🟡 **PENDING v0.3.1 FIELD MAPS PASS** |
 | Native ArcGIS Earth GNSS | ✅ **LIVE-OBSERVED** |
 | PRAVE -> ArcGIS Earth Automation API | ✅ **LIVE-PROVEN** |
 | Map Fountain network delivery proofs | ✅ **LIVE-PROVEN / PARKED REFERENCE** |
@@ -101,41 +102,35 @@ The operator sees a finished product, not a developer dump.
 
 ### Release boundary
 
-The QGIS -> MBTiles side remains valid. The TPKX stage must not be release-promoted for the broader Field Maps mission until v0.3.0 gets the real Field Maps vote.
+The QGIS -> MBTiles side remains valid. The TPKX stage must not be release-promoted for the broader Field Maps mission until v0.3.1 gets the real Field Maps vote.
 
 The historical release remains frozen and its ArcGIS Earth acceptance history remains valid.
 
 ---
 
-## v0.3.0 conformance result
-
-Official Esri control:
-
-```text
-Usa.tpkx
-1,635,803 bytes
-SHA-256 9d014cee353106eced55c747b1b200b62ec6f145596200240e1c4653f7d23e95
-```
+## v0.3.1 conformance result
 
 Current candidate converter:
 
 ```text
-ESRI_CANONICAL_TPKX_TEST_v0_3_0.zip
-31,448 bytes
-SHA-256 7d2b8003cf6f27be9fbf17ea5069018fea30ea3165c4e5d3d981f7fda96287aa
+ESRI_CANONICAL_TPKX_TEST_v0_3_1.zip
+12,018 bytes
+SHA-256 dcdac0cbfcb3276e392e71f76aaa73e1e71581728ba2bb64c76efefdd753f1ec
 ```
 
 Current ready-made test TPKX:
 
 ```text
-small mbtile test v030.tpkx
+small mbtile test v031.tpkx
 29,239,000 bytes
-SHA-256 e6a648683a16ef37cdd2eb61465310153858b11e9b288270fda307f8b1c1068e
+SHA-256 91f1f93f2485c5a344b7ac94d30746df8c6b7c1ac5a9c80bb9aa97f6274a3797
 ```
 
-Bench checks include exact Esri bundle-header pattern, explicit ZIP directory hierarchy, Esri-style ZIP metadata, root/iteminfo structure, canonical LOD table, 96-DPI thumbnail metadata, tile addressing and byte-for-byte tile preservation.
+Bench checks include the actual Esri bundle-header pattern, explicit ZIP directory hierarchy, Esri-style ZIP metadata, root/iteminfo schema, canonical LOD table, 96-DPI thumbnail metadata, tile addressing, and byte-for-byte source-tile preservation.
 
-**Result: 28 / 28 PASS.**
+v0.3.1 also performs the invariant structural checks itself before declaring success. Bench-sized inputs receive automatic full source-to-package tile verification; `--deep-verify` can force that verification on large inputs.
+
+**Bench result: PASS. No remaining structural defect is currently known.**
 
 ---
 
