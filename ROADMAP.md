@@ -1,53 +1,109 @@
 # Offline GeoStack Roadmap
 
-## Current Factory product line
+## Immediate priority — repair strict Field Maps TPKX conformance
 
-**Offline Map Factory 1.0** remains the current clean product direction.
+The current top engineering gate is no longer the large district-card cold test.
 
-Status: **BUILT / SELF-TESTED — LIVE ACCEPTANCE PENDING**.
+A live control test proved:
 
-Current operator feature set:
+```text
+project converter TPKX -> Field Maps REJECTED
+Esri official Usa.tpkx  -> Field Maps ACCEPTED
+```
+
+Both were tested through the same physical-card `basemaps` path and same Field Maps Designer workflow.
+
+Therefore the current defect is isolated to the project's MBTiles -> TPKX package construction.
+
+### Resume here
+
+1. run a **small MBTiles** through `ESRI_CANONICAL_TPKX_TEST_v0_2_0`;
+2. place the new TPKX in `\Android\data\com.esri.fieldmaps\files\basemaps\`;
+3. set Designer to the exact filename;
+4. open it in Field Maps;
+5. if it passes, promote the canonical construction as the replacement converter design;
+6. integrate the corrected converter into Offline Map Factory and Rasta;
+7. regenerate the district TPKX;
+8. rebuild the district MMPK from that corrected TPKX;
+9. resume full cold/no-Internet card acceptance.
+
+Do not waste a district-scale rebuild before the small conformance specimen passes.
+
+- [TPKX / Field Maps Conformance — 2026-08-20](docs/TPKX_FIELD_MAPS_CONFORMANCE_2026-08-20.md)
+
+---
+
+## Converter rule
+
+Esri's official `Usa.tpkx` is the golden master.
+
+The historical converter remains valid evidence for ArcGIS Earth compatibility, but its output failed strict Field Maps acceptance.
+
+The repair branch copies Esri's canonical Web Mercator LOD values and native metadata conventions instead of recalculating them.
+
+One verified deviation:
+
+```text
+LOD 0 historical scale: 591657527.5917094
+LOD 0 Esri scale:       591657527.591555
+```
+
+This is a real difference, not yet proven to be the sole cause.
+
+Governing engineering rule:
+
+> **When an official working reference implementation exists, reproduce/conform to it first.**
+
+---
+
+## Offline Map Factory 1.0
+
+**Status: BUILT / SELF-TESTED — RELEASE ACCEPTANCE BLOCKED ON TPKX CONFORMANCE.**
+
+Current operator feature set remains:
 
 - 4 sources: Google Earth, Google Hybrid, Esri World, Esri World / Google Labels;
-- map area by HOME EXTENT, Clipboard History diagonal points, or two manual GPS points;
+- HOME EXTENT, Clipboard History diagonal points, or two manual GPS points;
 - Z0-Z20;
-- output choice: TPKX / MBTiles / Both;
-- one Advanced Tool: existing MBTiles -> TPKX;
-- no REST / Static WMTS output in the current Factory.
+- TPKX / MBTiles / Both;
+- Advanced existing MBTiles -> TPKX;
+- no REST / Static WMTS output.
 
-The prior **TPKX Map Factory v1.0.0** remains a RELEASE-ACCEPTED / FROZEN historical milestone. Do not erase or relabel that acceptance record.
+The QGIS -> MBTiles side remains live-proven. The TPKX stage must use the corrected canonical converter before the new product line can be release-accepted for the broader deployment mission.
 
----
+### Factory acceptance after converter repair
 
-## Immediate Factory gate
-
-Run Offline Map Factory 1.0 on the real Windows/QGIS target.
-
-Acceptance sequence:
-
-1. launch from `RUN OFFLINE MAP FACTORY.bat`;
-2. verify both required QGZ references are found;
-3. build a small **MBTiles-only** map;
-4. build a small **TPKX-only** map;
-5. build a small **Both** map;
-6. run **Advanced MBTiles -> TPKX**;
-7. open the produced TPKX in ArcGIS Earth;
-8. confirm expected location, cartography, zoom behavior, navigation, cleanup, and final output state.
-
-Only after that passes should Offline Map Factory 1.0 be promoted to LIVE-PROVEN / RELEASE-ACCEPTED.
+1. launcher starts;
+2. both required QGZ references are found;
+3. small MBTiles-only build;
+4. small TPKX-only build;
+5. small Both build;
+6. Advanced MBTiles -> TPKX;
+7. TPKX opens in ArcGIS Earth;
+8. representative TPKX passes Field Maps when that deployment claim is made;
+9. cleanup/final-output state is correct.
 
 ---
 
-## Current primary field direction — physical district map card
+## Historical TPKX Map Factory v1.0.0
 
-Mission:
+**RELEASE-ACCEPTED / FROZEN — for the tested ArcGIS Earth target.**
+
+Do not rewrite or re-zip the accepted artifact.
+
+The 2026-08-20 Field Maps failure does not erase the 2026-08-15 acceptance; it narrows the compatibility claim. Historical output is proven in ArcGIS Earth but cannot be represented as Field Maps-conformant.
+
+---
+
+## District-card mission
 
 > **A Field Maps user must be able to open the app with zero public Internet and use a district-wide Esri Hybrid map through Z17. The same local map should stop the heavy basemap from burning cellular data when service exists.**
 
-Current field chain:
+Intended chain after the converter passes:
 
 ```text
-Offline Map Factory TPKX
+Offline Map Factory
+-> corrected district TPKX
 -> ArcGIS Pro minimal MMPK wrapper
 -> physical microSD
    +-- Field Maps mappackages\DISTRICT.mmpk
@@ -56,133 +112,56 @@ Offline Map Factory TPKX
 -> Field Maps + ArcGIS Earth Mobile
 ```
 
-### Why both files
+### Proven tonight
 
-The duplication is deliberate.
+- Field Maps Designer workflow: LIVE-PROVEN;
+- map shared Everyone/public: LIVE-PROVEN;
+- physical-card basemaps path: LIVE-PROVEN;
+- Esri official `Usa.tpkx`: LIVE-PROVEN in Field Maps;
+- project historical converter TPKX: FAILED / NEEDS REPAIR.
 
-- MMPK supplies a complete on-device Field Maps map.
-- TPKX remains available as a sideloaded local basemap and direct ArcGIS Earth Mobile product.
-- Storage efficiency ranks below field reliability.
-- MBTiles remains on the manufacturing/master side unless a different downstream use explicitly needs it.
+### ArcGIS Pro bridge
 
-### ArcGIS Pro bridge — PASS
-
-ArcGIS Pro 3.7 has now successfully created:
-
-- a small minimal MMPK from an existing project TPKX;
-- a district-scale approximately 52 GB MMPK from the existing approximately 52 GB district TPKX.
-
-Small specimen observations:
-
-- analyzer: 0 errors / 0 warnings / 0 messages;
-- MMPK version 3.0;
-- original TPKX preserved intact inside the MMPK;
-- no HTTP/HTTPS references found in the small specimen `.mmap` / `.mapx`;
-- Pro-created MMPK rendered in Windows ArcGIS Earth while Earth showed **Not signed in**.
-
-This proves the manufacturing bridge only. Field Maps runtime acceptance remains pending.
-
-### Current gold-test card
-
-- 128 GB physical microSD;
-- exFAT;
-- Windows shows approximately 119 GB usable;
-- approximately 52 GB district TPKX;
-- approximately 52 GB district MMPK;
-- first runtime target: Amazon Fire tablet;
-- later GPS target: GPS-capable personal Android phone.
-
-### Field Maps acceptance gate
-
-1. populate the physical card on Windows while it is outside Android;
-2. insert the prepared card into the Fire;
-3. open Field Maps;
-4. go to **On Device**;
-5. confirm the district MMPK appears;
-6. open and pan/zoom through Z17;
-7. remove public Internet and repeat;
-8. close/reopen Field Maps while still disconnected;
-9. repeat later on a GPS-capable phone and verify own position;
-10. test Field Maps restricted to Wi-Fi only while normal cellular service stays available.
-
-Do not promote before the real device passes.
-
-### Scoped-storage lesson
-
-The Fire investigation proved ordinary ADB/MTP-style injection into another app's protected `Android/data` tree is not a viable normal-user path.
-
-Do not reopen that dead end. Use Esri's documented physical-card sideload method.
+ArcGIS Pro 3.7 packaging remains PASS for small and district-scale MMPKs. But Pro preserves the source TPKX intact, so it is not a repair mechanism. Rebuild MMPK only after corrected TPKX acceptance.
 
 ---
 
-## User-experience rule
+## ArcGIS Earth Mobile
 
-The strongest selling point is freedom from **map rationing**.
+Local TPKX remains LIVE-PROVEN on multiple project packages.
 
-The desired experience is:
-
-```text
-Field Maps          -> agency workflow
-ArcGIS Earth Mobile -> fast local direct TPKX viewer
-physical card       -> heavy geography already present
-```
-
-Keep cellular data for communication instead of streaming a giant basemap repeatedly.
-
----
-
-## REST / Static WMTS exploration — PARKED HISTORY
-
-The Map Fountain Android proof remains valid and preserved.
-
-Current decision:
-
-- preserve the history;
-- do not include REST in Offline Map Factory 1.0;
-- do not revive REST in the normal personal-phone path unless a real shared-storage need reopens it.
-
-Possible future Map Fountain roles remain:
-
-- Starlink/basecamp NAS;
-- true multi-client shared-map need;
-- removable storage proving insufficient.
+The strict Field Maps failure must not be generalized into an Earth Mobile failure.
 
 ---
 
 ## Rasta Pyramid Factory
 
-Rasta remains the sibling project for arbitrary giant rasters and deep-zoom imagery.
+Rasta v0.1.3 remains LIVE-PROVEN for giant-raster manufacturing and ArcGIS Earth display.
 
-Current live-proven baseline: v0.1.3.
-
-The v0.1.4 REST branch remains TEST history tied to Map Fountain exploration; Rasta's core value does not depend on REST.
+Its TPKX output inherits the historical converter lineage, so Field Maps compatibility is currently **not approved** until the canonical converter replacement is proven and integrated.
 
 ---
 
-## Field integration
+## Map Fountain
 
-- Native GNSS: **LIVE-OBSERVED**, 9600 baud, GLL + RMC present.
-- PRAVE -> ArcGIS Earth Automation API: **LIVE-PROVEN**.
-- ArcGIS Earth Mobile local TPKX: **LIVE-PROVEN on multiple project packages**.
-- Field Maps MMPK on physical microSD: **VENDOR-DOCUMENTED / PROJECT LIVE TEST PENDING**.
+Map Fountain remains LIVE-PROVEN / PARKED from normal personal-phone deployment.
+
+Preserve it for actual shared-storage needs such as Starlink/basecamp NAS or multi-client access. Do not revive it because the TPKX converter needs repair; those are separate engineering subjects.
 
 ---
 
 ## Non-goals
 
-- forcing ordinary field users to run the Factory;
-- restoring REST to the clean Factory without a demonstrated need;
+- guessing at TPKX metadata instead of conforming to Esri's working sample;
+- rebuilding the 52 GB district products before a tiny specimen passes;
+- reviving protected-folder ADB/MTP injection;
+- restoring REST to the clean Factory;
 - requiring router/server infrastructure for normal personal-phone deployment;
-- rebuilding QGIS;
 - making public Internet mandatory;
-- reviving Raspberry Pi / Pi-server architecture by default;
-- using rejected TPKX recovery as a shortcut;
-- returning to protected-folder ADB/MTP injection as the normal Android path;
-- optimizing storage elegance ahead of field reliability;
-- adding features because they exist rather than because users need them.
+- optimizing storage elegance ahead of reliability.
 
 ## Governing rules
 
 > **The real target decides acceptance.**
 
-> **Keep the Factory simple. Put the heavy map on the card.**
+> **Esri's native TPKX is the reference; our converter conforms to it.**
