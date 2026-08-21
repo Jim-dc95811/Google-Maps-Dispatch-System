@@ -2,11 +2,16 @@
 
 ## Executive result
 
-A strict ArcGIS Field Maps test exposed a verified compatibility defect in the project's historical MBTiles -> TPKX converter lineage.
+ArcGIS Field Maps rejected a project-converter TPKX while accepting Esri's official `Usa.tpkx` through the same physical-card, Designer map, `basemaps` directory and general Web Mercator setup.
 
-The failure is **not** the microSD path, Field Maps Designer, public web-map configuration, or general Web Mercator setup.
+Therefore:
 
-The decisive control test was:
+- the Field Maps path is proven;
+- the historical converter output is not Field Maps-conformant;
+- Esri's actual working `Usa.tpkx` is the golden master;
+- the frozen historical Factory release remains valid for its actual ArcGIS Earth acceptance history, but its converter must not be promoted as generally Field Maps-compatible.
+
+## Decisive control
 
 ```text
 same physical microSD
@@ -18,164 +23,178 @@ project converter TPKX -> REJECTED
 Esri official Usa.tpkx -> ACCEPTED
 ```
 
-Field Maps reported the project-built package as spatial-reference incompatible. Esri's official `Usa.tpkx` worked after Designer was pointed at that exact filename.
+Field Maps reported the project-built package as spatial-reference incompatible.
 
-## What is now proven
+## Why the ArcGIS Pro MMPK does not repair the TPKX
 
-### LIVE-PROVEN
+ArcGIS Pro 3.7 successfully created small and district-scale MMPKs from existing project TPKX files. Forensic inspection showed that Pro preserved the source TPKX intact under `commondata/new_tpkx/` and referenced it locally from the MMPK.
 
-- Field Maps Designer map `District 7 Local Basemap Test` was created.
-- Offline was enabled.
-- Basemap source was configured as **File on the device**.
-- The map was shared **Everyone (public)**.
-- Physical-card basemap directory works:
+The Pro bridge is valid packaging proof, but it is not a TPKX sanitizer. Correct the TPKX first; then rebuild the district MMPK.
 
-```text
-\Android\data\com.esri.fieldmaps\files\basemaps\
-```
+## First verified metadata deviation
 
-- Esri official `Usa.tpkx` in that directory was accepted by Field Maps.
+The historical converter calculated the Web Mercator LOD resolution/scale values instead of copying Esri's canonical values.
 
-### FAILED / NEEDS REPAIR
-
-The project-converter-built District 7 TPKX was discovered by Field Maps but rejected with the message that the spatial reference of the file was not compatible with the map.
-
-That same converter lineage remains proven to open in:
-
-- ArcGIS Earth Windows;
-- ArcGIS Earth Mobile on multiple project packages;
-- ArcGIS Pro.
-
-Therefore the historical converter is **ArcGIS Earth-compatible but not currently accepted as Field Maps-conformant**.
-
-## Why the ArcGIS Pro MMPK result does not repair this
-
-ArcGIS Pro 3.7 successfully wrapped an existing TPKX into a modern MMPK, but forensic inspection showed that Pro preserved the original TPKX intact under:
-
-```text
-commondata/new_tpkx/
-```
-
-The `.mmap` referenced that packaged local TPKX.
-
-So the MMPK bridge is still a valid packaging proof, but it is not a sanitizer or rewriter for the TPKX. A Field Maps conformance defect in the source TPKX must be corrected before the district MMPK is treated as a clean acceptance candidate.
-
-## Official Esri specimen is now the authority
-
-The project rule is changed deliberately:
-
-> **When an official working reference implementation exists, reproduce/conform to it first. Do not invent an alternative until the reference path has been exhausted.**
-
-Esri's official `Usa.tpkx` is the current golden master for TPKX construction.
-
-Do not patch metadata by guesswork. Do not defend a merely permissive-reader-compatible package. Field Maps is the deciding target for Field Maps compatibility.
-
-## Concrete deviation found
-
-The historical converter calculated Web Mercator LOD resolution/scale values rather than copying Esri's canonical tiling-scheme values.
-
-Example, LOD 0 scale:
+Example LOD 0 scale:
 
 ```text
 historical converter: 591657527.5917094
 Esri native sample:    591657527.591555
 ```
 
-The difference repeats through the LOD table.
+`ESRI_CANONICAL_TPKX_TEST_v0_2_0` corrected that table and copied Esri's origin/spatial-reference conventions.
 
-This is a real package deviation, but it is **not yet proven to be the sole cause** of the Field Maps rejection.
+## v0.2.0 live conversion
 
-## Current repair candidate
-
-A separate test package was created without modifying the frozen historical converter:
-
-```text
-ESRI_CANONICAL_TPKX_TEST_v0_2_0
-```
-
-Its test converter copies Esri's published/native conventions for:
-
-- canonical LOD 0-23 resolutions and scales;
-- Web Mercator origin;
-- spatial-reference structure;
-- `root.json` conventions;
-- `iteminfo.json` field types.
-
-The Compact Cache V2 bundle writer remains based on the already-tested published format.
-
-### Bench status
-
-- synthetic MBTiles conversion: PASS;
-- ZIP/package structure checks: PASS;
-- bundle header/index checks: PASS.
-
-### Live Windows execution — observed 2026-08-20
-
-The actual `ESRI_CANONICAL_TPKX_TEST_v0_2_0` package was run against the selected small MBTiles on the real Windows test machine.
+The v0.2.0 test converter was run on the real Windows machine against `small mbtile test(1).mbtiles`.
 
 Result:
 
-- converter started normally;
-- conversion completed normally;
-- finished TPKX was produced;
-- operator observation: conversion completed **very quickly**.
+- started normally;
+- completed normally;
+- produced `small mbtile test.tpkx`;
+- operator reported that conversion completed very quickly.
 
-Evidence state for the converter itself is therefore upgraded from bench-only to **LIVE-OBSERVED CONVERSION PASS**.
+Status: **LIVE-OBSERVED CONVERSION PASS**.
 
-This is **not yet Field Maps proof**. The target acceptance state remains:
+## Direct structural comparison — v0.2.0 vs official Esri `Usa.tpkx`
 
-**FIELD MAPS PENDING.**
+The produced `small mbtile test.tpkx` was compared package-wide and byte-level against the exact official Esri `Usa.tpkx` specimen before Field Maps testing.
 
-## Immediate next test — resume here
+The supplied `Usa.tpkx` is byte-identical to the file in Esri's public `tile-package-spec` repository: 1,635,803 bytes and Git blob SHA `d6bb368e041174cb12e9aa839f74552ef405f7a5`.
 
-The conversion step is complete. The next action is now only the target vote:
+### Confirmed matches
+
+- top-level TPKX concept: `iteminfo.json`, `root.json`, thumbnail, `tile` hierarchy and `.bundle` files;
+- ZIP storage method: stored/uncompressed;
+- `iteminfo.json` key/type schema;
+- canonical LOD 0-23 resolution/scale table;
+- Web Mercator origin;
+- spatial-reference object structure;
+- 256 x 256 tiles;
+- root cache DPI 96;
+- `esriMapCacheStorageModeCompactV2`;
+- packet size 128;
+- LOD folder naming and lower-case hexadecimal bundle row/column naming;
+- 64-byte bundle header location;
+- 131,072-byte bundle index location/size;
+- 8-byte row-major tile index records;
+- 4-byte tile-size prefixes;
+- tile offsets and payload layout.
+
+### Complete source-tile preservation check
+
+The source MBTiles contains **174 PNG tiles** across Z0-Z18.
+
+Every source tile was independently located in the new TPKX using the MBTiles TMS-to-ArcGIS row conversion, bundle address, index record and tile offset.
+
+Result:
 
 ```text
-new small canonical TPKX
--> physical microSD basemaps folder
--> Field Maps Designer exact filename
--> Field Maps
+174 / 174 tile payloads byte-identical
+0 missing bundles
+0 zero/missing index records
+0 payload mismatches
 ```
 
-### Pass condition
+The raster data and index mechanics are therefore not the current suspect.
 
-Field Maps opens the new TPKX normally.
+## Remaining literal differences — important
 
-If it passes:
+### 1. Bundle header bytes do not match the actual Esri TPKX
 
-1. promote the canonical construction as the replacement converter design;
-2. integrate it into Offline Map Factory and downstream Rasta TPKX output;
-3. regenerate the district TPKX;
-4. rebuild the district MMPK from the corrected TPKX;
-5. resume cold/no-Internet district-card acceptance.
+The v0.2.0 writer still follows the published Compact Cache V2 header interpretation. Esri's actual `Usa.tpkx` uses different values in three fixed header fields.
 
-If it fails:
+| Offset | Interpreted field | Esri `Usa.tpkx` | v0.2.0 |
+| ---: | --- | ---: | ---: |
+| 4 | Record Count | 0 | 16384 |
+| 8 | header field | 131092 | actual maximum tile size |
+| 48 | legacy field | 0 | 16 |
 
-1. do not guess;
-2. continue package-wide conformance analysis against `Usa.tpkx`;
-3. inspect ZIP layout, `root.json`, `iteminfo.json`, thumbnail/top-level conventions, Compact Cache V2 bundle/index details, and metadata types;
-4. make one evidence-driven correction at a time;
-5. let Field Maps vote again.
+The following fields match structurally:
 
-## Status correction for historical releases
+- Version = 3;
+- Offset Byte Count = 5;
+- Slack Space = 0;
+- File Size = actual bundle file size;
+- User Header Offset = 40;
+- User Header Size = 131092;
+- legacy field at 44 = 3;
+- legacy field at 52 = 16384;
+- legacy field at 56 = 5;
+- Index Size = 131072.
 
-Do **not** erase historical evidence.
+This matters because the project rule is now to reproduce Esri's actual working structure, not merely our reading of the published white paper.
 
-`TPKX Map Factory v1.0.0` remains RELEASE-ACCEPTED for its actual 2026-08-15 target: successful Factory manufacture and ArcGIS Earth rendering.
+Esri's public `raster-tiles-compactcache` repository also currently contains an open issue reporting that its documented/sample-code bundle header does not match actual ArcGIS-produced bundle files.
 
-The newly discovered defect changes the compatibility claim, not history:
+### 2. Explicit ZIP directory entries
 
-- ArcGIS Earth compatibility: proven;
-- Field Maps compatibility of the historical converter output: failed on the current real target;
-- canonical converter live execution: passed;
-- canonical Field Maps repair: pending.
+Esri's archive explicitly contains entries such as:
+
+```text
+tile/
+tile/L00/
+tile/L01/
+...
+```
+
+v0.2.0 writes only the files and relies on implicit ZIP paths.
+
+That is valid ZIP behavior, but it is not a literal copy of the Esri package.
+
+### 3. ZIP entry metadata
+
+Esri's archive uses different ZIP version/external-attribute metadata from Python's default `zipfile.write()` output. This may be harmless to a tolerant reader, but it is another literal structural difference and should be normalized in the next candidate.
+
+### 4. `root.json` layer information
+
+Esri's sample contains a `layers` array. v0.2.0 omits it.
+
+The sample's actual layer records (`wind`, `ushigh`, `counties`, `states`) are map-specific and must not be copied into unrelated imagery. The structural difference is real; the next build needs a correct non-fabricated representation rather than blindly cloning data-specific values.
+
+### 5. Thumbnail PNG metadata
+
+Both packages contain a 200 x 133, 24-bit RGB PNG thumbnail.
+
+Esri's thumbnail contains approximately 96 DPI PNG metadata. v0.2.0's generated thumbnail has no DPI metadata.
+
+## Current status correction
+
+`ESRI_CANONICAL_TPKX_TEST_v0_2_0` is **not** ready for the Field Maps vote yet.
+
+Evidence state:
+
+- conversion execution: **LIVE-OBSERVED PASS**;
+- canonical LOD/spatial-reference metadata: **PASS**;
+- tile/index/payload preservation: **PASS**;
+- literal package conformance to Esri specimen: **NOT YET PASS**;
+- Field Maps acceptance: **HOLD / NOT TESTED**.
+
+## Immediate next engineering action
+
+Build the next small conformance candidate by copying Esri's actual package conventions more literally:
+
+1. reproduce the observed Esri bundle-header pattern;
+2. emit explicit ZIP `tile/` and LOD directory entries;
+3. normalize ZIP entry metadata where practical;
+4. determine a correct non-fabricated `layers` representation or verify omission is accepted;
+5. add 96 DPI thumbnail metadata;
+6. compare the finished package again against `Usa.tpkx`;
+7. only then give Field Maps the deciding vote.
+
+Do not rebuild the 52 GB district TPKX or MMPK until the small candidate passes.
+
+## Historical release boundary
+
+`TPKX Map Factory v1.0.0` remains RELEASE-ACCEPTED for its actual 2026-08-15 target: Factory manufacture and ArcGIS Earth rendering.
+
+The new finding narrows the compatibility claim; it does not erase history.
 
 ## Side issue — SD reader
 
-The laptop's built-in SD reader produced write-protection behavior with multiple cards/adapters. A second computer wrote successfully.
-
-Treat the laptop reader as suspect. The SD card is disposable test media and may be renamed, rewritten, reformatted, or wiped whenever useful to the test.
+The laptop's built-in SD reader produced write-protection behavior with multiple cards/adapters. A second computer wrote successfully. Treat the laptop reader as suspect. The SD card is disposable test media.
 
 ## Governing rule
 
-> **The real target decides acceptance. Esri's native TPKX is the construction reference; Field Maps is the judge.**
+> **Esri's actual working TPKX is the construction reference. The real target decides acceptance.**
