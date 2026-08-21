@@ -3,106 +3,141 @@
 ## Current artifact
 
 ```text
-ESRI_CANONICAL_TPKX_TEST_v0_2_0.zip
+ESRI_CANONICAL_TPKX_TEST_v0_3_0.zip
 ```
 
-Package layout:
+Package layout remains intentionally clean:
 
 ```text
-ESRI_CANONICAL_TPKX_TEST_v0_2_0/
+ESRI_CANONICAL_TPKX_TEST_v0_3_0/
   RUN ESRI CANONICAL TPKX TEST.bat
   Engine/
-    MBTiles_to_TPKX_ESRI_CANONICAL_v0_2_0_TEST.py
+    MBTiles_to_TPKX_ESRI_CANONICAL_v0_3_0_TEST.py
+```
+
+Exact tested package identity:
+
+```text
+31,448 bytes
+SHA-256 7d2b8003cf6f27be9fbf17ea5069018fea30ea3165c4e5d3d981f7fda96287aa
 ```
 
 ## Why this branch exists
 
 ArcGIS Field Maps rejected a TPKX created by the historical project converter while accepting Esri's official `Usa.tpkx` through the same physical-card and Field Maps Designer workflow.
 
-The official `Usa.tpkx` is therefore the golden master. The target is not merely "spec-compatible" output; it is output that conforms closely to Esri's actual working package.
+That verified defect reopened converter engineering without modifying the frozen historical Factory release.
 
-## v0.2.0 improvement
+## v0.2.0 lesson
 
-The historical converter calculated the Web Mercator LOD resolution/scale table. v0.2.0 replaced that calculation with Esri's canonical LOD 0-23 values and copied the native Web Mercator origin/spatial-reference conventions.
+v0.2.0 fixed the first known metadata difference by copying Esri's exact Web Mercator LOD table instead of calculating it.
 
-Example LOD 0 scale:
+A post-build comparison then found that v0.2.0 still differed from Esri's actual working package in bundle headers, ZIP directory/entry metadata, root `layers` structure and thumbnail DPI metadata.
+
+Field Maps testing of v0.2.0 was deliberately held.
+
+## v0.3.0 construction rule
+
+v0.3.0 copies the **actual official `Usa.tpkx` specimen conventions**, not merely the older written Compact Cache interpretation.
+
+### Bundle header
+
+Actual Esri specimen pattern:
 
 ```text
-historical converter: 591657527.5917094
-Esri native sample:    591657527.591555
+(3, 0, 131092, 5, 0, FILE_SIZE, 40, 131092, 3, 0, 16384, 5, 131072)
 ```
 
-The real Windows run completed normally and very quickly, producing `small mbtile test.tpkx`.
+Every v0.3.0 bundle is self-checked against that pattern before conversion is declared complete.
 
-## Post-build structural audit — important correction
+### ZIP package shape
 
-Before Field Maps testing, the finished `small mbtile test.tpkx` was compared directly against the official Esri `Usa.tpkx` byte/package structure.
-
-### What matches
-
-- top-level `iteminfo.json`, `root.json`, `thumbnail.png`, and `tile/.../*.bundle` concept;
-- ZIP entries are stored, not deflated;
-- `iteminfo.json` has the same key/type schema;
-- canonical LOD 0-23 resolution/scale values now match;
-- Web Mercator origin and spatial-reference objects match the Esri specimen;
-- tile size 256 x 256, 96 DPI metadata, Compact Cache V2 and packet size 128 match;
-- bundle naming uses lower-case hexadecimal row/column addresses and zero-padded LOD folders;
-- bundle index layout and tile-record mechanics are valid;
-- all 174 source MBTiles PNG payloads were recovered from the new TPKX byte-for-byte with zero mismatches.
-
-### What still does NOT match Esri's actual package
-
-#### 1. Compact Cache V2 bundle header bytes
-
-The v0.2.0 writer still follows the published Compact Cache V2 header interpretation rather than Esri's actual `Usa.tpkx` bundle header.
-
-Observed fields:
-
-| Bundle header offset | Esri `Usa.tpkx` | v0.2.0 output |
-| --- | ---: | ---: |
-| 4 — Record Count | 0 | 16384 |
-| 8 — field value | 131092 | actual max tile size |
-| 48 — legacy field | 0 | 16 |
-
-The remaining fixed header fields, file-size value, index size, tile offsets, tile-size prefixes, and index records match structurally.
-
-This is a real deviation. Esri's own public Compact Cache repository also has an open report noting that the documented/sample-code bundle header does not match actual ArcGIS-produced bundle headers.
-
-#### 2. ZIP directory entries
-
-Esri's package explicitly contains directory entries such as:
+v0.3.0 writes:
 
 ```text
+iteminfo.json
+root.json
+thumbnail.png
 tile/
-tile/L00/
-tile/L01/
-...
+tile/Lxx/
+tile/Lxx/R....C....bundle
 ```
 
-v0.2.0 writes only the files and relies on implicit ZIP paths. That is legal ZIP behavior but is not a literal copy of Esri's package layout.
+and reproduces the official specimen's ZIP creator/extract versions, DOS file/directory attributes, NTFS timestamp extra-field shape, explicit directory entries and root entry order.
 
-#### 3. ZIP entry metadata
+### Root metadata
 
-Esri's archive uses different ZIP version/external-attribute metadata than Python's default `zipfile.write()` output. This may be harmless, but it is another literal package difference and should be normalized in the next conformance build.
+v0.3.0 matches the official fixed structure for:
 
-#### 4. `root.json` layer-information object
+- canonical LOD 0-23 table;
+- Web Mercator origin;
+- spatial-reference objects;
+- 256 x 256 / 96 DPI;
+- Compact V2 storage info / packet size 128;
+- `root.json` key structure/order;
+- `iteminfo.json` key/type structure;
+- `layers` member present as `[]` because raster MBTiles contains no honest source-layer/legend metadata to fabricate;
+- 200 x 133 RGB thumbnail carrying Esri-style 3780 x 3780 pixels/meter `pHYs` metadata.
 
-The Esri sample contains a `layers` array. The v0.2.0 raster package omits it. The sample's actual layer contents are map-specific and must not be blindly copied, but the structural difference is recorded for the next conformance decision.
+## Local real-data validation
 
-#### 5. Thumbnail PNG metadata
+Input:
 
-Both thumbnails are 200 x 133, 24-bit RGB. Esri's sample also carries approximately 96 DPI PNG metadata; v0.2.0's generated thumbnail does not.
+```text
+small mbtile test(1).mbtiles
+26,906,624 bytes
+SHA-256 5b2818217899cd93e6f634f9231ea0a02dbf9dd0825e55ffca44ced0dc28ab6e
+174 PNG tiles
+Z0-Z18
+```
 
-## Current evidence status
+Output:
 
-- Windows conversion execution: **LIVE-OBSERVED PASS**;
-- source tile preservation: **PASS — 174/174 byte-identical**;
-- canonical LOD/spatial-reference metadata: **PASS**;
-- literal package conformance to Esri `Usa.tpkx`: **NOT YET PASS**;
-- ArcGIS Field Maps acceptance of v0.2.0: **NOT TESTED — HOLD**.
+```text
+small mbtile test v030.tpkx
+29,239,000 bytes
+SHA-256 e6a648683a16ef37cdd2eb61465310153858b11e9b288270fda307f8b1c1068e
+19 bundles
+```
 
-Do not spend a Field Maps vote on v0.2.0 yet. Correct the remaining literal package differences first, then produce a new small candidate and compare it again before the real target test.
+Conversion completed in under one second on the current bench.
+
+### Verification
+
+- 174 / 174 source tiles recovered from the TPKX;
+- 174 / 174 tile payloads byte-for-byte identical;
+- tile addressing and size prefixes exact;
+- all bundle headers match official Esri pattern;
+- all ZIP metadata checks match official Esri pattern;
+- root/iteminfo structures match;
+- thumbnail DPI metadata matches;
+- total conformance checklist: **28 / 28 PASS**.
+
+## Evidence status
+
+- v0.3.0 conversion: **BENCH PASS**;
+- official-specimen structural comparison: **28 / 28 PASS**;
+- tile preservation: **174 / 174 PASS**;
+- remaining structural defect found by local analysis: **NONE CURRENTLY KNOWN**;
+- ArcGIS Field Maps acceptance: **PENDING ONE FINAL REAL-TARGET VOTE**.
+
+## Next test
+
+Do not ask the operator to rerun iterative conversion experiments.
+
+Use the already-built candidate:
+
+```text
+small mbtile test v030.tpkx
+-> physical microSD basemaps folder
+-> Field Maps Designer exact filename
+-> ArcGIS Field Maps
+```
+
+If Field Maps accepts it, promote these construction rules into Offline Map Factory and Rasta.
+
+If it fails, capture that exact failure and resume forensic analysis. Do not guess.
 
 ## Governing rule
 
-> **Esri's actual working TPKX is the construction reference. The published specification is supporting documentation, not permission to diverge from the working specimen. Field Maps is the final judge.**
+> **Do the iterative engineering on the bench. Esri's actual working TPKX is the reference. Field Maps gets the final vote.**
