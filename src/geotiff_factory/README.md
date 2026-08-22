@@ -3,9 +3,9 @@
 ## Current test artifact
 
 ```text
-GEOTIFF_FACTORY_0_1_3_TEST.zip
-22,183 bytes
-SHA-256 9f98d67f9c38fee6ba71f538ef887aa10af901f7e1d1c5e68685590b492fd84a
+GEOTIFF_FACTORY_0_1_4_TEST.zip
+24,612 bytes
+SHA-256 a2aac728c732b658dc1a9ea0843fcaa7fe3fdeca2d235cd7ac0d3021dcc11778
 ```
 
 Status: **BUILT / BENCH SELF-TESTED — Windows QGIS live test pending.**
@@ -42,13 +42,11 @@ The GUI provides the four established source choices:
 - Esri World
 - Esri World / Google Labels
 
-## 0.1.3 GUI correction
+## 0.1.4 Box 2 restoration
 
-The first 0.1.2 live-open screenshot showed that the tall vertical area-entry layout pushed the Finished GeoTIFF controls below the visible Windows work area.
+The GeoTIFF Factory area-entry controls are deliberately copied from **Offline Map Factory 1.0 Box 2** rather than redesigned.
 
-0.1.3 corrects that by restoring the proven **Offline Map Factory Box 2** area layout rather than inventing a new extent panel.
-
-The area box is now the familiar two-column arrangement:
+The area box uses the established two-column arrangement:
 
 ```text
 LEFT
@@ -69,15 +67,36 @@ BOTTOM
 3 choices: saved extent / Clipboard History / manual GPS coordinates
 ```
 
-This directly follows the proven Offline Map Factory operator workflow documented in its user guide and live screenshots.
+The window footprint is also returned to the proven Offline Map Factory dimensions:
 
-The window/header/cards were also compacted so boxes 1 through 4 and BUILD GEOTIFF remain visible together on a common Windows display.
+```text
+1100 x 700
+minimum 1000 x 640
+```
 
-### Clipboard History behavior
+This keeps the full GeoTIFF operator surface visible without changing the established extent workflow.
 
-The large Clipboard History button now uses the operator's existing Windows `Win+V` history instead of adding fragile hidden WinRT/PowerShell history parsing. The Factory prompts for PIN 1 and PIN 2 in sequence, detects the selected `Latitude,Longitude` text, fills both pins, and computes HOME EXTENT.
+### Clipboard History behavior — exact Offline Map Factory behavior
 
-Manual pins remain complete `Latitude,Longitude` strings, matching the established Offline Map Factory interface.
+0.1.3 incorrectly introduced a new interactive Clipboard History selection sequence. That behavior is removed.
+
+0.1.4 copies the actual Offline Map Factory 1.0 implementation:
+
+- the exact `GET_CLIPBOARD_HISTORY.ps1` helper is included byte-for-byte;
+- pressing **LOAD TWO DIAGONAL POINTS FROM WINDOWS CLIPBOARD HISTORY** reads Windows Clipboard History once;
+- the program scans history from newest to older entries;
+- it finds the two most recent distinct valid `Latitude, Longitude` coordinate entries;
+- it converts those two diagonal points directly into HOME EXTENT;
+- no separate PIN 1 / PIN 2 prompts are introduced;
+- no Win+V selection sequence is introduced.
+
+The copied helper SHA-256 is:
+
+```text
+fb88b644f64989511d65b1832e4b928125b8a340b8e5270ad04e6d271154dca9
+```
+
+Manual PIN 1 / PIN 2 parsing and error behavior are also aligned with Offline Map Factory 1.0: decimal-degree `Latitude, Longitude`, either diagonal corner first.
 
 ## Target detail
 
@@ -120,29 +139,29 @@ The package includes a private QGIS template derived from the established `ESRI 
 ## Bench checks completed
 
 - Python source compilation: PASS
+- exact Offline Map Factory Clipboard History helper copied byte-for-byte: PASS
+- Clipboard History parsing path copied from Offline Map Factory: PASS
 - two-point GPS -> EPSG:3857 extent conversion: PASS
+- manual GPS point behavior aligned with Offline Map Factory: PASS
 - HOME EXTENT parsing: PASS
 - Z16-Z20 resolution table: PASS
 - 1024-aligned raster-size estimator: PASS
 - QGZ template archive: PASS
 - hybrid label-over-imagery render order: PASS
-- `native:rasterize` engine path retained from 0.1.2: PASS
-- 1366x768 virtual-screen GUI preview: all four numbered boxes and BUILD GEOTIFF visible
-- clean package layout: PASS
+- `native:rasterize` engine path retained: PASS
+- clean package root: one BAT + one System Files folder
 
 ## Live acceptance still required
 
-The container bench cannot execute the installed Windows QGIS runtime. The first real acceptance test should therefore be a small known extent, preferably Esri World / Google Labels at Z17, with QGIS Desktop closed.
+The container bench cannot execute the installed Windows QGIS runtime or Windows Clipboard History API. The next real acceptance should use the same operator routine already proven in Offline Map Factory:
 
-Pass condition:
-
-1. Factory launches from the BAT file.
-2. Entire interface is visible without clipped lower controls.
-3. Box 2 behaves like the established Offline Map Factory area workflow.
-4. QGIS 3.44.9 is found.
-5. GeoTIFF builds successfully.
-6. GeoTIFF is EPSG:3857.
-7. Satellite/imagery and labels render in the correct order.
-8. ArcGIS Pro opens the GeoTIFF normally and can create the native TPKX.
+1. copy one diagonal coordinate;
+2. copy the opposite diagonal coordinate;
+3. press **LOAD TWO DIAGONAL POINTS FROM WINDOWS CLIPBOARD HISTORY**;
+4. confirm HOME EXTENT populates automatically;
+5. build a small Esri World / Google Labels Z17 GeoTIFF;
+6. verify QGIS 3.44.9 builds it successfully;
+7. verify imagery and labels;
+8. open the GeoTIFF in ArcGIS Pro and create the native TPKX.
 
 Do not promote this test build as live-proven until that Windows/QGIS test passes.
