@@ -1,39 +1,33 @@
-# Offline GeoStack Source Publication
+# Source / Engineering Branches
 
-## Frozen historical source
+This folder records current experimental and production-support branches without rewriting frozen historical releases.
 
-The project's canonical historical v1.0 working source remains preserved inside the accepted `TPKX_MAP_FACTORY_v1_0_0.zip` package in the project archive.
+## GeoTIFF Factory
 
-Do not treat an independently reformatted or reconstructed converter file as the frozen v1.0 source.
+[`geotiff_factory/`](geotiff_factory/)
 
-> **The accepted v1.0 converter and Factory source are the exact files from the release-accepted ZIP. Do not rewrite them and call the result v1.0.0.**
-
-## Verified defect / new repair lineage
-
-On 2026-08-20 ArcGIS Field Maps rejected a project-converter TPKX while accepting Esri's official `Usa.tpkx` through the same physical-card and Designer workflow.
-
-That verified defect reopens converter engineering in a **new TEST lineage**, not inside the frozen v1.0 artifact.
-
-Current repair record:
-
-- [`esri_canonical_tpkx_test/`](esri_canonical_tpkx_test/)
-- [`../docs/TPKX_FIELD_MAPS_CONFORMANCE_2026-08-20.md`](../docs/TPKX_FIELD_MAPS_CONFORMANCE_2026-08-20.md)
-
-Current test artifact identity:
+Current Field Maps manufacturing direction:
 
 ```text
-ESRI_CANONICAL_TPKX_TEST_v0_2_0.zip
+QGIS / GeoTIFF Factory
+-> finished EPSG:3857 GeoTIFF
+-> ArcGIS Pro Create Map Tile Package
+-> native TPKX
+-> Field Maps
 ```
 
-Status: **BUILT / SELF-TESTED — FIELD MAPS ACCEPTANCE PENDING**.
+Current artifact: `GEOTIFF_FACTORY_0_1_2_TEST.zip`.
 
-The exact tested TEST package/source is preserved in the Library/current workbench. If source is mirrored into GitHub later, copy the exact tested file rather than reconstructing it from documentation.
+Status: **BUILT / BENCH-CHECKED — WINDOWS/QGIS LIVE TEST PENDING.**
 
-## Other engineering references
+## Esri canonical custom TPKX converter research
 
-- `../docs/professional_report/`
-- `../docs/TECHNICAL_ARCHITECTURE.md`
-- `../releases/README.md`
-- `../required_qgis_projects/`
+[`esri_canonical_tpkx_test/`](esri_canonical_tpkx_test/)
 
-> **Preserve frozen history. Repair verified defects in a new lineage. Let the real target decide acceptance.**
+The custom converter is preserved as research/backlog after Field Maps rejected v0.3.1 despite its local structural and tile-preservation checks passing.
+
+Production no longer waits on this branch. A real ArcGIS Pro-generated raster TPKX is now the preferred future research specimen if the project later attempts to remove the ArcGIS Pro dependency.
+
+## Frozen historical source boundary
+
+Historical accepted Factory artifacts remain frozen in their original release records. Do not silently rebuild or relabel them because current Field Maps production uses a different packaging path.
