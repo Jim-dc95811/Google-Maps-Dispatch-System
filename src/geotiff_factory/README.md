@@ -3,13 +3,14 @@
 ## Current test artifact
 
 ```text
-GEOTIFF_FACTORY_0_1_2_TEST.zip
-SHA-256 b25c86b7ceb3892512e99f4f5e67892c4765747411c06c9175be66b3a8a5fad4
+GEOTIFF_FACTORY_0_1_3_TEST.zip
+22,183 bytes
+SHA-256 9f98d67f9c38fee6ba71f538ef887aa10af901f7e1d1c5e68685590b492fd84a
 ```
 
 Status: **BUILT / BENCH SELF-TESTED — Windows QGIS live test pending.**
 
-The exact tested ZIP is preserved in the project Library.
+The exact test ZIP is preserved in the project Library.
 
 ## Purpose
 
@@ -41,7 +42,44 @@ The GUI provides the four established source choices:
 - Esri World
 - Esri World / Google Labels
 
-Area entry supports the established HOME EXTENT and two diagonal GPS-point workflow. The two points may be entered in either diagonal order; the Factory normalizes them to an EPSG:3857 QGIS extent.
+## 0.1.3 GUI correction
+
+The first 0.1.2 live-open screenshot showed that the tall vertical area-entry layout pushed the Finished GeoTIFF controls below the visible Windows work area.
+
+0.1.3 corrects that by restoring the proven **Offline Map Factory Box 2** area layout rather than inventing a new extent panel.
+
+The area box is now the familiar two-column arrangement:
+
+```text
+LEFT
+HOME EXTENT — order: xmin, xmax, ymin, ymax
+Approx. Area
+saved extent field
+example
+LOAD TWO DIAGONAL POINTS FROM WINDOWS CLIPBOARD HISTORY
+
+RIGHT
+ENTER 2 DIAGONAL SETS OF GPS COORDINATES
+PIN 1 — Latitude, Longitude
+PIN 2 — Latitude, Longitude
+example
+USE THESE TWO GPS POINTS
+
+BOTTOM
+3 choices: saved extent / Clipboard History / manual GPS coordinates
+```
+
+This directly follows the proven Offline Map Factory operator workflow documented in its user guide and live screenshots.
+
+The window/header/cards were also compacted so boxes 1 through 4 and BUILD GEOTIFF remain visible together on a common Windows display.
+
+### Clipboard History behavior
+
+The large Clipboard History button now uses the operator's existing Windows `Win+V` history instead of adding fragile hidden WinRT/PowerShell history parsing. The Factory prompts for PIN 1 and PIN 2 in sequence, detects the selected `Latitude,Longitude` text, fills both pins, and computes HOME EXTENT.
+
+Manual pins remain complete `Latitude,Longitude` strings, matching the established Offline Map Factory interface.
+
+## Target detail
 
 Target detail is selectable from Z16 through Z20 using the proven Web Mercator map-units-per-pixel values:
 
@@ -86,10 +124,10 @@ The package includes a private QGIS template derived from the established `ESRI 
 - HOME EXTENT parsing: PASS
 - Z16-Z20 resolution table: PASS
 - 1024-aligned raster-size estimator: PASS
-- all four temporary source-project constructions: PASS
+- QGZ template archive: PASS
 - hybrid label-over-imagery render order: PASS
-- Google source substitution into disposable QGZ: PASS
-- `native:rasterize` JSON parameter contract: PASS
+- `native:rasterize` engine path retained from 0.1.2: PASS
+- 1366x768 virtual-screen GUI preview: all four numbered boxes and BUILD GEOTIFF visible
 - clean package layout: PASS
 
 ## Live acceptance still required
@@ -99,10 +137,12 @@ The container bench cannot execute the installed Windows QGIS runtime. The first
 Pass condition:
 
 1. Factory launches from the BAT file.
-2. QGIS 3.44.9 is found.
-3. GeoTIFF builds successfully.
-4. GeoTIFF is EPSG:3857.
-5. Satellite/imagery and labels render in the correct order.
-6. ArcGIS Pro opens the GeoTIFF normally and can create the native TPKX.
+2. Entire interface is visible without clipped lower controls.
+3. Box 2 behaves like the established Offline Map Factory area workflow.
+4. QGIS 3.44.9 is found.
+5. GeoTIFF builds successfully.
+6. GeoTIFF is EPSG:3857.
+7. Satellite/imagery and labels render in the correct order.
+8. ArcGIS Pro opens the GeoTIFF normally and can create the native TPKX.
 
 Do not promote this test build as live-proven until that Windows/QGIS test passes.
