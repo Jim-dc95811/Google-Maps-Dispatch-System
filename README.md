@@ -4,36 +4,170 @@
 
 **Offline GeoStack is the master manufacturing and integration project for the four-repository family.**
 
-> **QGIS makes the pixels. The Factory packages them. The deployment project puts the finished capability in the user's hands.**
+> **QGIS renders the map. ArcGIS Pro packages the native Field Maps TPKX. The deployment project puts the finished capability in the user's hands.**
 
-**Keywords:** offline GIS, offline maps, QGIS, ArcGIS Earth, ArcGIS Field Maps, MMPK, TPKX, MBTiles, Compact Cache V2, microSD, cellular-data protection, map rationing, GNSS, PRAVE, wildland fire, human AI engineering
+**Keywords:** offline GIS, QGIS, GeoTIFF, ArcGIS Pro, ArcGIS Earth, ArcGIS Field Maps, TPKX, MMPK, microSD, GNSS, PRAVE, wildland fire
 
 ---
 
-## Current priority — final Field Maps vote on specimen-conformant TPKX
+## Current production direction — 2026-08-21
 
-A live ArcGIS Field Maps control test on 2026-08-20 isolated a verified defect in the historical MBTiles -> TPKX converter:
+The Field Maps manufacturing path has changed.
+
+The custom MBTiles -> TPKX converter lineage remains useful engineering research, but it is **no longer the production gate for Field Maps**.
+
+The current production chain is:
+
+```text
+QGIS
+-> finished labeled GeoTIFF in EPSG:3857
+-> ArcGIS Pro: Create Map Tile Package
+-> native ArcGIS Pro TPKX
+-> physical removable storage
+-> ArcGIS Field Maps
+```
+
+This turn followed a strict target result:
 
 ```text
 historical project TPKX -> Field Maps REJECTED
+canonical v0.3.1 TPKX  -> Field Maps REJECTED
 Esri official Usa.tpkx  -> Field Maps ACCEPTED
 ```
 
-Both used the same physical-card `basemaps` path and the same Field Maps Designer workflow. Therefore the card path, Designer map and general Web Mercator setup are proven; package construction was the engineering subject.
+The v0.3.1 rejection occurred even after its package/bundle structure matched the previously inspected `Usa.tpkx` invariants and preserved all test tiles byte-for-byte. That means a hand-built package can still miss behavior that the real ArcGIS toolchain supplies.
 
-The repair lineage is now:
+ArcGIS Pro now owns native TPKX construction for the Field Maps production branch.
 
-- **v0.2.0** corrected Esri's exact canonical LOD/spatial-reference values but still had literal package differences;
-- **v0.3.0** reproduced the actual Esri bundle-header / ZIP / thumbnail conventions and passed the first full structural bench audit;
-- **v0.3.1** keeps that construction and adds stronger built-in structural verification plus automatic byte-for-byte source-tile verification on bench-sized inputs.
+- [Current Project Status — 2026-08-21](docs/PROJECT_STATUS_2026-08-21.md)
+- [QGIS GeoTIFF Source Workflow](docs/QGIS_GEOTIFF_SOURCE_WORKFLOW_2026-08-21.md)
+- [ArcGIS Pro GeoTIFF -> TPKX Workflow](docs/ARCGIS_PRO_GEOTIFF_TO_TPKX_2026-08-21.md)
+- [TPKX / Field Maps Conformance engineering record](docs/TPKX_FIELD_MAPS_CONFORMANCE_2026-08-20.md)
 
-The v0.3.1 output has no currently known structural deviation from the invariant conventions in Esri's official `Usa.tpkx`, and **174 / 174 source tiles were recovered byte-for-byte** from the finished package.
+---
 
-One real Field Maps acceptance vote remains.
+## Small native ArcGIS Pro TPKX proof
 
-- [TPKX / Field Maps Conformance — 2026-08-20](docs/TPKX_FIELD_MAPS_CONFORMANCE_2026-08-20.md)
-- [Canonical TPKX test branch](src/esri_canonical_tpkx_test/README.md)
-- [Android Field Maps + ArcGIS Earth](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-)
+A labeled QGIS GeoTIFF was created and then packaged with ArcGIS Pro **Create Map Tile Package**.
+
+### QGIS source GeoTIFF
+
+```text
+37,767,543 bytes
+4096 x 3072 RGB
+EPSG:3857
+Z18 source resolution = 0.597164283559817 meters/pixel
+```
+
+The successful hybrid render order was:
+
+```text
+Google Labels   <- top
+ESRI Satellite  <- bottom
+```
+
+Reversing that order caused the imagery to cover the labels in the exported TIFF.
+
+### ArcGIS Pro native TPKX
+
+```text
+tiff test 66.tpkx
+38,306,245 bytes
+Z0-Z18
+PNG24
+19 Compact Cache V2 bundles
+creator: CreateMapTilePackage ArcGIS Pro
+```
+
+Forensic inspection of this real ArcGIS Pro output showed:
+
+- Web Mercator WKID 102100 / latestWKID 3857;
+- Compact Cache V2, packet size 128;
+- actual Esri bundle-header pattern;
+- `layers` contains a real `Raster Layer` record for the source GeoTIFF;
+- no explicit ZIP directory records are required by this ArcGIS Pro-created package;
+- the root spatial-reference object is simpler than the extended object previously copied into the custom converter.
+
+This native ArcGIS Pro TPKX still needs the real Field Maps runtime vote before being called Field Maps LIVE-PROVEN.
+
+---
+
+## GeoTIFF Factory — new branch
+
+A separate product line has been created deliberately rather than adding more modes to Offline Map Factory:
+
+```text
+GEOTIFF FACTORY 0.1.2 TEST
+```
+
+Scope is intentionally narrow:
+
+- four map-source choices;
+- standard two-point diagonal extent workflow;
+- saved HOME EXTENT / Clipboard History / manual two-point entry;
+- target detail Z16-Z20;
+- fixed EPSG:3857;
+- QGIS `Convert map to raster` engine;
+- correct hybrid layer order baked in;
+- one finished output: `.tif`;
+- no MBTiles;
+- no TPKX converter;
+- no recovery tools.
+
+Package surface remains professional and simple:
+
+```text
+RUN GEOTIFF FACTORY.bat
+System Files\
+```
+
+The test package uses a self-contained QGIS template inside `System Files`; it does not depend at runtime on the historical Factory QGZ paths.
+
+**Status: BUILT / BENCH-CHECKED — WINDOWS/QGIS LIVE TEST PENDING.**
+
+See [GeoTIFF Factory test branch](src/geotiff_factory/README.md).
+
+---
+
+## GeoTIFF detail table
+
+The GeoTIFF is one fixed-resolution master raster. ArcGIS Pro creates the lower zoom levels when it builds the TPKX.
+
+| Target detail | QGIS map units per pixel |
+| ---: | ---: |
+| Z16 | `2.38865713397468` |
+| Z17 | `1.19432856685505` |
+| Z18 | `0.597164283559817` |
+| Z19 | `0.298582141647617` |
+| Z20 | `0.149291070823808325` |
+
+ArcGIS Pro **Maximum Level Of Detail** should match the QGIS GeoTIFF source detail.
+
+---
+
+## District 7 branch
+
+The current district production attempt is:
+
+```text
+District 7
+Esri Satellite + Google Labels
+GeoTIFF source
+Z17
+map units per pixel = 1.19432856685505
+```
+
+A full District 7 Z17 GeoTIFF build was started on the live QGIS machine on 2026-08-21. Completion and finished file size are still pending and must not be inferred until the run finishes.
+
+After the GeoTIFF completes:
+
+```text
+District 7 Z17 GeoTIFF
+-> ArcGIS Pro Create Map Tile Package
+-> native District 7 TPKX
+-> physical card
+-> Field Maps acceptance
+```
 
 ---
 
@@ -41,153 +175,65 @@ One real Field Maps acceptance vote remains.
 
 | Subsystem | Status |
 | --- | --- |
-| **Offline Map Factory 1.0** | 🟡 **BUILT / SELF-TESTED — RELEASE ACCEPTANCE BLOCKED ON FINAL TPKX FIELD MAPS VOTE** |
-| QGIS -> raster MBTiles manufacturing | ✅ **LIVE-PROVEN** |
-| Historical MBTiles -> TPKX converter in ArcGIS Earth | ✅ **LIVE-PROVEN** |
-| Historical converter output in ArcGIS Field Maps | ❌ **FAILED / SUPERSEDED FOR FIELD MAPS CONFORMANCE** |
-| Esri official `Usa.tpkx` in Field Maps from physical microSD | ✅ **LIVE-PROVEN** |
-| Esri specimen-conformant converter v0.3.1 | ✅ **BENCH STRUCTURAL PASS — FIELD MAPS FINAL VOTE PENDING** |
-| v0.3.1 tile preservation | ✅ **174 / 174 BYTE-IDENTICAL** |
-| ArcGIS Pro existing TPKX -> minimal MMPK | ✅ **PASS — small and district-scale packages created** |
-| Pro-created MMPK in Windows ArcGIS Earth | ✅ **PASS — rendered while Earth showed Not signed in** |
-| ArcGIS Earth Windows native TPKX | ✅ **LIVE-PROVEN** |
-| ArcGIS Earth Mobile local TPKX | ✅ **LIVE-PROVEN on multiple project packages** |
+| QGIS manual GeoTIFF workflow | ✅ **LIVE-PROVEN SMALL TEST** |
+| ArcGIS Pro GeoTIFF -> native TPKX | ✅ **LIVE-PROVEN BUILD / FIELD MAPS VOTE PENDING** |
+| GeoTIFF Factory 0.1.2 TEST | 🟡 **BUILT / BENCH-CHECKED — LIVE TEST PENDING** |
+| District 7 Z17 GeoTIFF | 🟡 **LIVE BUILD STARTED — COMPLETION PENDING** |
 | Field Maps Designer + physical `basemaps` path | ✅ **LIVE-PROVEN** |
-| Corrected district TPKX + MMPK cold-card acceptance | 🟡 **PENDING v0.3.1 FIELD MAPS PASS** |
+| Esri official `Usa.tpkx` in Field Maps | ✅ **LIVE-PROVEN** |
+| Historical project converter TPKX in Field Maps | ❌ **FAILED** |
+| Canonical converter v0.3.1 in Field Maps | ❌ **FAILED** |
+| Canonical converter v0.3.2 | 🟡 **BENCH RESEARCH ONLY — NOT PRODUCTION GATE** |
+| ArcGIS Earth Windows native project TPKX | ✅ **LIVE-PROVEN** |
+| ArcGIS Earth Mobile local project TPKX | ✅ **LIVE-PROVEN on multiple packages** |
+| Historical TPKX Map Factory v1.0.0 | ✅ **RELEASE-ACCEPTED / FROZEN FOR EARTH TARGET** |
+| Offline Map Factory 1.0 QGIS -> MBTiles side | ✅ **LIVE-PROVEN** |
+| ArcGIS Pro existing TPKX -> MMPK bridge | ✅ **PASS, but does not repair source TPKX** |
 | Native ArcGIS Earth GNSS | ✅ **LIVE-OBSERVED** |
 | PRAVE -> ArcGIS Earth Automation API | ✅ **LIVE-PROVEN** |
-| Map Fountain network delivery proofs | ✅ **LIVE-PROVEN / PARKED REFERENCE** |
-| Historical TPKX Map Factory v1.0.0 | ✅ **RELEASE-ACCEPTED / FROZEN FOR ARCGIS EARTH TARGET** |
-| TPKX -> MBTiles recovery | ❌ **REJECTED as production path** |
-| Operational public-Internet dependency | **NONE BY DESIGN** |
+| Map Fountain | ✅ **LIVE-PROVEN / PARKED** |
+| Operational public-Internet dependency at showtime | **NONE BY DESIGN** |
 
 ---
 
-## Offline Map Factory 1.0
+## Historical converter research branch
 
-The current clean Factory product line remains deliberately simple:
+The converter work is preserved rather than erased.
 
-- four map sources: Google Earth, Google Hybrid, Esri World, Esri World / Google Labels;
-- area from HOME EXTENT, Clipboard History diagonal points, or two manual GPS points;
-- Z0-Z20;
-- output choice: TPKX / MBTiles / Both;
-- Advanced Tool: existing MBTiles -> TPKX;
-- no REST / Static WMTS output in the clean product.
+v0.3.1 proved that the project can reproduce much of Compact Cache V2 correctly, including tile addressing and bundle payloads, but Field Maps still rejected the package.
 
-Known-good environment:
+v0.3.2 added a further PNG `pHYs` normalization experiment after a difference was found between QGIS tiles and Esri's `Usa.tpkx`. It remains bench research and has not displaced the native ArcGIS Pro production path.
 
-```text
-Windows 10/11 64-bit
-QGIS 3.44.9
-Python 3.14.5
-PNG raster tiles
-96 DPI
-antialiasing ON
-metatile 4
-Z0-Z20
-```
+A real ArcGIS Pro-generated TPKX now provides a much better specimen for future converter research. In particular it exposes package behaviors that the earlier `Usa.tpkx` comparison did not establish as universal.
 
-### Finished-package standard
-
-```text
-OFFLINE MAP FACTORY 1.0 - Installation Guide.pdf
-OFFLINE MAP FACTORY 1.0 - User Guide.pdf
-REQUIRED_FACTORY_PROJECT_DO_NOT_EDIT.qgz
-ESRI and Google Labels.qgz
-RUN OFFLINE MAP FACTORY.bat
-System Files\
-```
-
-The operator sees a finished product, not a developer dump.
-
-### Release boundary
-
-The QGIS -> MBTiles side remains valid. The TPKX stage must not be release-promoted for the broader Field Maps mission until v0.3.1 gets the real Field Maps vote.
-
-The historical release remains frozen and its ArcGIS Earth acceptance history remains valid.
+See issue #3 and `src/esri_canonical_tpkx_test/README.md`.
 
 ---
 
-## v0.3.1 conformance result
-
-Current candidate converter:
-
-```text
-ESRI_CANONICAL_TPKX_TEST_v0_3_1.zip
-12,018 bytes
-SHA-256 dcdac0cbfcb3276e392e71f76aaa73e1e71581728ba2bb64c76efefdd753f1ec
-```
-
-Current ready-made test TPKX:
-
-```text
-small mbtile test v031.tpkx
-29,239,000 bytes
-SHA-256 91f1f93f2485c5a344b7ac94d30746df8c6b7c1ac5a9c80bb9aa97f6274a3797
-```
-
-Bench checks include the actual Esri bundle-header pattern, explicit ZIP directory hierarchy, Esri-style ZIP metadata, root/iteminfo schema, canonical LOD table, 96-DPI thumbnail metadata, tile addressing, and byte-for-byte source-tile preservation.
-
-v0.3.1 also performs the invariant structural checks itself before declaring success. Bench-sized inputs receive automatic full source-to-package tile verification; `--deep-verify` can force that verification on large inputs.
-
-**Bench result: PASS. No remaining structural defect is currently known.**
-
----
-
-## District-card mission
-
-> **A Field Maps user must be able to open the app with zero public Internet and use a district-wide Esri Hybrid map through Z17. The same local map should stop the heavy basemap from burning cellular data when service exists.**
-
-The intended chain remains:
-
-```text
-Offline Map Factory
--> corrected district TPKX
--> ArcGIS Pro minimal MMPK wrapper
--> physical microSD
-   +-- Field Maps mappackages\DISTRICT.mmpk
-   +-- Field Maps basemaps\DISTRICT.tpkx
--> Android
--> ArcGIS Field Maps + ArcGIS Earth Mobile
-```
-
-ArcGIS Pro packaging remains proven, but Pro preserves the source TPKX intact. Therefore the district MMPK is rebuilt only after the corrected TPKX passes Field Maps.
-
----
-
-## ArcGIS Earth integration
-
-Live-proven / observed capabilities include local native TPKX, router-hosted TPKX over SMB, ArcGIS Earth Mobile local TPKX, KML/KMZ/NetworkLinks, native GNSS/NMEA, Automation API, drawings/markers and PRAVE remote-unit display.
-
-Known-good GNSS observation:
-
-```text
-9600 baud
-GLL + RMC present
-```
-
----
-
-## Historical Factory lineage
+## Historical product lines
 
 ### TPKX Map Factory v1.0.0
 
-**RELEASE-ACCEPTED / FROZEN — 2026-08-15**
+**RELEASE-ACCEPTED / FROZEN — 2026-08-15 for its actual ArcGIS Earth target.**
 
-Its actual acceptance target was Factory manufacture plus ArcGIS Earth rendering. That history remains valid. The 2026-08-20 Field Maps test added a stricter compatibility boundary and justified a new converter lineage rather than rewriting the accepted archive.
+Do not rewrite or relabel the accepted artifact. Field Maps failures narrow its compatibility claim; they do not erase the original acceptance.
 
-### REST / Static WMTS exploration
+### Offline Map Factory 1.0
 
-REST experiments remain useful history under Map Fountain but are not part of Offline Map Factory 1.0.
+Its QGIS -> raster MBTiles manufacturing remains useful and live-proven. Its hand-built TPKX stage is not the current Field Maps production route.
+
+### Rasta Pyramid Factory
+
+Rasta v0.1.3 remains LIVE-PROVEN for giant-raster manufacturing and ArcGIS Earth use. A future Field Maps branch should prefer native ArcGIS Pro TPKX production unless a custom converter later earns its own strict Field Maps acceptance.
 
 ---
 
 ## Four-project family
 
-1. **Offline GeoStack** — master map manufacturing + field-system integration.
-2. **[Rasta Pyramid Factory](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory)** — giant-raster / deep-zoom manufacturing; its future TPKX stage will inherit the proven replacement converter after the Field Maps vote.
-3. **[Map Fountain](https://github.com/Jim-dc95811/Map-Fountain)** — LIVE-PROVEN shared-storage/network delivery reference; parked from normal personal-phone use.
-4. **[Android Field Maps + ArcGIS Earth](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-)** — deployment to the user and Field Maps acceptance evidence.
+1. **Offline GeoStack** — map manufacturing + integration + GeoTIFF/ArcGIS Pro production path.
+2. **[Rasta Pyramid Factory](https://github.com/Jim-dc95811/Rasta-Pyramid-Factory)** — giant-raster / deep-zoom manufacturing.
+3. **[Map Fountain](https://github.com/Jim-dc95811/Map-Fountain)** — LIVE-PROVEN shared-storage/network reference; parked from normal personal-phone deployment.
+4. **[Android Field Maps + ArcGIS Earth](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-)** — deployment and real Field Maps acceptance endpoint.
 
 ---
 
@@ -195,24 +241,12 @@ REST experiments remain useful history under Map Fountain but are not part of Of
 
 > **There can be no operational dependence on public Internet connectivity. Period.**
 
-> **When an official working reference implementation exists, reproduce/conform to it first.**
-
-> **Do the iterative engineering on the bench. Ask the field operator for one acceptance vote, not a stream of debugging experiments.**
+> **Use the vendor's native production path when it is available and proven.**
 
 > **The real target decides acceptance.**
 
 ---
 
-## Start here
-
-- **[TPKX / Field Maps Conformance — 2026-08-20](docs/TPKX_FIELD_MAPS_CONFORMANCE_2026-08-20.md)**
-- **[Current Project Status — 2026-08-20](docs/PROJECT_STATUS_2026-08-20.md)**
-- **[Canonical TPKX test branch](src/esri_canonical_tpkx_test/README.md)**
-- [Android deployment + ArcGIS Earth user features](https://github.com/Jim-dc95811/Android-Field-Maps-and-ArcGIS-Earth-)
-- [Map Fountain proof archive](https://github.com/Jim-dc95811/Map-Fountain)
-
----
-
 # Offline GeoStack
 
-> **Manufacture the geography once. Conform to the real standard. Put the heavy map on the card. Let the real field application decide acceptance.**
+> **QGIS makes the finished raster. ArcGIS Pro makes the native TPKX. Put the finished map on the card and let Field Maps decide.**
