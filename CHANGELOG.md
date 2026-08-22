@@ -2,6 +2,133 @@
 
 This file records public architecture milestones and preserves explored branches as lineage without confusing them with the current product.
 
+## 2026-08-21 — production pivot to QGIS GeoTIFF -> ArcGIS Pro native TPKX
+
+The strict Field Maps target rejected the custom canonical converter even after the local package comparison was tightened.
+
+### Field Maps result
+
+```text
+historical project TPKX -> REJECTED
+canonical v0.3.1 TPKX  -> REJECTED
+Esri official Usa.tpkx  -> ACCEPTED
+```
+
+The v0.3.1 package had already passed the project's then-current structural audit and preserved 174/174 source tiles byte-for-byte. Its Field Maps rejection proved that matching the visible/specimen invariants was still not enough to establish native package equivalence.
+
+### Production decision
+
+Field Maps manufacturing no longer waits on the custom MBTiles -> TPKX converter.
+
+New production chain:
+
+```text
+QGIS
+-> labeled GeoTIFF in EPSG:3857
+-> ArcGIS Pro Create Map Tile Package
+-> native TPKX
+-> physical removable storage
+-> Field Maps
+```
+
+The custom converter is retained as research/backlog for a future Pro-free path, not as the active deployment blocker.
+
+### QGIS GeoTIFF workflow LIVE-PROVEN on a small specimen
+
+A small area was rendered with QGIS **Convert map to raster**.
+
+Proven source settings:
+
+```text
+EPSG:3857
+RGB GeoTIFF
+4096 x 3072 pixels
+Z18 source resolution = 0.597164283559817 meters/pixel
+QGIS raster tile size = 1024
+```
+
+Critical cartographic finding:
+
+```text
+Google Labels   <- TOP
+ESRI Satellite  <- BOTTOM
+```
+
+When the order was reversed, satellite imagery covered the street labels. With labels above imagery, the finished GeoTIFF contained the intended hybrid map.
+
+### ArcGIS Pro native TPKX build LIVE-PROVEN
+
+The same GeoTIFF was packaged with ArcGIS Pro **Create Map Tile Package**.
+
+Result:
+
+```text
+tiff test 66.tpkx
+38,306,245 bytes
+Z0-Z18
+PNG24
+19 Compact Cache V2 bundles
+creator = CreateMapTilePackage ArcGIS Pro
+```
+
+Forensic inspection found:
+
+- WKID 102100 / latestWKID 3857;
+- Compact Cache V2 packet size 128;
+- Esri bundle-header pattern;
+- a real `Raster Layer` entry in `root.json.layers`;
+- no explicit ZIP directory entries;
+- a simpler root spatial-reference object than the custom converter had copied from `Usa.tpkx`.
+
+This native Pro package still requires the real Field Maps runtime vote before being called Field Maps LIVE-PROVEN.
+
+### GeoTIFF Factory branch created
+
+A new separate product was created rather than adding more modes to Offline Map Factory:
+
+```text
+GEOTIFF FACTORY 0.1.2 TEST
+```
+
+Scope:
+
+- four controlled map sources;
+- standard HOME EXTENT / Clipboard History / two-point GPS area workflow;
+- Z16-Z20 target detail;
+- fixed EPSG:3857;
+- QGIS Convert map to raster engine;
+- one finished `.tif` output;
+- no MBTiles;
+- no TPKX converter;
+- no recovery tools.
+
+Status: **BUILT / BENCH-CHECKED — WINDOWS/QGIS LIVE TEST PENDING.**
+
+### District 7 Z17 manual production started
+
+A full District 7 Esri Satellite + Google Labels GeoTIFF build was started with:
+
+```text
+Z17
+map units per pixel = 1.19432856685505
+```
+
+Completion, elapsed time, and final size remain pending until the live QGIS run actually finishes.
+
+### GeoTIFF source-detail table frozen for testing
+
+```text
+Z16  2.38865713397468
+Z17  1.19432856685505
+Z18  0.597164283559817
+Z19  0.298582141647617
+Z20  0.149291070823808325
+```
+
+ArcGIS Pro Maximum Level Of Detail should match the QGIS GeoTIFF source detail.
+
+---
+
 ## 2026-08-20 — strict Field Maps TPKX conformance failure isolated; canonical repair branch opened
 
 A real ArcGIS Field Maps control test exposed a compatibility defect in the historical MBTiles -> TPKX converter lineage.
