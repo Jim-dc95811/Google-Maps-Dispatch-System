@@ -6,36 +6,37 @@ Create a georeferenced raster in QGIS that already looks exactly like the finish
 
 This document covers the **QGIS side only**.
 
-## Proven test configuration
+## Production chain
 
 ```text
-QGIS project CRS: EPSG:3857
-Output raster: GeoTIFF (.tif)
-Raster content: rendered satellite imagery + rendered labels
-Test maximum detail: Web Mercator Z18
-Map units per pixel: 0.597164283559817
-Tile size: 1024
-Background transparency: OFF
+QGIS rendered map
+-> GeoTIFF in EPSG:3857
+-> ArcGIS Pro Create Map Tile Package
+-> native TPKX
 ```
+
+The GeoTIFF is one fixed-resolution master raster. ArcGIS Pro later creates the lower zoom levels.
+
+---
 
 ## 1. Prepare the QGIS map
 
 Open the QGIS project containing the map sources.
 
-For the Esri Satellite + Google Labels test, the visible layer order must be:
+For the Esri Satellite + Google Labels workflow, the visible layer order must be:
 
 ```text
 Google Labels      <- TOP
 ESRI Satellite     <- BOTTOM
 ```
 
-Both layers must be checked ON in the Layers panel.
+Both layers must be checked ON.
 
-### Critical lesson
+### Critical live-test lesson
 
 Layer order matters during rasterization.
 
-When `ESRI Satellite` was placed ahead of `Google Labels` in the **Layers to render** list, the satellite imagery covered the labels in the generated GeoTIFF.
+When `ESRI Satellite` was first/top in **Layers to render**, the imagery covered the labels in the generated GeoTIFF.
 
 The successful order was:
 
@@ -44,7 +45,9 @@ The successful order was:
 2. ESRI Satellite
 ```
 
-Do not include the `Annotations` layer unless it is intentionally part of the finished map.
+Do not include `Annotations` unless intentionally required in the finished map.
+
+---
 
 ## 2. Open Convert map to raster
 
@@ -58,127 +61,166 @@ Processing
 -> Convert map to raster
 ```
 
-## 3. Set the map extent
+---
 
-In **Minimum extent to render**, use the desired map area.
+## 3. Set the extent
 
-For the live small-area test, QGIS used:
+In **Minimum extent to render**, use the required map area in EPSG:3857.
+
+For the small live test, QGIS used:
 
 ```text
 -9146268.8731,-9144166.0472,3539208.9638,3540746.7555 [EPSG:3857]
 ```
 
-For production, substitute the actual required area.
+Production uses the actual requested area.
 
-## 4. Set raster resolution
+---
 
-For the Z18 test:
+## 4. Choose source detail
+
+Set **Map units per pixel** from this table:
+
+| Target detail | Map units per pixel |
+| ---: | ---: |
+| Z16 | `2.38865713397468` |
+| Z17 | `1.19432856685505` |
+| Z18 | `0.597164283559817` |
+| Z19 | `0.298582141647617` |
+| Z20 | `0.149291070823808325` |
+
+QGIS may display the value rounded in the GUI.
+
+Examples:
 
 ```text
-Map units per pixel = 0.597164283559817
+District Z17 -> 1.19432856685505
+Small Z18 test -> 0.597164283559817
+Selected high-detail Z20 -> 0.149291070823808325
 ```
 
-QGIS may display this rounded as:
+ArcGIS Pro **Maximum Level Of Detail** should later match the target detail chosen here.
 
-```text
-0.597164
-```
+---
 
-This is the standard Web Mercator Z18 resolution used for the test.
-
-## 5. Set raster tile size
+## 5. Remaining raster settings
 
 Use:
 
 ```text
 Tile size = 1024
-```
-
-Leave:
-
-```text
 Buffer around tiles = 0
 Make background transparent = unchecked
 Map theme to render = Not selected
 ```
 
-## 6. Select the layers to render
+---
 
-Open **Layers to render** and select exactly:
+## 6. Select Layers to render
 
-```text
-Google Labels
-ESRI Satellite
-```
+Select exactly the intended source stack.
 
-The list order must be:
+For Esri imagery + Google labels:
 
 ```text
 Google Labels
 ESRI Satellite
 ```
 
-Do not use `Select All` if unwanted layers such as `Annotations` are present.
+The list order must keep labels first/top.
 
-## 7. Choose the output GeoTIFF
+Do not use Select All when unwanted layers are present.
 
-Set **Output layer** to a permanent `.tif` file, for example:
+---
+
+## 7. Choose output
+
+Set **Output layer** to a permanent `.tif` file.
+
+Example:
 
 ```text
 C:\A\qgis tif test.tif
 ```
 
-It is acceptable to overwrite an earlier test TIFF.
+Overwriting an earlier test TIFF is acceptable when intentional.
 
-Leave:
+Leave **Open output file after running algorithm** checked if desired.
 
-```text
-Open output file after running algorithm = checked
-```
+---
 
-## 8. Run
+## 8. Run and verify
 
 Click **Run**.
 
-The resulting GeoTIFF should visually contain both:
+Do not proceed to ArcGIS Pro until the GeoTIFF itself visibly contains the intended finished cartography.
 
-- the satellite imagery;
-- the street/place labels.
+Verify:
 
-## 9. Verify the finished GeoTIFF before leaving QGIS
+- imagery present;
+- labels present;
+- labels not hidden beneath imagery;
+- georeferencing is EPSG:3857.
 
-Do not proceed to ArcGIS Pro until the GeoTIFF itself already looks like the finished map.
-
-For the live successful test, the GeoTIFF was:
+### Proven small result
 
 ```text
 GeoTIFF
+37,767,543 bytes
+4096 x 3072 RGB
 EPSG:3857
-RGB
-4096 x 3072 pixels
+Z18 source detail
 0.597164283559817 meters/pixel
 ```
 
-The labels were visibly baked into the image.
+---
 
-## What the GeoTIFF is
+## District 7 current production recipe
 
-The GeoTIFF is one georeferenced, fixed-resolution raster image. It is not yet the multilevel tile pyramid.
-
-ArcGIS Pro performs the next stage:
+A live District 7 manual build was started with:
 
 ```text
-QGIS GeoTIFF
--> ArcGIS Pro Create Map Tile Package
--> native TPKX
+Esri Satellite + Google Labels
+Z17
+map units per pixel = 1.19432856685505
 ```
+
+Completion and final size remain pending until QGIS actually finishes.
+
+---
+
+## GeoTIFF Factory automation
+
+The manual workflow above is now being automated in the separate:
+
+```text
+GEOTIFF FACTORY 0.1.2 TEST
+```
+
+The Factory keeps the established two-point extent workflow, four controlled source choices and Z16-Z20 selection, but outputs only a finished `.tif`.
+
+It deliberately contains:
+
+- no MBTiles production path;
+- no TPKX converter;
+- no recovery tools.
+
+The GeoTIFF Factory live Windows/QGIS acceptance is pending.
+
+See `src/geotiff_factory/README.md`.
+
+---
 
 ## Current production direction
 
-For Field Maps compatibility, use:
+For Field Maps:
 
 ```text
-QGIS -> GeoTIFF -> ArcGIS Pro -> TPKX
+QGIS / GeoTIFF Factory
+-> GeoTIFF
+-> ArcGIS Pro
+-> native TPKX
+-> Field Maps
 ```
 
-The custom MBTiles -> TPKX converter remains experimental and is not the production path at this point.
+The custom MBTiles -> TPKX converter remains research rather than the production route.
