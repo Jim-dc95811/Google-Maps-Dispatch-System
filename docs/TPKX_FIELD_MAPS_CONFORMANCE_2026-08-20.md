@@ -1,8 +1,8 @@
-# TPKX / Field Maps Conformance — 2026-08-20
+# TPKX / Field Maps Conformance — 2026-08-20 to 2026-08-21
 
-## Control result
+## Decisive control
 
-A strict ArcGIS Field Maps test proved:
+The original strict control remains:
 
 ```text
 same physical microSD
@@ -14,149 +14,171 @@ historical project TPKX -> REJECTED
 Esri official Usa.tpkx  -> ACCEPTED
 ```
 
-Therefore the historical converter/package construction was the defect boundary. The Field Maps path, public Designer map, physical-card `basemaps` directory and general Web Mercator setup are proven.
+That proved the Field Maps path and isolated the original defect to project-built TPKX construction.
 
-## Governing rule
-
-> **Esri's actual working TPKX is the construction reference. Field Maps is the final judge.**
-
-The written specification remains supporting documentation. Where the actual Esri package differs, the working package wins.
-
-## Historical converter
-
-The historical converter remains valid evidence for its actual tested targets:
-
-- ArcGIS Earth Windows: LIVE-PROVEN;
-- ArcGIS Earth Mobile: multiple packages accepted;
-- ArcGIS Pro: packages accepted.
-
-It is not approved as Field Maps-conformant.
-
-The frozen `TPKX Map Factory v1.0.0` archive remains frozen; repair belongs in a new lineage.
-
-## Repair lineage
+## Repair lineage result
 
 ### v0.2.0
 
-Corrected the first verified metadata deviation: the historical converter calculated Web Mercator LOD values instead of copying Esri's canonical values.
+Corrected canonical Web Mercator LOD values and other metadata differences. Further package differences were found before Field Maps testing.
 
-It still differed from Esri's actual package in bundle headers, ZIP directory/entry metadata, `layers` structure and thumbnail DPI metadata. Field Maps testing of v0.2.0 was held.
+### v0.3.0 / v0.3.1
 
-### v0.3.0
+The converter was tightened to reproduce the then-observed `Usa.tpkx` structural conventions and to self-verify its output.
 
-Copied the actual Esri bundle-header and ZIP conventions and passed the first full specimen comparison.
+Bench evidence for v0.3.1 included:
 
-### v0.3.1 — current bench candidate
+- 174 / 174 source PNG tiles recovered byte-for-byte;
+- valid Compact Cache V2 addressing/indexes;
+- Esri bundle-header pattern;
+- canonical LOD table;
+- matching Web Mercator origin;
+- matching root/item schema used in the comparison;
+- thumbnail DPI normalization;
+- no remaining defect found by the local comparison.
 
-v0.3.1 preserves the v0.3.0 construction and strengthens the code so the converter itself verifies the invariant Esri structure before declaring success.
+### Real target vote — v0.3.1
 
-Current artifact:
+Field Maps still rejected the v0.3.1 package as spatial-reference incompatible.
+
+Therefore:
 
 ```text
-ESRI_CANONICAL_TPKX_TEST_v0_3_1.zip
-12,018 bytes
-SHA-256 dcdac0cbfcb3276e392e71f76aaa73e1e71581728ba2bb64c76efefdd753f1ec
+v0.3.1 BENCH STRUCTURE PASS
+v0.3.1 FIELD MAPS FAIL
 ```
 
-Exact source SHA-256:
+This is the key engineering correction: local comparison against one official TPKX specimen did not establish complete native equivalence.
+
+## Web-map spatial reference check
+
+The Field Maps Designer web-map JSON reported:
 
 ```text
-0f4257fab6205f423c576cfd8341292e5b0f547f7387911b14b3e81b0bea32a9
+wkid = 102100
+latestWkid = 3857
+falseX = -20037700
+falseY = -30241100
+xyTolerance = 0.001
+xyUnits = 10000
 ```
 
-## What v0.3.1 reproduces
+Those values were already compatible with the v0.3.1 root metadata. The obvious visible WKID block was therefore not the missing piece.
 
-Structural values copied from the official working `Usa.tpkx` include:
-
-- canonical Web Mercator LOD 0-23 table;
-- Web Mercator origin and spatial-reference objects;
-- 256 x 256 / 96 DPI cache metadata;
-- Compact Cache V2 packet size 128;
-- actual Esri bundle-header fixed-byte pattern:
+The same JSON also demonstrated that Designer stores the exact device basemap filename in:
 
 ```text
-(3, 0, 131092, 5, 0, FILE_SIZE, 40, 131092, 3, 0, 16384, 5, 131072)
+applicationProperties.offline.offlinebasemap.referenceBasemapName
 ```
 
-- 64-byte bundle header;
-- 131,072-byte row-major bundle index;
-- 4-byte tile-size prefixes and packed tile offsets;
-- explicit `tile/` and `tile/Lxx/` ZIP directory entries;
-- Esri-style ZIP creator/extract versions, DOS attributes and NTFS timestamp-extra-field shape;
-- `root.json` and `iteminfo.json` top-level schema/order;
-- 200 x 133 RGB thumbnail with Esri-style 96-DPI PNG metadata.
+That filename must always match the actual card file being tested.
 
-For prerendered raster MBTiles, original GIS layer/legend information does not exist. v0.3.1 therefore uses an honest `layers: []` rather than fabricating data.
+## v0.3.2 research follow-up
 
-## Bench test
-
-Input:
+A remaining systematic PNG metadata difference was found:
 
 ```text
-small mbtile test(1).mbtiles
-174 PNG tiles
+Esri Usa.tpkx tiles: pHYs 3780 x 3780 pixels/meter
+QGIS small MBTiles tiles: pHYs 3779 x 3779 pixels/meter
+AE SYSTEM CHECK synthetic tiles: no pHYs chunk
+```
+
+`ESRI_CANONICAL_TPKX_TEST_v0_3_2` was built to normalize PNG tile `pHYs` metadata without re-encoding pixel data.
+
+Bench verification passed.
+
+Status: **RESEARCH ONLY — NOT THE CURRENT PRODUCTION GATE.**
+
+The project pivoted before spending more Field Maps cycles on hand-built TPKX experiments.
+
+---
+
+## Production bypass — native ArcGIS Pro TPKX
+
+The project changed the manufacturing path to:
+
+```text
+QGIS
+-> GeoTIFF
+-> ArcGIS Pro Create Map Tile Package
+-> native TPKX
+-> Field Maps
+```
+
+A small live proof successfully created both the GeoTIFF and the native Pro TPKX.
+
+### QGIS source
+
+```text
+37,767,543-byte GeoTIFF
+4096 x 3072 RGB
+EPSG:3857
+Z18 source detail
+```
+
+### ArcGIS Pro output
+
+```text
+tiff test 66.tpkx
+38,306,245 bytes
 Z0-Z18
+PNG24
+19 bundles
+creator = CreateMapTilePackage ArcGIS Pro
 ```
 
-Output:
+## New forensic lessons from a real ArcGIS Pro-generated TPKX
+
+The native Pro package is a better production reference than trying to infer universal rules from `Usa.tpkx` alone.
+
+Observed native-Pro facts:
+
+- `spatialReference` uses the simple `{wkid:102100, latestWkid:3857}` form;
+- `tileInfo.spatialReference` uses the same simple form;
+- `root.json.layers` contains a real `Raster Layer` entry for the source GeoTIFF with legend information;
+- ZIP entries are stored with Esri creator/extract metadata;
+- the archive contains **no explicit ZIP directory records**;
+- Compact Cache V2 bundle headers match the Esri pattern already discovered;
+- `iteminfo.json` identifies `creator: CreateMapTilePackage ArcGIS Pro`.
+
+These findings invalidate two earlier assumptions as universal requirements:
+
+1. explicit `tile/` / `tile/Lxx/` ZIP directory entries are not required for a native ArcGIS Pro TPKX;
+2. the extended spatial-reference object copied from `Usa.tpkx` is not required in ArcGIS Pro's own native raster TPKX.
+
+A third difference is now a meaningful future converter research lead: the native Pro package contains a populated Raster Layer description rather than `layers: []`.
+
+This is **not yet claimed as the sole reason v0.3.1 failed**. It is simply a concrete native-package difference worth preserving for future research.
+
+---
+
+## Current production decision
+
+Do not continue using Field Maps as the iterative debugger for the custom converter.
+
+Use:
 
 ```text
-small mbtile test v031.tpkx
-29,239,000 bytes
-SHA-256 91f1f93f2485c5a344b7ac94d30746df8c6b7c1ac5a9c80bb9aa97f6274a3797
-19 Compact Cache V2 bundles
+QGIS / GeoTIFF Factory
+-> finished GeoTIFF
+-> ArcGIS Pro native TPKX
+-> Field Maps acceptance
 ```
 
-Conversion completed in under one second on the current bench.
+The converter issue remains open as research/backlog for a possible future Pro-free workflow.
 
-## Independent post-build verification
+## Current acceptance matrix
 
-Result:
+| Object / path | Result |
+| --- | --- |
+| Historical custom TPKX -> Field Maps | ❌ FAIL |
+| Esri official Usa.tpkx -> Field Maps | ✅ PASS |
+| Custom v0.3.1 -> Field Maps | ❌ FAIL |
+| Custom v0.3.2 | 🟡 BENCH RESEARCH ONLY |
+| QGIS GeoTIFF small build | ✅ PASS |
+| ArcGIS Pro GeoTIFF -> native TPKX build | ✅ PASS |
+| ArcGIS Pro native TPKX -> Field Maps | 🟡 PENDING |
 
-- ZIP structural signature matches Esri for files, directories and bundles;
-- root/iteminfo schema and order match;
-- canonical LOD / Web Mercator / Compact V2 metadata match;
-- all 19 bundle headers match the actual Esri fixed-byte pattern;
-- thumbnail 96-DPI metadata matches;
-- 174 / 174 source MBTiles PNGs recovered from the finished TPKX byte-for-byte;
-- 0 missing bundles;
-- 0 missing index records;
-- 0 payload mismatches;
-- no remaining structural defect is currently known from the bench comparison.
+## Governing rule
 
-v0.3.1 performs the invariant structural checks itself before reporting success. Bench-sized inputs also receive automatic full byte-level source-to-package verification. Large inputs skip the expensive full reread by default; `--deep-verify` forces it.
-
-## Current evidence state
-
-- v0.3.1 conversion: **BENCH PASS**;
-- Esri specimen structural audit: **PASS**;
-- tile preservation: **174 / 174 BYTE-IDENTICAL PASS**;
-- remaining known structural defect: **NONE**;
-- ArcGIS Field Maps acceptance: **PENDING ONE FINAL REAL-TARGET VOTE**.
-
-## Next action
-
-Use the already-built candidate:
-
-```text
-small mbtile test v031.tpkx
--> physical microSD basemaps folder
--> Field Maps Designer exact filename
--> ArcGIS Field Maps
-```
-
-If Field Maps accepts it:
-
-1. promote v0.3.1 construction into Offline Map Factory;
-2. propagate it into Rasta TPKX output;
-3. regenerate the district TPKX;
-4. rebuild the district MMPK from the corrected TPKX;
-5. resume cold/no-Internet district-card acceptance.
-
-If Field Maps rejects it, capture that exact failure and resume forensic analysis. Do not change the QGIS MBTiles recipe or unrelated architecture without evidence.
-
-## Side issue — SD reader
-
-The laptop's built-in SD reader produced write-protection behavior with multiple cards/adapters. A second computer wrote successfully. Treat the laptop reader as suspect. The SD card is disposable test media.
-
-> **Do the science on the bench. Ask the field operator for one acceptance vote, not a stream of debugging experiments.**
+> **Use the native vendor packaging path for production. Preserve custom-converter work as research until it earns the same real-target acceptance.**
